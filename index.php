@@ -1,3 +1,3 @@
 <?php 
 
-echo "hello NK!";
+echo "hi NK!";
