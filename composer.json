@@ -1,0 +1,17 @@
+{
+    "name": "fin/narekaltro",
+    "description": "Simple POS System for NareKaltro",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Fin\\Narekaltro\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Atdhe Boshnjaku",
+            "email": "atdhe.boshnjaku@gmail.com"
+        }
+    ],
+    "require": {}
+}
