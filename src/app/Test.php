@@ -1,6 +1,6 @@
 <?php
 
-namespace Fin\Narekaltro;
+namespace Fin\Narekaltro\App;
 
 class Test
 {
