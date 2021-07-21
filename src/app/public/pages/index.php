@@ -1,6 +1,6 @@
 <?php 
 
-use Fin\Narekaltro\App\Classes\Test;
+use Fin\Narekaltro\app\classes\Test;
 
 require_once("../../../../vendor/autoload.php");
 
