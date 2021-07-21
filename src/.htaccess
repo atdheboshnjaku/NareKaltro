@@ -3,15 +3,15 @@ RewriteEngine on
 
 # if URL has /pages/ then remove and redirect
 RewriteCond %{ENV:REDIRECT_STATUS} ^$
-RewriteRule ^pages/(.+)$ /$1 [L,R=301,NC]
+RewriteRule ^Pages/(.+)$ /$1 [L,R=301,NC]
 
 # landing page for app subdomain to show index.php
-RewriteRule ^$ pages/index.php [L]
+RewriteRule ^$ Pages/index.php [L]
 
 # check & rewrite if a matching .php file exists in pages/ subdirectory
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/src/pages/$1.php -f
-RewriteRule ^(.+?)/?$ pages/$1.php [L]
+RewriteCond %{DOCUMENT_ROOT}/src/Pages/$1.php -f
+RewriteRule ^(.+?)/?$ Pages/$1.php [L]
 
 # Redirecting to the error page when nothing is found
 ErrorDocument 404 /error

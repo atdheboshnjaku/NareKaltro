@@ -6,4 +6,4 @@ RewriteEngine on
 
 
 # send all the traffic to /public/
-RewriteRule .* src/pages/$0 [L]
+RewriteRule .* src/Pages/$0 [L]
