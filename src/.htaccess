@@ -9,9 +9,13 @@ RewriteRule ^Pages/(.+)$ /$1 [L,R=301,NC]
 RewriteRule ^$ Pages/index.php [L]
 
 # check & rewrite if a matching .php file exists in pages/ subdirectory
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+#RewriteRule ^(.+?)/?$ $1.php [L]
+
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/src/Pages/$1.php -f
-RewriteRule ^(.+?)/?$ Pages/$1.php [L]
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [NC,L] 
 
 # Redirecting to the error page when nothing is found
 ErrorDocument 404 /error
