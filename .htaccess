@@ -1,9 +1,9 @@
 Options +FollowSymLinks -MultiViews
 RewriteEngine on
 
-<IfModule mime_module>
-  AddHandler application/x-httpd-alt-php80 .php .php8 .phtml
-</IfModule>
+#<IfModule mime_module>
+#  AddHandler application/x-httpd-alt-php80 .php .php8 .phtml
+#</IfModule>
 
 
 # send all the traffic to /public/
