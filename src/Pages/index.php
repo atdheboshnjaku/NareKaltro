@@ -7,14 +7,14 @@ use Fin\Narekaltro\App\User;
 
 require_once("../../vendor/autoload.php");
 
-$session = new Session();
-if(!$session->isLogged()) {
-    Login::redirectTo("login");
-}
+// $session = new Session();
+// if(!$session->isLogged()) {
+//     Login::redirectTo("login");
+// }
 
 $user = new User();
 $u =  $user->getUser(1);
-echo $u['name'] . " " . $_SESSION['userId'] . "\n";
+echo $u['name'] . " ";
 echo "<a href=\"logout\">logout</a>";
 
 
