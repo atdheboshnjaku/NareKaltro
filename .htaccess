@@ -1,8 +1,9 @@
 Options +FollowSymLinks -MultiViews
 RewriteEngine on
 
-# Setting PHP version
-#AddHandler application/x-httpd-php80 .php
+<IfModule mime_module>
+  AddHandler application/x-httpd-alt-php80 .php .php8 .phtml
+</IfModule>
 
 
 # send all the traffic to /public/
