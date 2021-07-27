@@ -7,10 +7,10 @@ use Fin\Narekaltro\App\User;
 
 require_once("../../vendor/autoload.php");
 
-// $session = new Session();
-// if(!$session->isLogged()) {
-//     Login::redirectTo("login");
-// }
+$session = new Session();
+if(!$session->isLogged()) {
+    Login::redirectTo("login");
+}
 
 $user = new User();
 $u =  $user->getUser(1);
