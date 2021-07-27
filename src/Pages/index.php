@@ -1,10 +1,21 @@
 <?php 
 
-use Fin\Narekaltro\App\Test;
 use Fin\Narekaltro\App\Database;
+use Fin\Narekaltro\App\Session;
+use Fin\Narekaltro\App\Login;
+use Fin\Narekaltro\App\User;
 
 require_once("../../vendor/autoload.php");
 
+$session = new Session();
+if(!$session->isLogged()) {
+    Login::redirectTo("login");
+}
 
-$db = new Database();
-echo $db::genv();
+$user = new User();
+$u =  $user->getUser(1);
+echo $u['name'] . " " . $_SESSION['userId'] . "\n";
+echo "<a href=\"logout\">logout</a>";
+
+
+//echo "you are logged in!";

@@ -14,4 +14,4 @@ RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [NC,L] 
 
 # Redirecting to the error page when nothing is found
-ErrorDocument 404 https://fin.narekaltro.com/src/Pages/error
+ErrorDocument 404 /error
