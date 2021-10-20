@@ -20,3 +20,7 @@ RewriteRule ^(users|locations)/([\w-]+)/(\d+)/?$ Pages/$1.php?action=$2&id=$3 [N
 # check & rewrite if a matching .php file exists in Pages folder
 RewriteCond %{DOCUMENT_ROOT}/src/Pages/$1.php -f
 RewriteRule ^(.+?)/?$ Pages/$1.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [NC,L] 
