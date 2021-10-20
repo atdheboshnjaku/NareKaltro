@@ -10,19 +10,19 @@ $action = Url::getParam('action');
 switch($action) {
     
     case "add":
-    require_once('user/add.php');
+    require_once('User/add.php');
     break;
     
     case "edit":
-    require_once('user/edit.php');
+    require_once('User/edit.php');
     break;
 
     case "remove":
-    require_once('user/remove.php');
+    require_once('User/remove.php');
     break;
     
     default:
-    require_once('user/list.php');
+    require_once('User/list.php');
 
 }
 
