@@ -4,42 +4,60 @@ use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\Form;
 use Fin\Narekaltro\App\User;
+use Fin\Narekaltro\App\Validation;
 
 require_once("../../vendor/autoload.php");
 
-$session = new Session();
-if($session->isLogged()) {
+$objSession = new Session();
+if($objSession->isLogged()) {
     Login::redirectTo("/");
 }
 
-$form = new Form();
+$objForm = new Form();
+$objValidation = new Validation($objForm);
 
-if($form->isPost("email")) {
+if($objForm->isPost("email")) {
     
-    $user = new User();
-    if($user->authenticate($form->getPost("email"), $form->getPost("password"))) {
-        $session = new Session();
-        $session->login($user);
+    $objUser = new User();
+    if($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"))) {
+        $objSession->login($objUser);
         Login::redirectTo("/");
     } else {
-        Login::redirectTo("error");
+        $objValidation->addToErrors("login");
     }
 
 } 
 
-
+require_once("Templates/header.php");
 ?>
 
-<form action="" method="post">
+<div class="login-ctn">
 
-    <p>
-        <input type="email" name="email" placeholder="Email" required="">
-    </p>
-    <p>
-        <input type="password" name="password" placeholder="Password" required="">
-    </p>
-    <p>
-        <input type="submit" name="submit">
-    </p>
-    
-</form>
+    <div class="login-intro-img">
+        <img src="Resources/img/calculator_wallpaper.svg">
+    </div>
+
+    <div class="login-form-ctn">
+
+        <div class="form-ctn">
+            <h1>Login</h1>
+            <form action="" method="post" class="login-form">
+                <?php echo $objValidation->validate("login"); ?>
+                <?php echo $objValidation->validate("email"); ?>
+                <input type="email" name="email" placeholder="Email" required="">
+                <?php echo $objValidation->validate("password"); ?>
+                <input type="password" name="password" placeholder="Password" required="">
+
+                <input type="submit" name="submit">
+                
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<?php require_once("Templates/footer.php"); ?>

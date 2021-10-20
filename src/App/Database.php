@@ -10,7 +10,12 @@ class Database
 {
 
     private $db = false;
-    public $lastQuery = null;
+
+    public ?string $lastQuery = null;
+    public array  $insertKeys = [];
+    public array  $insertValues = [];
+    
+    public int $id;
 
     public function __construct() 
     {
@@ -23,7 +28,7 @@ class Database
     {
         // Using vlucas/phpdotenv package to load the environment (.env) file and call variables 
         // for the database credentials
-        $dotenv = Dotenv::createImmutable("../../");
+        $dotenv = Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
         $dotenv->load();
 
         // Creating a mysqli object and using the variables from withing the .env file located 
@@ -47,15 +52,15 @@ class Database
 
     }
 
-    public function escape(string $string): string 
+    public function escape(string|int $value): string|int
     {
 
-        $escape_string = $this->db->escape_string($string);
+        $escape_string = $this->db->escape_string($value);
         return $escape_string;
 
     }
 
-    public function query(string $query): array
+    public function query(string $query): bool
     {
 
         $this->lastQuery = $query;
@@ -65,7 +70,7 @@ class Database
 
     }
 
-    public function confirmQuery(string $result): string|int
+    public function confirmQuery(bool $result): void
     {
 
         if(!$result) {
@@ -73,7 +78,7 @@ class Database
             $output .= "Last SQL query: ". $this->lastQuery;
             die($output);
         } else {
-            $this->db->affected_rows();
+            $this->db->affected_rows;
         }
 
     }
@@ -91,7 +96,7 @@ class Database
 
     }
 
-    public function fetchOne(string $query): array
+    public function fetchOne(string $query): array|null
     {
 
         $result = $this->fetchAll($query);
@@ -99,10 +104,49 @@ class Database
 
     }
     
-    public function lastId(): int|string
+    public function lastId(): int
     {
 
         return $this->db->insert_id;
+
+    }
+
+    public function prepareToInsert(array $args = null): void
+    {
+
+        if(!empty($args)) {
+
+            foreach($args as $key => $value) {
+                $this->insertKeys[] = $key;
+                $this->insertValues[] = $this->escape($value);
+            }
+
+        }
+
+    }
+
+    public function insert(string $table = null): bool
+    {
+
+        if(
+            !empty($table) && 
+            !empty($this->insertKeys) && 
+            !empty($this->insertValues)
+        ) {
+
+            $sql  = "INSERT INTO `{$table}` (`";
+            $sql .= implode("`, `", $this->insertKeys);
+            $sql .= "`) VALUES ('";
+            $sql .= implode("', '", $this->insertValues);
+            $sql .= "')";
+
+            if($this->query($sql)) {
+                $this->id = $this->lastId();
+                return true;
+            }
+            return false;
+
+        }
 
     }
 

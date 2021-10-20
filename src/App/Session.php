@@ -7,25 +7,29 @@ namespace Fin\Narekaltro\App;
 class Session
 {
 
-    private string $userId;
+    private $userId;
 
     public function __construct()
     {
-
-        session_start();
+        
+        if(session_status() === PHP_SESSION_NONE)
+        {
+            session_start();
+        }
+    
         $this->checkLogin();
 
     }
 
-    public function login($user): bool
+    public function login($user = null): array|bool|int
     {
 
         if($user) {
 
             // Regenerating the session id after login to prevent session fixation
             session_regenerate_id();
-            $_SESSION['userId'] = $user->id;
-            $this->userId = $user->id;            
+            $_SESSION['userId'] = (int) $user->id;
+            $this->userId = $user->id;        
 
         }
 
@@ -54,7 +58,7 @@ class Session
 
         if(isset($_SESSION['userId'])) {
             $this->userId = $_SESSION['userId'];
-        }
+        } 
 
     }
 

@@ -7,11 +7,11 @@ namespace Fin\Narekaltro\App;
 class Form
 {
 
-    public function isPost(string $input): bool 
+    public function isPost(string $field = ""): bool
     {
 
-        if(!empty($input)) {
-            if(isset($_POST[$input])) {
+        if(!empty($field)) {
+            if(isset($_POST[$field])) {
                 return true;
             }
             return false;
@@ -24,11 +24,34 @@ class Form
 
     }
 
-    public function getPost(string $input): string|null {
-        if(!empty($input)) {
-            return $this->isPost($input) ? strip_tags($_POST[$input]) : null;
+    public function getPost(string $field): string|null
+    {
+
+        if(!empty($field)) {
+            return $this->isPost($field) ? strip_tags($_POST[$field]) : null;
         }
+
     }
+
+    public function getPostArray(array $expected = null): array
+    {
+
+        $out = [];
+        if($this->isPost()) {
+            foreach($_POST as $key => $value) {
+                if(!empty($expected)) {
+                    if(in_array($key, $expected)) {
+                        $out[$key] = strip_tags($value);
+                    }
+                } else {
+                    $out[$key] = strip_tags($value);
+                }
+            }
+        }
+        return $out;
+
+    }
+
 
 }
 

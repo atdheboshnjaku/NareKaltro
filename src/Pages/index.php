@@ -12,10 +12,10 @@ if(!$session->isLogged()) {
     Login::redirectTo("login");
 }
 
-$user = new User();
-$u =  $user->getUser(1);
-echo $u['name'] . " ";
-echo "<a href=\"logout\">logout</a>";
+require_once("Templates/header.php");
+?>
 
 
-//echo "you are logged in!";
+
+<?php require_once("Templates/footer.php"); ?>
+
