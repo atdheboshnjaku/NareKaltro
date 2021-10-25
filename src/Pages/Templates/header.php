@@ -70,7 +70,7 @@ use Fin\Narekaltro\App\Session;
             <div class="top-bar">
                 sdsdfs
             </div>
-        <!-- <?php } ?> -->
+        <!-- <?php // } ?> -->
         
     
 
