@@ -30,10 +30,10 @@ use Fin\Narekaltro\App\Session;
 <!-- Main body container -->
 <div class="fluid-ctn">
     <!-- Side menu -->
-    <?php
+    <!-- <?php
 
-        $session = new Session();
-        if($session->isLogged()) { ?>
+        // $session = new Session();
+        // if($session->isLogged()) { ?> -->
 
         <aside>
         <div class="logo-ctn">
@@ -70,7 +70,7 @@ use Fin\Narekaltro\App\Session;
             <div class="top-bar">
                 sdsdfs
             </div>
-        <?php } ?>
+        <!-- <?php } ?> -->
         
     
 

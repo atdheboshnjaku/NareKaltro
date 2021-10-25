@@ -8,10 +8,10 @@ use Fin\Narekaltro\App\Validation;
 
 require_once("../../vendor/autoload.php");
 
-$objSession = new Session();
-if($objSession->isLogged()) {
-    Login::redirectTo("/");
-}
+// $objSession = new Session();
+// if($objSession->isLogged()) {
+//     Login::redirectTo("/");
+// }
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
