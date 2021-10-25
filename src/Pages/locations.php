@@ -1,3 +1,4 @@
+<?php phpinfo(); exit(); ?>
 <?php
 
 use Fin\Narekaltro\App\Url;
