@@ -6,4 +6,4 @@ Options -MultiViews
 RewriteEngine On
 
 # landing page for app subdomain to show index.php
-RewriteRule ^$ Pages/index.php [L]
+#RewriteRule ^$ Pages/index.php [L]
