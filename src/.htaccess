@@ -5,7 +5,12 @@ RewriteEngine On
 RewriteRule ^$ Pages/index.php [L]
 
 # skip all files and directories from rewrite rules below
-RewriteCond %{ENV:REDIRECT_STATUS} 200 [OR]
+#RewriteCond %{ENV:REDIRECT_STATUS} ^$ [OR]
+#RewriteCond %{REQUEST_FILENAME} -d [OR]
+#RewriteCond %{REQUEST_FILENAME} -f
+#RewriteRule ^ - [L]
+
+RewriteCond %{ENV:REDIRECT_STATUS} Pages/200 [OR]
 RewriteCond %{REQUEST_FILENAME} -d [OR]
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
