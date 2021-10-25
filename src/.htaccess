@@ -10,7 +10,7 @@ RewriteRule ^$ Pages/index.php [L]
 #RewriteCond %{REQUEST_FILENAME} -f
 #RewriteRule ^ - [L]
 
-RewriteCond %{ENV:REDIRECT_STATUS} Pages/200 [OR]
+RewriteCond %{REQUEST_URI} =%{ORG_REQ_URI}
 RewriteCond %{REQUEST_FILENAME} -d [OR]
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
