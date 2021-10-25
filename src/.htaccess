@@ -5,15 +5,15 @@ RewriteEngine On
 RewriteRule ^$ Pages/index.php [L]
 
 # skip all files and directories from rewrite rules below
-#RewriteCond %{ENV:REDIRECT_STATUS} ^$ [OR]
-#RewriteCond %{REQUEST_FILENAME} -d [OR]
-#RewriteCond %{REQUEST_FILENAME} -f
-#RewriteRule ^ - [L]
-
-RewriteCond %{REQUEST_URI} =%{ORG_REQ_URI}
+RewriteCond %{ENV:REDIRECT_STATUS} 200 [OR]
 RewriteCond %{REQUEST_FILENAME} -d [OR]
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
+
+#RewriteCond %{REQUEST_URI} =%{ORG_REQ_URI}
+#RewriteCond %{REQUEST_FILENAME} -d [OR]
+#RewriteCond %{REQUEST_FILENAME} -f
+#RewriteRule ^ - [L]
 
 # route dummy URLs to their php files inside Pages/ folder
 
