@@ -1,0 +1,30 @@
+Options -MultiViews
+RewriteEngine On
+
+# landing page for app subdomain to show index.php
+RewriteRule ^$ Pages/index.php [L]
+
+# skip all files and directories from rewrite rules below
+#RewriteCond %{ENV:REDIRECT_STATUS} 200 [OR]
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+#RewriteCond %{REQUEST_URI} =%{ORG_REQ_URI}
+#RewriteCond %{REQUEST_FILENAME} -d [OR]
+#RewriteCond %{REQUEST_FILENAME} -f
+#RewriteRule ^ - [L]
+
+# route dummy URLs to their php files inside Pages/ folder
+
+RewriteRule ^(users|locations)/([\w-]+)/?$ Pages/$1.php?action=$2 [NC,L,QSA]
+
+RewriteRule ^(users|locations)/([\w-]+)/(\d+)/?$ Pages/$1.php?action=$2&id=$3 [NC,L,QSA]
+
+# check & rewrite if a matching .php file exists in Pages folder
+RewriteCond %{DOCUMENT_ROOT}/src/Pages/$1.php -f
+RewriteRule ^(.+?)/?$ Pages/$1.php [L]
+
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME}\.php -f
+#RewriteRule ^(.*)$ $1.php [NC,L]
