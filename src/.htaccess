@@ -1,3 +1,3 @@
-Options -MultiViews
-RewriteEngine On
-RewriteRule ^(users|locations)/([\w-]+)/?$ Pages/$1.php?action=$2 [NC,L,QSA,R]
+#Options -MultiViews
+#RewriteEngine On
+#RewriteRule ^(users|locations)/([\w-]+)/?$ Pages/$1.php?action=$2 [NC,L,QSA,R]
