@@ -11,8 +11,7 @@ use Fin\Narekaltro\App\Session;
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- <base href="/src/Pages/" /> -->
-    <base href="/" />
+    <base href="/src/Pages/" />
     <meta charset="utf-8">
     <title>Fin NK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

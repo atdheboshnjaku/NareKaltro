@@ -13,10 +13,10 @@ $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objLocation = new Location();
 
-$objSession = new Session();
-if(!$objSession->isLogged()) {
-    Login::redirectTo("login");
-}
+// $objSession = new Session();
+// if(!$objSession->isLogged()) {
+//     Login::redirectTo("login");
+// }
 
 if($objForm->isPost("name")) {
 

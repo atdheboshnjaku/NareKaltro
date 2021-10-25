@@ -9,10 +9,10 @@ use Fin\Narekaltro\App\Location;
 
 require_once("../../vendor/autoload.php");
 
-$objSession = new Session();
-if(!$objSession->isLogged()) {
-    Login::redirectTo("login");
-}
+// $objSession = new Session();
+// if(!$objSession->isLogged()) {
+//     Login::redirectTo("login");
+// }
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
