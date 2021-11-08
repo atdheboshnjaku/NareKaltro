@@ -9,10 +9,10 @@ use Fin\Narekaltro\App\Location;
 
 require_once("../../vendor/autoload.php");
 
-// $objSession = new Session();
-// if(!$objSession->isLogged()) {
-//     Login::redirectTo("login");
-// }
+$objSession = new Session();
+if(!$objSession->isLogged()) {
+    Login::redirectTo("login");
+}
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
@@ -32,7 +32,7 @@ require_once("Templates/header.php");
             <p><?php echo array_shift($locationCount); ?> locations in total</p>
         </div>
         <div class="box-rt-ctn">
-            <a href="/locations/add"><button class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New Location</button></a>
+            <a href="/location/add"><button class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New Location</button></a>
         </div>
     </div>
     <table class="action-table align-middle">
@@ -53,10 +53,10 @@ require_once("Templates/header.php");
                     </td>
                     <td><p class="badge badge-active">Active</p></td>
                     <td>
-                        <a href="/locations/edit/<?php echo $location['location_id']; ?>">
+                        <a href="/location/edit?id=<?php echo $location['location_id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
                         </a> 
-                        <a href="/locations/remove/<?php echo $location['location_id']; ?>">
+                        <a href="/location/remove?id=<?php echo $location['location_id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>
                         </a>
                     </td>

@@ -1,0 +1,24 @@
+Options +FollowSymLinks -MultiViews
+RewriteEngine on
+
+# if URL has /pages/ then remove and redirect
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^Pages/(.+)$ /$1 [L,R=301,NC]
+
+# landing page for app subdomain to show index.php
+#RewriteRule ^$ Pages/index.php [L]
+
+# route dummy URLs to their php files inside Pages/ folder
+
+RewriteRule ^(users|locations)/([\w-]+)/?$ Pages/$1.php?action=$2 [NC,L,QSA]
+
+RewriteRule ^(users|locations)/([\w-]+)/(\d+)/?$ Pages/$1.php?action=$2&id=$3 [NC,L,QSA]
+
+# check & rewrite if a matching .php file exists in Pages folder
+RewriteCond %{DOCUMENT_ROOT}/src/Pages/$1.php -f
+RewriteRule ^(.+?)/?$ Pages/$1.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [NC,L]
+

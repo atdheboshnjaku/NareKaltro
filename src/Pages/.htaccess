@@ -1,0 +1,29 @@
+Options +FollowSymLinks -MultiViews
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+
+RewriteRule ^(locations|users|services|login|logout) $1.php [NC,L,QSA]
+#RewriteRule ^([a-zA-Z_-]+) $1.php [NC,L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php !-f
+
+# redirecting users
+RewriteRule ^(locations|users)/([0-9a-zA-Z_-]+) $1.php?action=$2.php [NC,L,QSA]
+
+# redirecting to folder
+RewriteRule ^(location|user|service)/([0-9a-zA-Z_-]+) $1/$2.php [NC,L,QSA]
+#RewriteRule ^([a-zA-Z_-]+)/([a-zA-Z_-]+) $1/$2.php [NC,L,QSA]
+
+# redirecting to user folder
+RewriteRule ^(locations|user)/([0-9a-zA-Z_-]+)/(\d+)/?$ $1/$2&id=$3 [NC,L,QSA]
+#RewriteRule ^(locations|users)/([0-9a-zA-Z_-]+)/([0-9]+)/?$ $1.php?action=$2.php&id=$3 [NC,L,QSA] 
+
+
+
+
+
+
+

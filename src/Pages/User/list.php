@@ -9,10 +9,10 @@ use Fin\Narekaltro\App\Url;
 
 require_once("../../vendor/autoload.php");
 
-// $objSession = new Session();
-// if(!$objSession->isLogged()) {
-//     Login::redirectTo("login");
-// }
+$objSession = new Session();
+if(!$objSession->isLogged()) {
+    Login::redirectTo("login");
+}
 
 $objUser = new User();
 $userCount = $objUser->userCount();
@@ -27,7 +27,7 @@ require_once("Templates/header.php");
             <p><?php echo array_shift($userCount); ?> users in total</p>
         </div>
         <div class="box-rt-ctn">
-            <a href="/users/add"><button class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New User</button></a>
+            <a href="/user/add"><button class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New User</button></a>
         </div>
     </div>
     <table class="action-table align-middle">
@@ -51,10 +51,10 @@ require_once("Templates/header.php");
                         <p class="badge badge-vacation">Vacation</p>
                     </td> 
                     <td>
-                        <a href="/users/edit/<?php echo $aUser['id']; ?>">
+                        <a href="/user/edit?id=<?php echo $aUser['id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
                         </a> 
-                        <a href="&quest;action=remove&amp;id=<?php echo $aUser['id']; ?>">
+                        <a href="/user/remove?id=<?php echo $aUser['id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>
                         </a>
                     </td>

@@ -6,12 +6,12 @@ use Fin\Narekaltro\App\User;
 use Fin\Narekaltro\App\Form;
 use Fin\Narekaltro\App\Validation;
 
-require_once("../../vendor/autoload.php");
+require_once("../../../vendor/autoload.php");
 
-// $objSession = new Session();
-// if(!$objSession->isLogged()) {
-//     Login::redirectTo("login");
-// }
+$objSession = new Session();
+if(!$objSession->isLogged()) {
+    Login::redirectTo("login");
+}
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
@@ -50,7 +50,7 @@ if($objForm->isPost("name")) {
 
 }
 
-require_once("Templates/header.php");
+require_once("../Templates/header.php");
 
 ?>
 

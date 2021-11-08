@@ -7,12 +7,12 @@ use Fin\Narekaltro\App\Form;
 use Fin\Narekaltro\App\Validation;
 use Fin\Narekaltro\App\Url;
 
-require_once("../../vendor/autoload.php");
+require_once("../../../vendor/autoload.php");
 
-// $objSession = new Session();
-// if(!$objSession->isLogged()) {
-//     Login::redirectTo("login");
-// }
+$objSession = new Session();
+if(!$objSession->isLogged()) {
+    Login::redirectTo("login");
+}
 
 
 $objForm = new Form();
@@ -53,7 +53,6 @@ if($objForm->isPost("name")) {
 
 }
 
-require_once("Templates/header.php");
 ?>
 
 oh noo

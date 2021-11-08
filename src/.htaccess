@@ -1,13 +1,6 @@
-#Options -MultiViews
-#RewriteEngine On
-#RewriteRule ^(users|locations)/([\w-]+)/?$ Pages/$1.php?action=$2 [NC,L,QSA,R]
-
-Options -MultiViews
+Options +FollowSymLinks -MultiViews
 RewriteEngine On
 
-# landing page for app subdomain to show index.php
-RewriteRule ^$ Pages/index.php [L]
-
-#RewriteCond %{REQUEST_FILENAME} !-d
-#RewriteCond %{REQUEST_FILENAME}\.php -f
-#RewriteRule ^(.*)$ $1.php [NC,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.+) $1.php [NC,L]
