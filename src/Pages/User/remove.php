@@ -53,6 +53,8 @@ if($objForm->isPost("name")) {
 
 }
 
+require_once("../Templates/header.php");
+
 ?>
 
 oh noo
