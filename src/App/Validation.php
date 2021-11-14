@@ -13,9 +13,12 @@ class Validation
     public array $message = [
         "login"           => "Email/Password combination is not correct!",
         "email"           => "Please enter a valid email address",
+        "name"            => "Please enter the users full name",
         "password"        => "Please enter your password",
-        "user_exists"     => "This user exists in the Db",
-        "location_exists" => "This location exists"
+        "user_exists"     => "This user email exists in the Database",
+        "location_exists" => "This location already exists!",
+        "role_id"         => "Please select a user role",
+        "location_id"     => "Please select a user location"
     ];
 
     public array $expected = [];

@@ -7,5 +7,5 @@ require_once("../../vendor/autoload.php");
 
 $session = new Session();
 $session->logout();
-Login::redirectTo("/");
+Login::redirectTo("/login");
 

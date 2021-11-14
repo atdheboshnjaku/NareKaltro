@@ -11,9 +11,12 @@ class Database
 
     private $db = false;
 
-    public ?string $lastQuery = null;
-    public array  $insertKeys = [];
-    public array  $insertValues = [];
+    public ?string $lastQuery  = null;
+    
+    public array $insertKeys   = [];
+    public array $insertValues = [];
+
+    public array $updateSets   = [];
     
     public int $id;
 
@@ -150,6 +153,63 @@ class Database
 
     }
 
+    public function prepareToUpdate(array $args = null)
+    {
+
+        if(!empty($args)) {
+            foreach($args as $key => $value) {
+                $this->updateSets[] = "`{$key}` = '". $this->escape($value) ."'";
+            }
+        }
+
+    }
+
+    public function update(string $table = null, string $id = null) 
+    {
+
+        if(!empty($table) && !empty($id) && !empty($this->updateSets)) {
+            $sql  = "UPDATE `{$table}` SET ";
+            $sql .= implode(", ", $this->updateSets);
+            $sql .= " WHERE `id` = '". $this->escape($id) ."'";
+            return $this->query($sql);
+        }
+
+    }
+
+    public function deleteRecord(string $table = null, string $id = null): bool
+    {
+
+        if(!empty($table) && !empty($id)) {
+            $sql = "DELETE FROM `{$table}`
+                    WHERE `id` = '". $this->escape($id) ."' LIMIT 1";
+                    return $this->query($sql);
+        }
+
+    }
+
+    public function deactivateUser(string $table = null, string $id = null): bool
+    {
+
+        if(!empty($table) && !empty($id)) {
+            $sql = "UPDATE `{$table}` SET status = '0', location_id = '0' WHERE `id` = '". $this->escape($id) ."'";
+            return $this->query($sql);
+        }
+
+    }
+
+
+    public function totalCountById(string $table, string $id): array 
+    {
+
+        $sql = "SELECT COUNT(*) FROM {$this->table}
+                WHERE `location_id` = '". $this->escape($id) ."' 
+                AND `status` = 1
+                AND `role_id` = 2 
+                OR `role_id` = 3 
+                OR `role_id` = 4";
+        return $this->fetchOne($sql);
+
+    }
 
     // Testing Dotenv
     public static function genv(): string 

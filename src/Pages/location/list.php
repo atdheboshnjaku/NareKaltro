@@ -11,13 +11,14 @@ require_once("../../vendor/autoload.php");
 
 $objSession = new Session();
 if(!$objSession->isLogged()) {
-    Login::redirectTo("login");
+    Login::redirectTo("/login");
 }
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objLocation = new Location();
 $locationCount = $objLocation->locationCount();
+$objUser = new User();
 
 require_once("Templates/header.php");
 
@@ -39,7 +40,8 @@ require_once("Templates/header.php");
         <thead>
             <tr>
                 <th>Location</th>
-                <th>Status</th>
+                <th># Employees</th>
+                <th># Clients</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -49,22 +51,128 @@ require_once("Templates/header.php");
                 <tr>
                     <td>
                         <?php echo $location['name']; ?>
-                        <p>3 Employees</p>
+                        <p>
+                            
+                        </p>
                     </td>
-                    <td><p class="badge badge-active">Active</p></td>
                     <td>
-                        <a href="/location/edit?id=<?php echo $location['location_id']; ?>">
+                        <p class="badge badge-blue">
+                        <?php 
+                            $total = $objUser->employeeLocationCountById($location['id']); 
+                            $emp = "";
+                            $totalEmployees = array_pop($total);
+                            if($totalEmployees <= 1) {
+                                $emp = " Employee";
+                            }
+                            if($totalEmployees > 1) {
+                                $emp = " Employees";
+                            }
+                            if($totalEmployees == 0) {
+                                $emp = " Employees";
+                            }
+                            echo $totalEmployees . $emp;
+                        ?>
+                        </p>
+                    </td>
+                    <td>
+                        <p class="badge badge-green">
+                        <?php 
+                            $total = $objUser->clientLocationCountById($location['id']); 
+                            $cli = "";
+                            $totalClients = array_pop($total);
+                            if($totalClients <= 1) {
+                                $cli = " Client";
+                            }
+                            if($totalClients > 1) {
+                                $cli = " Clients";
+                            }
+                            if($totalClients == 0) {
+                                $cli = " Clients";
+                            }
+                            echo $totalClients . $cli;
+                        ?>
+                        </p>
+                    </td>
+                    <td>
+                        <a href="/location/edit?id=<?php echo $location['id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
                         </a> 
-                        <a href="/location/remove?id=<?php echo $location['location_id']; ?>">
+                        <?php if(!$objUser->checkUserHasThisLocation($location['id'])) { ?>
+                        <!-- href="/location/remove?id=<?php // echo $location['id']; ?>" -->
+                        <input type="hidden" class="delete-id" value="<?php echo $location['id']; ?>" >
+                        <a class="delete-confirmation">
                             <div class="btn btn-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>
                         </a>
+                        <?php } else { ?>
+                        <a class="delete-denied">
+                            <div class="btn btn-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>
+                        </a>
+                        <?php } ?>
+                        
                     </td>
                 </tr>
             </tbody>
         <?php } ?>
     </table>
 </div>
+
+<script type="text/javascript">
+    
+$(document).ready(function(){
+
+    $('.delete-denied').click(function(e) {
+
+        e.preventDefault();
+
+        swal({
+            title: "Unable to Delete!",
+            text: "You cannot delete a location that has users assigned to it",
+            icon: "error",
+            timer: 5000,
+        });
+
+    });
+
+    $('.delete-confirmation').click(function(e) {
+        e.preventDefault();
+
+        var deleteID = $(this).closest("tr").find('.delete-id').val();
+
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this location!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+            
+                $.ajax({
+                    type: "POST",
+                    url: "/location/remove",
+                    data: {
+                        "id": deleteID,
+                    },
+                    success: function (response) {
+                        
+                        swal("Location Deleted Successfully!", {
+                            icon: "success",
+                        }).then((result) => {
+                            location.reload();
+                        });
+
+                    }
+                });
+
+            } 
+        });
+
+    });
+
+});
+
+</script>
 
 <?php require_once("Templates/footer.php"); ?>
 

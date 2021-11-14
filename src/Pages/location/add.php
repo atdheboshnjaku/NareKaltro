@@ -15,7 +15,7 @@ $objLocation = new Location();
 
 $objSession = new Session();
 if(!$objSession->isLogged()) {
-    Login::redirectTo("login");
+    Login::redirectTo("/login");
 }
 
 if($objForm->isPost("name")) {
@@ -24,7 +24,7 @@ if($objForm->isPost("name")) {
     $objValidation->required = ["name"];
 
     $location = $objForm->getPost("name");
-    $existingLocation = $objLocation->getLocationByEmail($location);
+    $existingLocation = $objLocation->getLocationByName($location);
 
     if(!empty($existingLocation)) {
         $objValidation->addToErrors("location_exists");
@@ -32,9 +32,9 @@ if($objForm->isPost("name")) {
 
     if($objValidation->isValid()) {
         if($objLocation->createLocation($objValidation->post)) {
-            Login::redirectTo("locations");
+            Login::redirectTo("/locations");
         } else {
-            Login::redirectTo("error");
+            Login::redirectTo("/error");
         }
     } 
 
@@ -44,12 +44,27 @@ require_once("../Templates/header.php");
 
 ?>
 
-<form action="" method="post">
-    <?php echo $objValidation->validate('location_exists'); ?>
-    <p>
-        <input type="text" name="name" placeholder="Location name" required="">
-    </p>
-    <p>
-        <input type="submit" name="" value="Add location">
-    </p>
-</form>
+<div class="box">
+    <div class="box-header">
+        <div class="box-lf-ctn">
+            <h2>Locations</h2>
+            <p>Add your new location</p>
+        </div>
+        <div class="box-rt-ctn">
+            <a href="/locations"><button class="action-btn align-middle"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp; Go Back</button></a>
+        </div>
+    </div>
+    <form action="" method="post" class="add-form">
+        
+        <?php echo $objValidation->validate('location_exists'); ?>
+        <p>
+            <input type="text" name="name" placeholder="Location name" required="">
+        </p>
+        <p>
+            <input type="submit" name="submit" class="blue-btn alab" value="Add location">
+        </p>
+
+    </form>
+</div>
+
+<?php require_once("../Templates/footer.php"); ?>

@@ -7,7 +7,7 @@ namespace Fin\Narekaltro\App;
 class Location extends Database
 {
 
-    private $table = "Business_Locations";
+    protected $table = "Business_Locations";
 
     //public int $id;
 
@@ -25,6 +25,16 @@ class Location extends Database
 
     }
 
+    public function updateLocation(array $args, string $id): bool 
+    {
+
+        if(!empty($args) && !empty($id)) {
+            $this->prepareToUpdate($args);
+            return $this->update($this->table, $id);
+        }
+
+    }
+
     public function getBusinessLocations(): array|null
     {
 
@@ -33,13 +43,34 @@ class Location extends Database
 
     }
 
-    public function getLocationByEmail(string $name): array|null
+    public function getLocationByName(string $name): array|null
     {
 
         if(!empty($name)) {
             $sql = "SELECT `name` FROM {$this->table} 
-                WHERE `name` ='" . $this->escape($name) . "'";
+                    WHERE `name` = '" . $this->escape($name) . "'";
             return $this->fetchOne($sql);
+        }
+
+    }
+
+    public function getLocationById(string $id)
+    {
+
+        if(!empty($id)) {
+            $sql = "SELECT `name` FROM {$this->table} WHERE `id` = '". $this->escape($id) ."'";
+            return $this->fetchOne($sql);
+        }
+
+    }
+
+    public function deleteLocation(string $id): bool 
+    {
+
+        if(!empty($id)) {
+            if($this->deleteRecord($this->table, $id)) {
+                return true;
+            }
         }
 
     }
@@ -49,6 +80,16 @@ class Location extends Database
 
         $sql = "SELECT COUNT(*) FROM {$this->table}";
         return $this->fetchOne($sql);
+
+    }
+
+    public function locationCountById(string $id): array 
+    {
+
+        if(!empty($id)) {
+            $result = $this->totalCountById($this->table, $id);
+            return $result;
+        }
 
     }
 

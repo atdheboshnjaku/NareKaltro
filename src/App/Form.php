@@ -52,6 +52,29 @@ class Form
 
     }
 
+    public function stickySelect($field, $value, $default = null)
+    {
+
+        if($this->isPost($field) && $this->getPost($field) == $value) {
+            return " selected=\"selected\"";
+        } else {
+            return !empty($default) && $default == $value ? " selected=\"selected\"" : null;
+        }
+
+    }
+
+    public function stickyText($field, $value = null)
+    {
+
+        if($this->isPost($field)) {
+            return stripslashes($this->getPost($field));
+        } else {
+            return !empty($value) ? $value : null;
+        }
+
+    } 
+    
+
 
 }
 
