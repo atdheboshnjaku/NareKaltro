@@ -62,6 +62,15 @@ class Session
 
     }
 
+    public function getUserId(): int 
+    {
+
+        if(isset($_SESSION['userId'])) {
+            return $this->userId = $_SESSION['userId'];
+        }
+
+    }
+
 }
 
 

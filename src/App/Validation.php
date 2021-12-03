@@ -17,6 +17,9 @@ class Validation
         "password"        => "Please enter your password",
         "user_exists"     => "This user email exists in the Database",
         "location_exists" => "This location already exists!",
+        "service_exists"  => "This service already exists!",
+        "country"         => "Please select client country",
+        "state"           => "Please select client state/region",
         "role_id"         => "Please select a user role",
         "location_id"     => "Please select a user location"
     ];

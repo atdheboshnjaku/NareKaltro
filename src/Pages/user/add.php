@@ -85,7 +85,7 @@ require_once("../Templates/header.php");
         </p>
         <p>
             <input type="hidden" name="status" value="1">
-            <input type="text" name="name" placeholder="User name" required="">
+            <input type="text" name="name" placeholder="Users full name" required="">
         </p>
         <?php echo $objValidation->validate('user_exists'); ?>
         <?php echo $objValidation->validate('email'); ?>

@@ -8,8 +8,18 @@ class Location extends Database
 {
 
     protected $table = "Business_Locations";
+    private $table_2 = "Countries";
+    private $table_3 = "States";
+    private $table_4 = "Cities";
 
     //public int $id;
+
+    public function getColumnName(): array  
+    {
+
+        return $this->getTableColumnName($this->table);
+
+    }
 
     public function createLocation(array $args): bool
     {
@@ -42,6 +52,43 @@ class Location extends Database
         return $this->fetchAll($sql);
 
     }
+
+    public function getCountries(): array 
+    {
+        
+        return $this->getAllCountries($this->table_2);
+
+    }
+
+    public function getStates(string $id): ?string 
+    {
+
+        $sql = "SELECT `id`, `name` FROM {$this->table_3}
+                WHERE `country_id` = '". $this->escape($id) ."'
+                ORDER BY `name` ASC";
+                $result = $this->fetchAll($sql);
+                return json_encode($result);
+
+    }
+
+    public function getCities(string $state, string $country): ?string 
+    {
+
+        $sql = "SELECT `id`, `name` FROM {$this->table_4}
+                WHERE `state_id` = '". $this->escape($state) ."'
+                AND `country_id` = '". $this->escape($country) ."'
+                ORDER BY `name` ASC";
+                $result = $this->fetchAll($sql);
+                return json_encode($result);
+
+    }
+
+    // public function getStates(string $id): ?string 
+    // {
+
+    //     return json_encode($this->getRecordsFromTableColumnValue($this->table_3, "country_id", $id));
+
+    // }
 
     public function getLocationByName(string $name): array|null
     {

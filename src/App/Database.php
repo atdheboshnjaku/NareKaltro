@@ -79,6 +79,8 @@ class Database
         if(!$result) {
             $output  = "Database query failed\n ";
             $output .= "Last SQL query: ". $this->lastQuery;
+            $output .= "\n Error: " . $this->db->error;
+            $output .= "\n Error number: " . $this->db->errno;
             die($output);
         } else {
             $this->db->affected_rows;
@@ -167,12 +169,59 @@ class Database
     public function update(string $table = null, string $id = null) 
     {
 
-        if(!empty($table) && !empty($id) && !empty($this->updateSets)) {
+        if(
+            !empty($table) && 
+            !empty($id) && 
+            !empty($this->updateSets)
+        ) {
             $sql  = "UPDATE `{$table}` SET ";
             $sql .= implode(", ", $this->updateSets);
             $sql .= " WHERE `id` = '". $this->escape($id) ."'";
             return $this->query($sql);
         }
+
+    }
+
+    public function getTableColumnName(string $table): array  
+    {
+
+        $sql = "SELECT COLUMN_NAME
+                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                WHERE TABLE_NAME = '". $this->escape($table) ."'
+                AND CONSTRAINT_NAME = 'PRIMARY'";
+                return $this->fetchOne($sql);
+
+    }
+
+    public function getAllCountries(string $table): array  
+    {
+
+        $sql = "SELECT * FROM `". $this->escape($table) . "`
+                ORDER BY `name` ASC";
+                return $this->fetchAll($sql);
+
+    }
+
+    public function getRecordsFromTableColumnValue(string $table = null, string $column = null, string $value = null): array 
+    {
+
+        $sql = "SELECT * FROM `{$table}`";
+                if(!empty($column)) {
+                    $sql .= " WHERE `{$this->escape($column)}` = '". $this->escape($value) ."'";
+                }
+                $sql .= " ORDER BY ASC";
+                return $this->fetchAll($sql);
+
+    }
+
+    public function getRecordFromTableColumnValue(string $table = null, string $column = null, string $value = null): array 
+    {
+
+        $sql = "SELECT * FROM `{$table}`";
+                if(!empty($column)) {
+                    $sql .= " WHERE `{$this->escape($column)}` = '". $this->escape($value) ."'";
+                }
+                return $this->fetchOne($sql);
 
     }
 
@@ -192,6 +241,16 @@ class Database
 
         if(!empty($table) && !empty($id)) {
             $sql = "UPDATE `{$table}` SET status = '0', location_id = '0' WHERE `id` = '". $this->escape($id) ."'";
+            return $this->query($sql);
+        }
+
+    }
+
+    public function deactivateService(string $table = null, string $id = null): bool 
+    {
+
+        if(!empty($table) && !empty($id)) {
+            $sql = "UPDATE `{$table}` SET status = 0 WHERE `id` = '". $this->escape($id) ."'";
             return $this->query($sql);
         }
 

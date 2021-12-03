@@ -12,6 +12,13 @@ class User extends Database
 
     public int $id;
 
+    public function getColumnName(): array  
+    {
+
+        return $this->getTableColumnName($this->table);
+
+    }
+
     public function authenticate(string $email, string $password): bool
     {
 
@@ -36,10 +43,10 @@ class User extends Database
 
     }
 
-    public function createUser(array $args = null, string $password = null): bool
+    public function createUser(array $args = null, ?string $password = null): bool
     {
 
-        if(!empty($args) && !empty($password)) {
+        if(!empty($args)) {
             $this->prepareToInsert($args);
             if($this->insert($this->table)) {
                 return true;
@@ -60,11 +67,24 @@ class User extends Database
 
     }
 
-    public function getUserByEmail(string $email): array|null
+    // public function getUserByEmail(string $email): array|null
+    // {
+    //     if(!empty($email)) {
+    //         $sql = "SELECT `id` FROM {$this->table} 
+    //                 WHERE `email` = '" . $this->escape($email) . "'";
+    //         return $this->fetchOne($sql);
+    //     }
+
+    // }
+
+    public function getUserByEmail(string $email, string $id = null): array|null
     {
         if(!empty($email)) {
             $sql = "SELECT `id` FROM {$this->table} 
-                    WHERE `email` = '" . $this->escape($email) . "'";
+                    WHERE `email` = '" . $this->escape($email) . "' ";
+                    if(!empty($id)) {
+                        $sql .= "AND NOT `id` = '". $this->escape($id) ."'";
+                    }
             return $this->fetchOne($sql);
         }
 
@@ -84,8 +104,54 @@ class User extends Database
     {
 
         $sql = "SELECT * FROM {$this->table}
-                WHERE `status` = 1";
+                WHERE `status` = 1
+                AND `role_id` > 1";
         return $this->fetchAll($sql);
+
+    }
+
+    public function getClients(): array
+    {
+
+        $sql = "SELECT * FROM {$this->table}
+                WHERE `status` = 1
+                AND `role_id` = 1";
+        return $this->fetchAll($sql);
+
+    }
+
+    public function getClient(string $value): array 
+    {
+
+        $columnName = $this->getColumnName();
+        $column = $columnName['COLUMN_NAME'];
+        return $this->getRecordFromTableColumnValue($this->table, $column, $value);
+        // $sql = "SELECT * FROM {$this->table}
+        //         WHERE `".$this->escape($columnName['COLUMN_NAME'])."` = '". $this->escape($id) ."'";
+        //         return $this->fetchOne($sql);
+
+    }
+
+    public function getClientCountryById(string $id): array  
+    {
+
+       $columnName = $this->getColumnName();
+       $sql = "SELECT `country` FROM {$this->table}
+               WHERE `{$this->escape($columnName['COLUMN_NAME'])}` = '". $this->escape($id) ."'";
+               return $this->fetchOne($sql);
+
+    }
+
+    public function getClientInitials(string $fullname): string 
+    {
+
+        $safeFullname = [];
+        $safeFullname[] = $this->escape($fullname);
+        $initials = implode('', array_map(function($name) {
+            preg_match_all('/\b\w/', $name, $matches);
+            return implode('', $matches[0]);
+        }, $safeFullname));
+        return $initials; 
 
     }
 
@@ -114,8 +180,20 @@ class User extends Database
     public function userCount(): array 
     {
 
-        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE `status` = 1";
+        $sql = "SELECT COUNT(*) FROM {$this->table} 
+                WHERE `status` = 1
+                AND `role_id` > 1";
         return $this->fetchOne($sql);
+
+    }
+
+    public function clientCount(): array 
+    {
+
+        $sql = "SELECT COUNT(*) FROM {$this->table}
+                WHERE `status` = 1
+                AND `role_id` = 1";
+                return $this->fetchOne($sql);
 
     }
 
@@ -129,6 +207,17 @@ class User extends Database
                     AND `role_id` > 1 ";
         }
         return $this->fetchOne($sql);
+
+    }
+
+    public function getUserLevelName(string $id): array 
+    {
+
+        if(!empty($id)) {
+            $sql = "SELECT `name` FROM {$this->table_2}
+                    WHERE `level` = '". $this->escape($id) ."'";
+                    return $this->fetchOne($sql);
+        }
 
     }
 
@@ -164,7 +253,8 @@ class User extends Database
     public function getUserRoles(): array 
     {
 
-        $sql = "SELECT * FROM {$this->table_2}";
+        $sql = "SELECT * FROM {$this->table_2}
+                WHERE `level` > 1";
         return $this->fetchAll($sql);
 
     }

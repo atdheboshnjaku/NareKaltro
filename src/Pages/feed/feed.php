@@ -6,22 +6,19 @@ use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\User;
 use Fin\Narekaltro\App\Appointments;
 
-require_once("../../vendor/autoload.php");
+require_once("../../../vendor/autoload.php");
 
-$session = new Session();
-if(!$session->isLogged()) {
+$objSession = new Session();
+if(!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
+$objAppointments = new Appointments();
 
-require_once("Templates/header.php");
-?>
-
-
-    
-home
+echo $appointments = $objAppointments->getAppointmentsJSON();
 
 
 
-<?php require_once("Templates/footer.php"); ?>
+
+
 

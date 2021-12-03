@@ -7,24 +7,12 @@ require_once("../../vendor/autoload.php");
 
 $action = Url::getParam('action');
 
-switch($action) {
-    
-    case "add":
-    require_once('user/add.php');
-    break;
-    
-    case "edit":
-    require_once('user/edit.php');
-    break;
-
-    case "remove":
-    require_once('user/remove.php');
-    break;
-    
-    default:
-    require_once('user/list.php');
-
-}
+match ($action) {
+    "add" => require_once('user/add.php'),
+    "edit" => require_once('user/edit.php'),
+    "remove" => require_once('user/remove.php'),
+    default => require_once('user/list.php'),
+};
 
 
 

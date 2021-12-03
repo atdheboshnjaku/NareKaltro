@@ -35,6 +35,7 @@ require_once("Templates/header.php");
 
     <div class="login-intro-img">
         <img src="Resources/img/calculator_wallpaper.svg">
+        <!-- <img src="Resources/img/appointment_wallpaper.svg"> -->
     </div>
 
     <div class="login-form-ctn">

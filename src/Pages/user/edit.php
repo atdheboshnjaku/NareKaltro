@@ -117,7 +117,7 @@ require_once("../Templates/header.php");
         <?php echo $objValidation->validate('name'); ?>
         <p>
             <input type="hidden" name="status" value="1">
-            <input type="text" name="name" value="<?php echo $objForm->stickyText('name', $user['name']); ?>" placeholder="User name" required="">
+            <input type="text" name="name" value="<?php echo $objForm->stickyText('name', $user['name']); ?>" placeholder="Users full name" required="">
         </p>
         <?php echo $objValidation->validate('email'); ?>
         <p>

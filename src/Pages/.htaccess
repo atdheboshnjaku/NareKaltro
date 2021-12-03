@@ -4,17 +4,17 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 
-RewriteRule ^(locations|users|services|login|logout) $1.php [NC,L,QSA]
+RewriteRule ^(appointments|locations|users|clients|services|login|logout|error) $1.php [NC,L,QSA]
 #RewriteRule ^([a-zA-Z_-]+) $1.php [NC,L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php !-f
 
 # redirecting users
-RewriteRule ^(locations|users)/([0-9a-zA-Z_-]+) $1.php?action=$2.php [NC,L,QSA]
+RewriteRule ^(appointments|locations|users|clients|services)/([0-9a-zA-Z_-]+) $1.php?action=$2.php [NC,L,QSA]
 
 # redirecting to folder
-RewriteRule ^(location|user|service)/([0-9a-zA-Z_-]+) $1/$2.php [NC,L,QSA]
+RewriteRule ^(appointment|location|user|client|service)/([0-9a-zA-Z_-]+) $1/$2.php [NC,L,QSA]
 #RewriteRule ^([a-zA-Z_-]+)/([a-zA-Z_-]+) $1/$2.php [NC,L,QSA]
 
 # redirecting to user folder

@@ -5,8 +5,7 @@ use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\User;
 use Fin\Narekaltro\App\Form;
 use Fin\Narekaltro\App\Validation;
-use Fin\Narekaltro\App\Url;
-use Fin\Narekaltro\App\Location;
+use Fin\Narekaltro\App\Service;
 
 require_once("../../vendor/autoload.php");
 
@@ -15,68 +14,69 @@ if(!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
+$objForm = new Form();
+$objValidation = new Validation($objForm);
+$objService = new Service();
 $objUser = new User();
-$userCount = $objUser->userCount();
-$objLocation = new Location();
-
+$services = $objService->getServices();
+$serviceCount = $objService->serviceCount();
 
 require_once("Templates/header.php");
+
 ?>
+
+
 
 <div class="box">
     <div class="box-header">
         <div class="box-lf-ctn">
-            <h2>Users</h2>
-            <p><?php echo array_shift($userCount); ?> users in total</p>
+            <h2>Services</h2>
+            <p><?php echo array_shift($serviceCount); ?> services in total</p>
         </div>
         <div class="box-rt-ctn">
-            <a href="/user/add"><button class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New User</button></a>
+            <a href="/service/add"><button class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New Service</button></a>
         </div>
     </div>
     <table class="action-table align-middle">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Level</th>
+                <th>Service</th>
+                <th>Style</th>
+                <th></th>
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-            <?php $users = $objUser->getUsers(); ?>
-            <?php foreach($users as $user) { ?>
+        <?php foreach($services as $service) { ?>
+            <tbody>
                 <tr>
                     <td>
-                        <?php echo $user['name']; ?>
+                        <?php echo $service['name']; ?>
                         <p>
-                            <?php 
-                                $location = $objLocation->getLocationById($user['location_id']); 
-                                echo $location['name'];
-                            ?>    
+                            
                         </p>
                     </td>
                     <td>
-                        <?php echo $user['email']; ?><br>
-                        <p class="badge badge-vacation">Vacation</p>
-                    </td> 
-                    <td>
-                        <?php 
-                            $level = $objUser->getUserLevelName($user['role_id']);
-                            echo $level['name'];
-                        ?>
+                        <p class="badge" style="background-color:<?php echo $service['background']; ?>; color:<?php echo $service['color']; ?>;">
+                            <?php echo $service['name']; ?>
+                        </p>
                     </td>
                     <td>
-                        <input type="hidden" class="delete-id" value="<?php echo $user['id']; ?>" >
-                        <a href="/user/edit?id=<?php echo $user['id']; ?>">
+                        <p>
+                       
+                        </p>
+                    </td>
+                    <td>
+                        <a href="/service/edit?id=<?php echo $service['id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
                         </a> 
+                        <input type="hidden" class="delete-id" value="<?php echo $service['id']; ?>" >
                         <a class="delete-confirmation">
                             <div class="btn btn-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>
                         </a>
                     </td>
                 </tr>
-            <?php } ?>            
-        </tbody>
+            </tbody>
+        <?php } ?>
     </table>
 </div>
 
@@ -91,7 +91,7 @@ $(document).ready(function(){
         swal({
             title: "Unable to Delete!",
             text: "You cannot delete a location that has users assigned to it",
-            icon: "warning",
+            icon: "error",
             timer: 5000,
         });
 
@@ -103,8 +103,8 @@ $(document).ready(function(){
         var deleteID = $(this).closest("tr").find('.delete-id').val();
 
         swal({
-            title: "Remove User?",
-            text: "Once removed, this user will no longer be available!",
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this service!",
             icon: "warning",
             buttons: true,
             dangerMode: true,
@@ -114,13 +114,13 @@ $(document).ready(function(){
             
                 $.ajax({
                     type: "POST",
-                    url: "/user/remove",
+                    url: "/service/remove",
                     data: {
                         "id": deleteID,
                     },
                     success: function (response) {
                         
-                        swal("User Removed Successfully!", {
+                        swal("Service Removed Successfully!", {
                             icon: "success",
                         }).then((result) => {
                             location.reload();
@@ -139,9 +139,6 @@ $(document).ready(function(){
 </script>
 
 <?php require_once("Templates/footer.php"); ?>
-
-
-
 
 
 
