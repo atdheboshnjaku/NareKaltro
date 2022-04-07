@@ -71,7 +71,7 @@ class Location extends Database
 
     }
 
-    public function getCities(string $state, string $country): ?bool
+    public function getCities(string $state, string $country): bool|string
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_4}
