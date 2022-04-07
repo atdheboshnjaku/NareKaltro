@@ -60,7 +60,7 @@ class Location extends Database
 
     }
 
-    public function getStates(string $id): array|bool 
+    public function getStates(string $id): mixed
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_3}
