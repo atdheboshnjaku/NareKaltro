@@ -243,6 +243,7 @@ require_once("../Templates/header.php");
             url: "/src/Pages/world/getCities.php",
             type: "GET",
             data: {'country_id': country_id, 'state_id': state_id},
+            contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data) {
                 console.log(data);
