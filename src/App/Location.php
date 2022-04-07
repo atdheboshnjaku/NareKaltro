@@ -60,7 +60,7 @@ class Location extends Database
 
     }
 
-    public function getStates(string $id): string|bool
+    public function getStates(string $id)
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_3}
@@ -71,7 +71,7 @@ class Location extends Database
 
     }
 
-    public function getCities(string $state, string $country): mixed  
+    public function getCities(string $state, string $country)
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_4}
@@ -82,13 +82,6 @@ class Location extends Database
                 return json_encode($result);
 
     }
-
-    // public function getStates(string $id): ?string 
-    // {
-
-    //     return json_encode($this->getRecordsFromTableColumnValue($this->table_3, "country_id", $id));
-
-    // }
 
     public function getLocationByName(string $name): array|null
     {
