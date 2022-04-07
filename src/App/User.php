@@ -110,6 +110,15 @@ class User extends Database
 
     }
 
+    public function getUserLocationID(string $id): ?array 
+    {
+
+        $sql = "SELECT `location_id` FROM $this->table
+                WHERE `id` = '" . $this->escape($id) . "'";
+        return $this->fetchOne($sql);
+
+    }
+
     public function getClients(): array
     {
 

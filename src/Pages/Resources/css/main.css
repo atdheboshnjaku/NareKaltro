@@ -273,7 +273,7 @@ table.action-table th {
 /* Add forms */
 
 .add-form input, .add-form select {
-    width: 100%;
+    width: 100% !important;
     height: 45px;
     display: inline-block;
     background: var(--main-bg-color);
@@ -294,6 +294,11 @@ table.action-table th {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+
+/* Added this to fix the small select2 width */
+.select2-container {
+    width: 100% !important;
 }
 
 .profile-card input, .profile-card select {
@@ -506,7 +511,7 @@ aside {
 }
 
 .menu-title {
-
+    /*  */
 }
 
 /* Box layout containers */
