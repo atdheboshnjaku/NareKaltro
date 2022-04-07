@@ -1,4 +1,4 @@
-AddHandler application/x-httpd-alt-php80 .php .php8 .phtml
+#AddHandler application/x-httpd-alt-php80 .php .php8 .phtml
 
 Options +FollowSymLinks -MultiViews
 RewriteEngine on
