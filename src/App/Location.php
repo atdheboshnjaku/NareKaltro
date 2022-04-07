@@ -71,7 +71,7 @@ class Location extends Database
 
     }
 
-    public function getCities(string $state, string $country): array|bool  
+    public function getCities(string $state, string $country): mixed  
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_4}
