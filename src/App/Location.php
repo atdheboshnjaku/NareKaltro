@@ -60,7 +60,7 @@ class Location extends Database
 
     }
 
-    public function getStates(string $id)
+    public function getStates(string $id): ?array
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_3}
@@ -71,7 +71,7 @@ class Location extends Database
 
     }
 
-    public function getCities(string $state, string $country)
+    public function getCities(string $state, string $country): ?array
     {
 
         $sql = "SELECT `id`, `name` FROM {$this->table_4}
