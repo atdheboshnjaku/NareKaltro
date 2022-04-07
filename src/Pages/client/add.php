@@ -240,7 +240,7 @@ require_once("../Templates/header.php");
         localStorage.setItem("select2StateValue", state_id);
         if (state_id) {
         $.ajax({
-            url: "/world/getCities.php",
+            url: "/src/Pages/world/getCities.php",
             type: "GET",
             data: {'country_id': country_id, 'state_id': state_id},
             dataType: "json",
