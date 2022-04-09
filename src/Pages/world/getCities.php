@@ -1,10 +1,7 @@
 <?php 
 
-use Fin\Narekaltro\App\Database;
 use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
-use Fin\Narekaltro\App\User;
-use Fin\Narekaltro\App\Appointments;
 use Fin\Narekaltro\App\Location;
 
 require_once("../../../vendor/autoload.php");

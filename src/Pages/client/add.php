@@ -14,11 +14,11 @@ if(!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
-$userId = $objSession->getUserId();
-
 $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objUser = new User();
+$userId = $objSession->getUserId();
+$userLocationId = $objUser->getUserLocationID($userId);
 $userCount = $objUser->userCount();
 $objLocation = new Location();
 $locations = $objLocation->getBusinessLocations();
@@ -142,7 +142,7 @@ require_once("../Templates/header.php");
                     <optgroup label="User location">
                         <?php foreach($locations as $location) { ?>
                             <option value="<?php echo $location['id']; ?>"
-                                <?php echo $objForm->stickySelect('location_id', $location['id'], $userId); ?>>
+                                <?php echo $objForm->stickySelect('location_id', $location['id'], $userLocationId['location_id']); ?>>
                                 <?php echo $location['name']; ?>
                             </option>
                         <?php } ?>
@@ -208,23 +208,24 @@ require_once("../Templates/header.php");
         localStorage.setItem("select2CountryValue", country_id);
         if (country_id) {
             $.ajax({
-            url: "/src/Pages/world/getStates.php",
-            type: "GET",
-            data: {'country_id':country_id},
-            dataType: "json",
-            success: function(data) {
-                console.log(data);
-                $('select[name="state"]').empty();
-                $('select[name="state"]').append('<option value="">Select State</option>');
-                $.each(JSON.parse(data), function(key,value) {
-                    $('select[name="state"]').append('<option value="'+value.id+'">'+value.name+'</option>');
-                });
-                //check if the change is called on page load
-                if (page_load == true) {
-                    $('#state').val(state_id).trigger('change'); //assign slected value after element option is added in dom
-                    page_load = false; //adding this so that next time this doesn't get execute
+                url: "/src/Pages/world/getStates.php",
+                type: "GET",
+                data: {'country_id':country_id},
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                    $('select[name="state"]').empty();
+                    $('select[name="state"]').append('<option value="">Select State</option>');
+                    //$.each(JSON.parse(data), function(key,value) {
+                    $.each(data, function(key,value) {
+                        $('select[name="state"]').append('<option value="'+value.id+'">'+value.name+'</option>');
+                    });
+                    //check if the change is called on page load
+                    if (page_load == true) {
+                        $('#state').val(state_id).trigger('change'); //assign slected value after element option is added in dom
+                        page_load = false; //adding this so that next time this doesn't get execute
+                    }
                 }
-            }
             });
         } else {
             $('select[name="state"]').empty();
@@ -243,7 +244,6 @@ require_once("../Templates/header.php");
             url: "/src/Pages/world/getCities.php",
             type: "GET",
             data: {'country_id': country_id, 'state_id': state_id},
-            contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data) {
                 console.log(data);
@@ -254,7 +254,7 @@ require_once("../Templates/header.php");
                 });
             }
         });
-        }else {
+        } else {
              $('select[name="city"]').empty();
        }
     });
