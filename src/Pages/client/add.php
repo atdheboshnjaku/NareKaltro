@@ -211,13 +211,14 @@ require_once("../Templates/header.php");
                 url: "/src/Pages/world/getStates.php",
                 type: "GET",
                 data: {'country_id':country_id},
+                //data: ['{"country_id":"country_id"}'],
                 dataType: "json",
+                contentType: "application/json; charset=utf-8",
                 success: function(data) {
                     console.log(data);
                     $('select[name="state"]').empty();
                     $('select[name="state"]').append('<option value="">Select State</option>');
-                    //$.each(JSON.parse(data), function(key,value) {
-                    $.each(data, function(key,value) {
+                    $.each(JSON.parse(data), function(key,value) {
                         $('select[name="state"]').append('<option value="'+value.id+'">'+value.name+'</option>');
                     });
                     //check if the change is called on page load
