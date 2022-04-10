@@ -210,8 +210,7 @@ require_once("../Templates/header.php");
             $.ajax({
                 url: "/src/Pages/world/getStates.php",
                 type: "GET",
-                data: {'country_id':country_id},
-                //data: ['{"country_id":"country_id"}'],
+                data: {"country_id":country_id},
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function(data) {
