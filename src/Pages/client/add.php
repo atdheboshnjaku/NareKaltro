@@ -243,7 +243,7 @@ require_once("../Templates/header.php");
         $.ajax({
             url: "/src/Pages/world/getCities.php",
             type: "GET",
-            data: {'country_id': country_id, 'state_id': state_id},
+            data: {"country_id": country_id, "state_id": state_id},
             dataType: "json",
             success: function(data) {
                 console.log(data);
