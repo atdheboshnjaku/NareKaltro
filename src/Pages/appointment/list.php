@@ -22,6 +22,7 @@ $objForm = new Form();
 $objValidation = new Validation($objForm);
 
 $objLocation = new Location(); 
+$countries = $objLocation->getCountries();
 $locations = $objLocation->getBusinessLocations();
 $objUser = new User();    
 $userId = $session->getUserId();
@@ -179,7 +180,7 @@ require_once("Templates/header.php");
                     <select class="csc-select" name="country" id="country">
                         <option value="">Select Country</option>
                         <?php foreach($countries as $country) { ?>
-                        <option value="<?php echo $country[$columnName['COLUMN_NAME']]; ?>"
+                        <option value="<?php echo $country['id']; ?>"
                         >
                             <?php echo $country['name']; ?>
                         </option>
@@ -283,7 +284,7 @@ require_once("Templates/header.php");
             initialView: 'dayGridMonth',
             dayMaxEventRows: true,
             editable: true,
-            eventLimit: true,
+            //eventLimit: true,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
@@ -311,8 +312,28 @@ require_once("Templates/header.php");
                 $('#addappointment #start_date').val(info.start.toJSON().slice(0,19));
 
                 $('#addappointment').modal('show');
+            },
+            eventDrop: function(info) {
+
+                var appointment_id = info.event.id;
+                var start_date = info.event.start.toJSON().slice(0,19);
+                if(info.event.end) {
+                    var end_date = info.event.end.toJSON().slice(0,19);
+                }
+                
+
+                $.ajax({
+                    type: "POST",
+                    url: "/src/Pages/appointment/edit.php",
+                    data: {appointment_id:appointment_id, start_date:start_date, end_date:end_date},
+                    success: function(data) {
+                        console.log(data);
+                    }
+                    
+                });
+
             },            
-            //display: 'block'
+            eventDisplay: 'block'
         });
         calendar.render();
     });

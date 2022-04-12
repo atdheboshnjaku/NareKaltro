@@ -114,6 +114,19 @@ class Appointments extends Database
 
     }
 
+    public function updateAppointmentDate($appointment_id, $start_date, $end_date): bool 
+    {
+
+
+        $sql = "UPDATE {$this->table} 
+                SET `start_date` = '". $this->escape($start_date) ."',
+                `end_date` = '". $this->escape($end_date) ."'
+                WHERE `appointment_id` = '". $this->escape($appointment_id) ."'";
+                return $this->query($sql);
+
+
+    }
+
 
 
 }
