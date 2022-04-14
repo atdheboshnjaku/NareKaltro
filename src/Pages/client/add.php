@@ -211,7 +211,7 @@ require_once("../Templates/header.php");
                 url: "/src/Pages/world/getStates.php",
                 type: "GET",
                 data: {"country_id":country_id},
-                //dataType: "json",
+                dataType: "json",
                 //contentType: "application/json; charset=utf-8",
                 success: function(data) {
                     console.log(data);
@@ -244,7 +244,7 @@ require_once("../Templates/header.php");
             url: "/src/Pages/world/getCities.php",
             type: "GET",
             data: {"country_id": country_id, "state_id": state_id},
-            //dataType: "json",
+            dataType: "json",
             success: function(data) {
                 console.log(data);
                 $('select[name="city"]').empty();

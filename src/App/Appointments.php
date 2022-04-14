@@ -127,6 +127,14 @@ class Appointments extends Database
 
     }
 
+    public function numberOfUpcomingAppointments(): array 
+    {
+
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE `start_date` >= NOW()";
+                return $this->fetchOne($sql);
+
+    }
+
 
 
 }

@@ -17,6 +17,7 @@ if(!$session->isLogged()) {
 }
 $objAppointments = new Appointments();
 $appointments = $objAppointments->getAppointmentsJSON();
+$upcomingAppointments = $objAppointments->numberOfUpcomingAppointments();
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
@@ -38,7 +39,7 @@ require_once("Templates/header.php");
     <div class="box-header">
         <div class="box-lf-ctn">
             <h2>Appointments from Lists</h2>
-            <p>3 pending appointments in total</p>
+            <p><?php echo array_shift($upcomingAppointments); ?> upcoming appointments in total</p>
         </div>
         <div class="box-rt-ctn">
             <!-- <a href="/appointment/add"><button id="add-event" class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New Appointment</button> -->
@@ -328,6 +329,7 @@ require_once("Templates/header.php");
                     data: {appointment_id:appointment_id, start_date:start_date, end_date:end_date},
                     success: function(data) {
                         console.log(data);
+                        calendar.refetchEvents();
                     }
                     
                 });
@@ -360,6 +362,7 @@ require_once("Templates/header.php");
                 }).done(function (data) {
                 $('#addappointment').modal('hide');
                 console.log(data);
+                calendar.refetchEvents();
             });
 
             //event.preventDefault();
@@ -390,6 +393,7 @@ require_once("Templates/header.php");
                 }).done(function (data) {
                 $('#addappointment').modal('hide');
                 console.log(data);
+                calendar.refetchEvents();
             });
 
             //event.preventDefault();
