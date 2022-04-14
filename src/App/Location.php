@@ -72,7 +72,7 @@ class Location extends Database
                     return json_encode($result);
                 } else {
                     //return var_dump(json_last_error(), json_last_error_msg());
-                    return json_encode($result, JSON_UNESCAPED_UNICODE);
+                    return json_encode($result, JSON_THROW_ON_ERROR);
                 }
 
     }
@@ -90,7 +90,7 @@ class Location extends Database
                     return json_encode($result);
                 } else {
                     //return var_dump(json_last_error(), json_last_error_msg());
-                    return json_encode($result, JSON_UNESCAPED_UNICODE);
+                    return json_encode($result, JSON_THROW_ON_ERROR);
                 }
 
     }
