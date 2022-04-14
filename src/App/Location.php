@@ -71,7 +71,7 @@ class Location extends Database
                 if(json_encode($result)) {
                     return json_encode($result);
                 } else {
-                    return var_dump(json_last_error());
+                    return var_dump(json_last_error(), json_last_error_msg());
                 }
 
     }
@@ -88,7 +88,7 @@ class Location extends Database
                 if(json_encode($result)) {
                     return json_encode($result);
                 } else {
-                    return var_dump(json_last_error());
+                    return var_dump(json_last_error(), json_last_error_msg());
                 }
 
     }
