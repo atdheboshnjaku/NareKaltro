@@ -67,13 +67,13 @@ class Location extends Database
                 WHERE `country_id` = '". $this->escape($id) ."'
                 ORDER BY `name` ASC";
                 $result = $this->fetchAll($sql);
-                //return json_encode($result);
-                if(json_encode($result)) {
-                    return json_encode($result);
-                } else {
-                    //return var_dump(json_last_error(), json_last_error_msg());
-                    return json_encode($result, JSON_THROW_ON_ERROR);
-                }
+                return json_encode($result);
+                // if(json_encode($result)) {
+                //     return json_encode($result);
+                // } else {
+                //     //return var_dump(json_last_error(), json_last_error_msg());
+                //     return json_encode($result, JSON_THROW_ON_ERROR);
+                // }
 
     }
 
@@ -85,13 +85,13 @@ class Location extends Database
                 AND `country_id` = '". $this->escape($country) ."'
                 ORDER BY `name` ASC";
                 $result = $this->fetchAll($sql);
-                //return json_encode($result);
-                if(json_encode($result)) {
-                    return json_encode($result);
-                } else {
-                    //return var_dump(json_last_error(), json_last_error_msg());
-                    return json_encode($result, JSON_THROW_ON_ERROR);
-                }
+                return json_encode($result);
+                // if(json_encode($result)) {
+                //     return json_encode($result);
+                // } else {
+                //     //return var_dump(json_last_error(), json_last_error_msg());
+                //     return json_encode($result, JSON_THROW_ON_ERROR);
+                // }
 
     }
 
