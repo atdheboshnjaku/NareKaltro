@@ -170,6 +170,7 @@ class Database
     public function update(string $table = null, string $id = null) 
     {
 
+        $columnName = $this->getTableColumnName($table);
         if(
             !empty($table) && 
             !empty($id) && 
@@ -177,7 +178,8 @@ class Database
         ) {
             $sql  = "UPDATE `{$table}` SET ";
             $sql .= implode(", ", $this->updateSets);
-            $sql .= " WHERE `id` = '". $this->escape($id) ."'";
+            $sql .= " WHERE `". $columnName['COLUMN_NAME'] ."` = '". $this->escape($id) ."'";
+            //$sql .= " WHERE `id` = '". $this->escape($id) ."'";
             return $this->query($sql);
         }
 

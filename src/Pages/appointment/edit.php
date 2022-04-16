@@ -19,10 +19,21 @@ $start_date = (isset($_POST['start_date'])) ? $_POST['start_date'] : "NULL";
 $end_date = (isset($_POST['end_date'])) ? $_POST['end_date'] : "NULL";
 $appointment_id = (isset($_POST['appointment_id'])) ? $_POST['appointment_id'] : "NULL";
 
+// if(!empty($start_date) && !empty($appointment_id)) {
+
+//     $objAppointment = new Appointments();
+//     $objAppointment->updateAppointmentDate($appointment_id, $start_date, $end_date);
+
+// }
+
 if(!empty($start_date) && !empty($appointment_id)) {
 
+    $params = [
+        'start_date' => $start_date,
+        'end_date' => $end_date
+    ];
     $objAppointment = new Appointments();
-    $objAppointment->updateAppointmentDate($appointment_id, $start_date, $end_date);
+    $objAppointment->updateAppointmentDate($params, $appointment_id);
 
 }
 
