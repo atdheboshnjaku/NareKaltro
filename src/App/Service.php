@@ -32,7 +32,7 @@ class Service extends Database
 
         if(!empty($name)) {
             $sql = "SELECT * FROM {$this->table}
-                    WHERE `name` = '". $this->escape($name) ."' ";
+                    WHERE `name` = '". $this->escape($name) ."' AND `status` > 0 ";
                     if(!empty($id)) {
                         $sql .= "AND NOT `id` = '". $this->escape($id) ."'";
                     }

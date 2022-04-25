@@ -50,7 +50,7 @@ require_once("Templates/header.php");
     </div>
     <div id="calendar"></div>
 
-    <!-- Modal: View/Edit Appointment-->
+    <!-- Modal: View/Edit Appointment -->
     <div class="modal fade" id="openappointment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -325,7 +325,7 @@ require_once("Templates/header.php");
 
                 $.ajax({
                     type: "POST",
-                    url: "/src/Pages/appointment/edit.php",
+                    url: "/src/Pages/appointment/editStartDate.php",
                     data: {appointment_id:appointment_id, start_date:start_date, end_date:end_date},
                     success: function(data) {
                         console.log(data);
