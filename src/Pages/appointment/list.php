@@ -50,36 +50,75 @@ require_once("Templates/header.php");
     </div>
     <div id="calendar"></div>
 
-    <!-- Modal: View/Edit Appointment -->
+    <!-- Modal: View/Edit/Delete Appointment -->
     <div class="modal fade" id="openappointment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="">Appointment Info/Edit</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <dl class="row">
 
-                <dt class="col-sm-3">Appointment ID:</dt>
-                <dd class="col-sm-9" id="id"></dd>
+        <form action="" method="post" class="add-form">
+        
+            <p>
+                <span id="">Appointment ID</span>
+                <input type="text" id="edit_appointment_id" disabled >
+            </p>
+            
+            <p>
+                <span>Location</span>
+                <select class="form-select" name="edit_location_id" id="edit_location_id">
+                    <option disabled>Choose location</option>
+                    <optgroup label="User location">
+                        <?php foreach($locations as $location) { ?>
+                            <option value="<?php echo $location['id']; ?>"
+                                <?php echo $objForm->stickySelect('edit_location_id', $location['id']); ?>>
+                                <?php echo $location['name']; ?>
+                            </option>
+                        <?php } ?>
+                    </optgroup>
+                </select>
+            </p>
 
-                <dt class="col-sm-3">Appointment Client:</dt>
-                <dd class="col-sm-9" id="title"></dd>
+            <p>
+             <span>Service</span>
+                <select class="csc-select" name="edit_service_id" id="edit_service_id">
+                    <?php foreach($services as $service) { ?>
+                        <option value="<?php echo $service['id']; ?>" 
+                            <?php echo $objForm->stickySelect('edit_service_id', $service['id']); ?>>
+                            <?php echo $service['name']; ?>
+                        </option>
+                    <?php } ?>    
+                </select>
+            </p>
 
-                <dt class="col-sm-3">Appointment Location:</dt>
-                <dd class="col-sm-9" id="location"></dd>
+            <p>
+                <span>Appointment Start Date & Time</span>
+                <input type="datetime-local" name="edit_start_date" id="edit_start_date">
+            </p>
 
-                <dt class="col-sm-3">Appointment Service:</dt>
-                <dd class="col-sm-9" id="service"></dd>
+            <p>
+                <span>Appointment End Date & Time</span>
+                <input type="datetime-local" name="edit_end_date" id="edit_end_date">
+            </p>
 
-                <dt class="col-sm-3">Appointment Start:</dt>
-                <dd class="col-sm-9" id="start"></dd>
+            <p>
+                <span>Notes/Comments</span>
+                <textarea rows="5"></textarea>
+            </p>
 
-                <dt class="col-sm-3">Appointment End:</dt>
-                <dd class="col-sm-9" id="end"></dd>
+            <p>
+                <input type="submit" name="submit" id="submit" class="sm-blue-btn alab" value="Update">
+            </p>
 
-            </dl>
+            <p>
+                <input type="submit" name="submit" id="submit" class="sm-red-btn alab" value="Remove">
+            </p>
+
+        </form>
+
         </div>
         </div>
     </div>
@@ -285,7 +324,6 @@ require_once("Templates/header.php");
             initialView: 'dayGridMonth',
             dayMaxEventRows: true,
             editable: true,
-            //eventLimit: true,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
@@ -304,6 +342,19 @@ require_once("Templates/header.php");
                 $('#openappointment #end').text(info.event.end);
 
                 $('#openappointment').modal('show');
+
+                $('#openappointment #edit_appointment_id').val(info.event.id);
+
+                $('#openappointment #edit_location_id').val(info.event.extendedProps.location_id);
+
+                $('#openappointment #edit_service_id').val(info.event.extendedProps.service_id);
+
+                $('#openappointment #edit_start_date').val(info.event.start.toJSON().slice(0,19));
+
+                $('#openappointment #edit_end_date').val(info.event.end.toJSON().slice(0,19));
+
+                //edit_start_date
+               
 
                 
             },

@@ -38,7 +38,9 @@ class Appointments extends Database
                         'id'        => (int) $appointment[$columnName['COLUMN_NAME']],
                         'title'     => $user['name'],
                         'extendedProps' => [
+                            'location_id' =>  $location['id'],
                             'location' => $location['name'],
+                            'service_id' => $service['id'],
                             'service' => $service['name'] 
                         ],
                         'start'     => $appointment['start_date'],
@@ -53,7 +55,9 @@ class Appointments extends Database
                         'id'        => (int) $appointment[$columnName['COLUMN_NAME']],
                         'title'     => $user['name'],
                         'extendedProps' => [
+                            'location_id' =>  $location['id'],
                             'location' => $location['name'],
+                            'service_id' => $service['id'],
                             'service' => $service['name'] 
                         ],
                         'start'     => $appointment['start_date'],
@@ -99,7 +103,7 @@ class Appointments extends Database
     public function getService(string $id): array 
     {
 
-        $sql = "SELECT `name`, `background`, `color` FROM {$this->table_3}
+        $sql = "SELECT `id`, `name`, `background`, `color` FROM {$this->table_3}
                 WHERE `id` = '". $this->escape($id) . "'";
                 return $this->fetchOne($sql);
 
@@ -108,7 +112,7 @@ class Appointments extends Database
     public function getLocation(string $id): array 
     {
 
-        $sql = "SELECT `name` FROM {$this->table_4}
+        $sql = "SELECT `id`, `name` FROM {$this->table_4}
                 WHERE `id` = '". $this->escape($id) . "'";
                 return $this->fetchOne($sql);
 
