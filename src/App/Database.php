@@ -259,6 +259,17 @@ class Database
 
     }
 
+    public function deactivateStatus(string $table = null, string $id = null): bool 
+    {
+
+        $columnName = $this->getTableColumnName($table);
+        if(!empty($table) && !empty($id)) {
+            $sql = "UPDATE `{$table}` SET status = 0 WHERE `". $columnName['COLUMN_NAME'] ."` = '". $this->escape($id) ."'";
+            return $this->query($sql);
+        }
+
+    }
+
 
     public function totalCountById(string $table, string $id): array 
     {

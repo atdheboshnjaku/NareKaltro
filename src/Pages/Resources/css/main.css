@@ -94,8 +94,29 @@ a:hover {
     color: var(--white-text);
 }
 
+.red-btn {
+    width: 120px !important;
+    height: 40px !important;
+    background: var(--warning-red) !important;
+    border-radius: 5px;
+    margin-right: 10px;
+    color: var(--white-text);
+}
+
+.fl-rt {
+    float: right;
+}
+
+.red-btn:hover {
+    background-color: var(--warning-red-hover);
+}
+
 .blue-btn:hover {
     background: var(--blue-btn-hover) !important;
+}
+
+.wt-on-hv:hover {
+    color: #ffffff !important;
 }
 
 .sm-blue-btn {
@@ -542,10 +563,6 @@ aside {
     width: 2rem;
     margin-right: .5rem;
     float: left;
-}
-
-.menu-title {
-    /*  */
 }
 
 /* Box layout containers */

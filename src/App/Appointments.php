@@ -24,7 +24,7 @@ class Appointments extends Database
 
         $columnName = $this->getColumnName();
         $appointmentList = [];
-        $sql = "SELECT * FROM {$this->table}";
+        $sql = "SELECT * FROM {$this->table} WHERE status = 1";
         $appointments = $this->fetchAll($sql);
         if($appointments) {
             foreach($appointments as $appointment):
@@ -41,7 +41,8 @@ class Appointments extends Database
                             'location_id' =>  $location['id'],
                             'location' => $location['name'],
                             'service_id' => $service['id'],
-                            'service' => $service['name'] 
+                            'service' => $service['name'],
+                            'notes' => $appointment['appointment_notes'] 
                         ],
                         'start'     => $appointment['start_date'],
                         'end'       => $appointment['end_date'],
@@ -58,7 +59,8 @@ class Appointments extends Database
                             'location_id' =>  $location['id'],
                             'location' => $location['name'],
                             'service_id' => $service['id'],
-                            'service' => $service['name'] 
+                            'service' => $service['name'],
+                            'notes' => $appointment['appointment_notes']  
                         ],
                         'start'     => $appointment['start_date'],
                         //'url'       => '/appointment/edit?id=' . (int) $appointment[$columnName['COLUMN_NAME']],
@@ -140,6 +142,18 @@ class Appointments extends Database
             return $this->update($this->table, $app_id);
         }
 
+
+    }
+
+    public function cancelAppointment(string $id): bool 
+    {
+
+        if(!empty($id)) {
+
+            $safeID = $this->escape($id);
+            return $this->deactivateStatus($this->table, $safeID);
+
+        }
 
     }
 

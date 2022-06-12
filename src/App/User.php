@@ -67,15 +67,12 @@ class User extends Database
 
     }
 
-    // public function getUserByEmail(string $email): array|null
-    // {
-    //     if(!empty($email)) {
-    //         $sql = "SELECT `id` FROM {$this->table} 
-    //                 WHERE `email` = '" . $this->escape($email) . "'";
-    //         return $this->fetchOne($sql);
-    //     }
+    public function getCreatedUserID(): int|string 
+    {
 
-    // }
+        return $this->lastId();
+
+    }
 
     public function getUserByEmail(string $email, string $id = null): array|null
     {
