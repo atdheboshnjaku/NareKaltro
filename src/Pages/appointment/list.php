@@ -297,19 +297,18 @@ require_once("Templates/header.php");
 <!-- Appointments FullCalendar -->
 <script type="text/javascript">
 
-    $('#submitAddClient').click(function(e){
-            e.preventDefault();
+    // $('#submitAddClient').click(function(e){
+    //         e.preventDefault();
 
-            $('#addclient').modal('hide').on('hidden.bs.modal', function (e) {
+    //         $('#addclient').modal('hide').on('hidden.bs.modal', function (ev) {
 
-                $('#addappointment').removeData('bs.modal');
-                $('#addappointment').modal('show');
+    //             $('#addappointment').modal('show');
 
-                $(this).off('hidden.bs.modal'); // Remove the 'on' event binding
+    //             $(this).off('hidden.bs.modal'); // Remove the 'on' event binding
 
-            });
+    //         });
 
-    });
+    // });
 
 
     $('#client_id').select2({
@@ -462,6 +461,7 @@ require_once("Templates/header.php");
                 $('#addappointment').modal('hide');
                 console.log(data);
                 calendar.refetchEvents();
+                location.reload();
             });
 
         });
@@ -585,8 +585,6 @@ require_once("Templates/header.php");
                 localStorage.setItem("newlyCreatedClient", newClientID);
                 console.log(data);
                 calendar.refetchEvents();
-                $('#addappointment').modal('show');
-                //location.reload();
             });
 
         });
