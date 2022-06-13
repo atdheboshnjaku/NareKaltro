@@ -184,7 +184,7 @@ require_once("Templates/header.php");
                 </p>
                 <span>Appointment Notes</span>
                 <p>
-                    <textarea rows="4" name="appointment_notes" id="appointment_notes"></textarea>
+                    <textarea rows="4" name="a_appointment_notes" id="a_appointment_notes"></textarea>
                 </p>
             <p>
                 <input type="submit" name="submitApp" id="submitApp" class="blue-btn alab del-ls" value="Add Appointment">
@@ -296,6 +296,21 @@ require_once("Templates/header.php");
 
 <!-- Appointments FullCalendar -->
 <script type="text/javascript">
+
+    $('#submitAddClient').click(function(e){
+            e.preventDefault();
+
+            $('#addclient').modal('hide').on('hidden.bs.modal', function (e) {
+
+                $('#addappointment').removeData('bs.modal');
+                $('#addappointment').modal('show');
+
+                $(this).off('hidden.bs.modal'); // Remove the 'on' event binding
+
+            });
+
+    });
+
 
     $('#client_id').select2({
         placeholder: "Select Client",
@@ -434,7 +449,7 @@ require_once("Templates/header.php");
                 service_id: $("#service_id").val(),
                 start_date: $("#start_date").val(),
                 end_date: $("#end_date").val(),
-                appointment_notes: $("#appointment_notes").val()
+                a_appointment_notes: $("#a_appointment_notes").val()
             };
 
             $.ajax({
@@ -446,7 +461,6 @@ require_once("Templates/header.php");
                 }).done(function (data) {
                 $('#addappointment').modal('hide');
                 console.log(data);
-                deleteLocalStorage();
                 calendar.refetchEvents();
             });
 
