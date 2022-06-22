@@ -129,7 +129,7 @@ require_once("Templates/header.php");
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="">Create Appointment</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close del-ls" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
@@ -309,6 +309,14 @@ require_once("Templates/header.php");
     //         });
 
     // });
+
+    $(function() {
+        var newClientCreated = localStorage.getItem("newlyCreatedClient"); 
+        if(newClientCreated) {
+            $('#addappointment').modal('show');
+            $("#client_id").val(newClientCreated).trigger('change');
+        }
+    });
 
 
     $('#client_id').select2({
