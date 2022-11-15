@@ -48,6 +48,20 @@ class User extends Database
 
         if(!empty($args)) {
             $this->prepareToInsert($args);
+            if($this->insert($this->table)) {   
+                return true;
+            }
+            return false;
+        }
+        return false;
+
+    }
+
+    public function registerUser(array $args = null): bool
+    {
+
+        if(!empty($args)) {
+            $this->prepareToInsert($args);
             if($this->insert($this->table)) {
                 if($this->sendEmail($args['email'], $args['hash'])) {
                     

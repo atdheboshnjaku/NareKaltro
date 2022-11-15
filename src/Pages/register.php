@@ -21,6 +21,9 @@ if($objForm->isPost("email")) {
     $objUser = new User();
 
     $objValidation->expected = [
+        "account_id",
+        "role_id",
+        "location_id",
         "email"
     ];
 
@@ -35,10 +38,16 @@ if($objForm->isPost("email")) {
         $objValidation->addToErrors("user_exists");
     } 
 
-    $objValidation->post['hash'] = mt_rand(7, 8);
-    $objValidation->post['hash_date'] = date('YYYY-MM-DD HH:MI:SS');
+    $objValidation->post['account_id'] = uniqid();
+    $objValidation->post['role_id'] = "1";
+    $objValidation->post['location_id'] = "1";
+    $objValidation->post['country'] = "1";
+    $objValidation->post['hash'] = uniqid();
+    $objValidation->post['email'] = $_POST['email'];
+    $objValidation->post['status'] = "0";
+    //$objValidation->post['hash_date'] = date('YYYY-MM-DD hh:mm:ss');
 
-    if($objUser->createUser($objValidation->post)) {
+    if($objUser->registerUser($objValidation->post)) {
         Login::redirectTo("login");
     } else {
         $objValidation->addToErrors("reg_failed");
