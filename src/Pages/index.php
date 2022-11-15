@@ -17,11 +17,10 @@ if(!$session->isLogged()) {
 require_once("Templates/header.php");
 ?>
 
-
+<div class="box">
     
-home
 
-
+</div>
 
 <?php require_once("Templates/footer.php"); ?>
 

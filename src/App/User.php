@@ -49,11 +49,32 @@ class User extends Database
         if(!empty($args)) {
             $this->prepareToInsert($args);
             if($this->insert($this->table)) {
-                return true;
+                if($this->sendEmail($args['email'], $args['hash'])) {
+                    
+                    return true;
+
+                }
             }
             return false;
         }
         return false;
+
+    }
+
+    public function sendEmail(string $email, string $hash): bool 
+    {
+
+        $to       = $email;
+        $subject  = 'Please verify your account';
+        $message  = 'Please verify email by clicking on the link below:' . "\r\n";
+        $message .= '<a href="fin.narekaltro.com/verify?hash='. $hash  .'">Verify Email Now</a>';
+        $headers  = 'From: noreply@narekaltro.com'       . "\r\n" .
+                    'Reply-To: info@narekaltro.com' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
+
+        if(mail($to, $subject, $message, $headers)) {
+            return true;
+        }
 
     }
 

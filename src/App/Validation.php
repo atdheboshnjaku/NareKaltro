@@ -21,7 +21,8 @@ class Validation
         "country"         => "Please select client country",
         "state"           => "Please select client state/region",
         "role_id"         => "Please select a user role",
-        "location_id"     => "Please select a user location"
+        "location_id"     => "Please select a user location",
+        "reg_failed"      => "Registration failed, please try again"
     ];
 
     public array $expected = [];
