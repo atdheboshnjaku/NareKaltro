@@ -82,6 +82,7 @@ class User extends Database
 
             if($userID = $this->hashExists($hash)) {
                 $id = $userID['id'];
+                $args['status'] = "1";
                 $this->prepareToUpdate($args);
                 return $this->update($this->table, $id);
 
