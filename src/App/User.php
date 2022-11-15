@@ -84,7 +84,9 @@ class User extends Database
                 $id = $userID['id'];
                 $args['status'] = "1";
                 $this->prepareToUpdate($args);
-                return $this->update($this->table, $id);
+                if($this->update($this->table, $id)) {
+                    return true;
+                }
 
             }
         }
