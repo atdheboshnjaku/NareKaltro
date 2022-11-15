@@ -8,7 +8,7 @@ class User extends Database
 {
 
     protected $table   = "Users";
-    private $table_2 = "User_Roles";
+    private $table_2   = "User_Roles";
 
     public int $id;
 
@@ -75,6 +75,31 @@ class User extends Database
 
     }
 
+    public function verifyUser(array|string $args, string $hash, ?string $password = null): bool 
+    {
+
+        if(!empty($args) && !empty($hash) && !empty($password)) {
+
+            if($userID = $this->hashExists($hash)) {
+                $id = $userID['id'];
+                $this->prepareToUpdate($args);
+                return $this->update($this->table, $id);
+
+            }
+        }
+
+    }
+
+    private function hashExists(string $hash): array|null
+    {
+
+        $sql = "SELECT `id`, `hash` FROM {$this->table}
+                WHERE `hash` = '". $this->escape($hash) ."'";
+
+            return $this->fetchOne($sql);
+
+    }
+
     public function sendEmail(string $email, string $hash): bool 
     {
 
@@ -82,8 +107,10 @@ class User extends Database
         $subject  = 'Please verify your account';
         $message  = 'Please verify email by clicking on the link below:' . "\r\n";
         $message .= '<a href="fin.narekaltro.com/verify?hash='. $hash  .'">Verify Email Now</a>';
-        $headers  = 'From: noreply@narekaltro.com'       . "\r\n" .
-                    'Reply-To: info@narekaltro.com' . "\r\n" .
+        $headers  = 'MIME-Version: 1.0' . "\r\n" .
+                    'Content-type:text/html;charset=UTF-8' . "\r\n" .
+                    'From: noreply@narekaltro.com'       . "\r\n" .
+                    'Reply-To: noreply@narekaltro.com' . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
 
         if(mail($to, $subject, $message, $headers)) {

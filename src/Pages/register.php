@@ -40,8 +40,8 @@ if($objForm->isPost("email")) {
 
     $objValidation->post['account_id'] = uniqid();
     $objValidation->post['role_id'] = "1";
-    $objValidation->post['location_id'] = "1";
-    $objValidation->post['country'] = "1";
+    $objValidation->post['location_id'] = "0";
+    $objValidation->post['country'] = "0";
     $objValidation->post['hash'] = uniqid();
     $objValidation->post['email'] = $_POST['email'];
     $objValidation->post['status'] = "0";
