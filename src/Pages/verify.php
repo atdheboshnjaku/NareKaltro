@@ -14,6 +14,7 @@ require_once("../../vendor/autoload.php");
 // }
 
 $hash = Url::getParam('hash');
+$status = "1";
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
@@ -21,7 +22,7 @@ $objValidation = new Validation($objForm);
 if($objForm->isPost("password")) {
     
     $objUser = new User();
-    if($objUser->verifyUser($objForm->getPost("name"), $hash, $objForm->getPost("password"))) {
+    if($objUser->verifyUser($objForm->getPost("name"), $hash, $status, $objForm->getPost("password"))) {
         $objSession->login($objUser);
         Login::redirectTo("/");
     } else {

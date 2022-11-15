@@ -75,7 +75,7 @@ class User extends Database
 
     }
 
-    public function verifyUser(array|string $args, string $hash, ?string $password = null): bool 
+    public function verifyUser(array $args, string $hash, ?string $password = null): bool 
     {
 
         if(!empty($args) && !empty($hash) && !empty($password)) {
