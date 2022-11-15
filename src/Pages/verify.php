@@ -20,9 +20,17 @@ $objForm = new Form();
 $objValidation = new Validation($objForm);
 
 if($objForm->isPost("password")) {
+
+    $objValidation->expected = [
+        "name", 
+        "password",
+        "status"
+    ];
+
+    $objValidation->required = ["name", "password"];
     
     $objUser = new User();
-    if($objUser->verifyUser($objForm->getPost("name"), $hash, $status, $objForm->getPost("password"))) {
+    if($objUser->verifyUser($objValidation->post, $hash)) {
         $objSession->login($objUser);
         Login::redirectTo("/");
     } else {
