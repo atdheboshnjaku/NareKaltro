@@ -105,8 +105,16 @@ class User extends Database
 
         $to       = $email;
         $subject  = 'Please verify your account';
-        $message  = 'Please verify email by clicking on the link below:' . "\r\n";
-        $message .= '<a href="fin.narekaltro.com/verify?hash='. $hash  .'">Verify Email Now</a>';
+        $message  = '
+                    <html>
+                    <head>
+                        <title>Please verify email</title> 
+                    </head>
+                    <body>
+                        <h1>Verify account by clicking on the link below:</h1><br>
+                        <a href="fin.narekaltro.com/verify?hash='. $hash  .'">Verify Email Now</a>
+                    </body>
+                    </html>';
         $headers  = 'MIME-Version: 1.0' . "\r\n" .
                     'Content-type:text/html;charset=UTF-8' . "\r\n" .
                     'From: noreply@narekaltro.com'       . "\r\n" .
