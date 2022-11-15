@@ -111,12 +111,15 @@ class User extends Database
                         <title>Please verify email</title> 
                     </head>
                     <body>
-                        <h1>Verify account by clicking on the link below:</h1><br>
-                        <a href="fin.narekaltro.com/verify?hash='. $hash  .'">Verify Email Now</a>
+                        <h1>Verify account by clicking on the link below</h1><br>
+                        <p><a href="https://fin.narekaltro.com/verify?hash='. $hash  .'">Verify Email</a></p>
+                        <p>If the link above does not work, please visit this url to verify: <br>
+                        https://fin.narekaltro.com/verify?hash='.$hash.'
+                        </p>
                     </body>
                     </html>';
         $headers  = 'MIME-Version: 1.0' . "\r\n" .
-                    'Content-type:text/html;charset=UTF-8' . "\r\n" .
+                    'Content-Type: text/html; charset=UTF-8' . "\r\n" .
                     'From: noreply@narekaltro.com'       . "\r\n" .
                     'Reply-To: noreply@narekaltro.com' . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
