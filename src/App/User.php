@@ -80,7 +80,8 @@ class User extends Database
 
         if(!empty($args) && !empty($hash) && !empty($password)) {
 
-            if($userID = $this->hashExists($hash)) {
+            $userID = $this->hashExists($hash);
+            if($userID) {
                 $id = $userID['id'];
                 $args['status'] = "1";
                 $this->prepareToUpdate($args);
