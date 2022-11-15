@@ -78,7 +78,7 @@ class User extends Database
     public function verifyUser(array $args, string $hash, ?string $password = null): bool 
     {
 
-        if(!empty($args) && !empty($hash) && !empty($password)) {
+        if(!empty($args) && !empty($hash)) {
 
             $userID = $this->hashExists($hash);
             if($userID) {

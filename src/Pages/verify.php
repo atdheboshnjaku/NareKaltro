@@ -55,9 +55,9 @@ require_once("Templates/header.php");
             <h1>Verify</h1>
             <form action="" method="post" class="login-form">
                 <?php echo $objValidation->validate("name"); ?>
-                <input type="text" name="name" placeholder="Enter Your Fullname" required="">
+                <input autocomplete="off" type="text" name="name" placeholder="Enter Your Fullname" required="required">
                 <?php echo $objValidation->validate("password"); ?>
-                <input type="password" name="password" placeholder="Strong Password" required="">
+                <input autocomplete="off" type="password" name="password" placeholder="Strong Password" required="required">
 
                 <input type="submit" name="submit" value="Continue">
                 
