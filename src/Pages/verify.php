@@ -14,7 +14,6 @@ require_once("../../vendor/autoload.php");
 // }
 
 $hash = Url::getParam('hash');
-$status = "1";
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
@@ -28,6 +27,8 @@ if($objForm->isPost("password")) {
     ];
 
     $objValidation->required = ["name", "password"];
+
+    $objValidation->postFormat = ["password" => "password"];
     
     $objUser = new User();
     if($objUser->verifyUser($objValidation->post, $hash)) {
