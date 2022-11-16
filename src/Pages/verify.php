@@ -5,6 +5,7 @@ use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\Form;
 use Fin\Narekaltro\App\User;
 use Fin\Narekaltro\App\Validation;
+use Fin\Narekaltro\App\Session;
 
 require_once("../../vendor/autoload.php");
 
@@ -22,21 +23,35 @@ if($objForm->isPost("password")) {
 
     $objValidation->expected = [
         "name", 
-        "password",
-        "status"
+        "password"
     ];
 
     $objValidation->required = ["name", "password"];
 
     $objValidation->postFormat = ["password" => "password"];
-    
-    $objUser = new User();
-    if($objUser->verifyUser($objValidation->post, $hash)) {
-        $objSession->login($objUser);
-        Login::redirectTo("/");
-    } else {
-        $objValidation->addToErrors("login");
+
+    if($objValidation->isValid()) {
+
+        $objValidation->post['status'] = "1";
+        $objUser = new User();
+        if($objUser->verifyHash($hash)) {
+            $user = $objUser->verifyHash($hash);
+            if($objUser->updateUser($objValidation->post, $user['id'])) {
+
+                if($objUser->authenticate($user['email'], $objForm->getPost("password"))) {
+                    $objSession = new Session();
+                    $objSession->login($objUser);
+                    Login::redirectTo("/");
+                } else {
+                    $objValidation->addToErrors("login");
+                }
+
+            }
+        }
+
     }
+
+    
 
 } 
 

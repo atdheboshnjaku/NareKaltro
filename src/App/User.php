@@ -75,18 +75,38 @@ class User extends Database
 
     }
 
-    public function verifyUser(array $args, string $hash, ?string $password = null): bool 
+    public function verifyHash(string $hash):?array
     {
 
-        if(!empty($args) && !empty($hash)) {
+        if(!empty($hash)) {
+            if($this->hashExists($hash)) {
+                return $this->hashExists($hash);
+            }
+            return false;
+        }
 
-            $userID = $this->hashExists($hash);
-            if($userID) {
-                $id = $userID['id'];
+        // if(!empty($hash)) {
+        //     if($this->hashExists($hash)) {
+        //         $id = $this->hashExists($hash);
+        //         return $id['id'];
+        //     }
+        //     return false;
+        // }
+
+    }
+
+    public function verifyUser(array $args, string $password, string $hash): ?bool 
+    {
+
+        if(!empty($args) && !empty($password) && !empty($hash)) {
+
+            $user = $this->hashExists($hash);
+            if($user) {
+                $id = $user['id'];
                 $args['status'] = "1";
                 $this->prepareToUpdate($args);
                 if($this->update($this->table, $id)) {
-                    return true;
+                    return $this->authenticate($user['email'], $password);
                 }
 
             }
@@ -97,7 +117,7 @@ class User extends Database
     private function hashExists(string $hash): array|null
     {
 
-        $sql = "SELECT `id`, `hash` FROM {$this->table}
+        $sql = "SELECT `id`, `email`, `hash` FROM {$this->table}
                 WHERE `hash` = '". $this->escape($hash) ."'";
 
             return $this->fetchOne($sql);

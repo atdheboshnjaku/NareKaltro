@@ -38,27 +38,32 @@ if($objForm->isPost("email")) {
         $objValidation->addToErrors("user_exists");
     } 
 
-    $objValidation->post['account_id'] = uniqid();
-    $objValidation->post['role_id'] = "1";
-    $objValidation->post['location_id'] = "0";
-    $objValidation->post['country'] = "0";
-    $objValidation->post['hash'] = uniqid();
-    $objValidation->post['email'] = $_POST['email'];
-    $objValidation->post['status'] = "0";
-    //$objValidation->post['hash_date'] = date('YYYY-MM-DD hh:mm:ss');
+    if($objValidation->isValid()) {
 
-    if($objUser->registerUser($objValidation->post)) {
-        Login::redirectTo("login");
-    } else {
-        $objValidation->addToErrors("reg_failed");
+        $objValidation->post['account_id'] = uniqid();
+        $objValidation->post['role_id'] = "1";
+        $objValidation->post['location_id'] = "0";
+        $objValidation->post['country'] = "0";
+        $objValidation->post['hash'] = uniqid();
+        $objValidation->post['email'] = $_POST['email'];
+        $objValidation->post['status'] = "0";
+        //$objValidation->post['hash_date'] = date('YYYY-MM-DD hh:mm:ss');
+
+        if($objUser->registerUser($objValidation->post)) {
+            Login::redirectTo("login");
+        } else {
+            $objValidation->addToErrors("reg_failed");
+        }
+    
+        // if($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"))) {
+        //     $objSession->login($objUser);
+        //     Login::redirectTo("/");
+        // } else {
+        //     $objValidation->addToErrors("login");
+        // }
+
     }
 
-    // if($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"))) {
-    //     $objSession->login($objUser);
-    //     Login::redirectTo("/");
-    // } else {
-    //     $objValidation->addToErrors("login");
-    // }
 
 } 
 
