@@ -18,15 +18,26 @@ if(!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
+$objUser = new User();    
+$userId = $objSession->getUserId();
+$userAccount = $objUser->getUserAccountID($userId);
+//$userLocationId = $objUser->getUserLocationID($userId);
+//$clients = $objUser->getClients();
+
 $location = $_POST['location_id'];
 $client = $_POST['client_id'];
-$services = $_POST['service_id'];
+
+
+//$services = $_POST['service_id'];
+$services = $_POST['implodedArray'];
 $notes = $_POST['a_appointment_notes'];
 $appStart = $_POST['start_date'];
 if(!empty($_POST['end_date'])) {
+
     $appEnd = $_POST['end_date'];
     $objAppointment = new Appointments();
     $params = [
+        'account_id' => $userAccount,
         'location_id' => $location,
         'client_id' => $client,
         'service_id' => $services,
@@ -36,8 +47,10 @@ if(!empty($_POST['end_date'])) {
     ];
     $objAppointment->addAppointment($params);
 } else {
+
     $objAppointment = new Appointments();
     $params = [
+        'account_id' => $userAccount,
         'location_id' => $location,
         'client_id' => $client,
         'service_id' => $services,

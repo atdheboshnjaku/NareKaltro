@@ -107,6 +107,22 @@ a:hover {
     float: right;
 }
 
+.pd-rt-50 {
+    padding-right: 50px;
+}
+
+.mg-rt-50 {
+    margin-right: 50px;
+}
+
+.mg-rt-15 {
+    margin-right: 15px;
+}
+
+.mg-tp-7 {
+    margin-top: 7px;
+}
+
 .red-btn:hover {
     background-color: var(--warning-red-hover);
 }
@@ -199,6 +215,12 @@ a:hover {
 
 /* Client Area */
 
+.client-info-ctn {
+    width: 180px;
+    height: 50px;
+    line-height: 50px;
+}
+
 .client-pic-ctn {
     width: 50px;
     height: 50px;
@@ -221,6 +243,24 @@ a:hover {
     background: var(--blue-transparent);
     border-radius: 5px;
     margin-bottom: 20px;
+}
+
+.rec-ctn {
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    padding-right: 5%;
+    float: left;
+    text-align: right;
+    box-sizing: border-box;
+}
+
+.txt-blue {
+    color: var(--blue-btn);
+}
+
+.txt-grey {
+    color: var(--soft-grey-text);
 }
 
 /* ENd: Client Area */
@@ -460,6 +500,13 @@ span.warn {
     color: #ffffff;
 }
 
+.login-form input[type=checkbox] {
+    width: 15px;
+    height: 15px;
+    float: left;
+    margin-right: 10px;
+}
+
 .login-form input[type=submit]:hover {
     background: var(--blue-btn-hover);
     cursor: pointer;
@@ -474,7 +521,7 @@ span.warn {
 }
 
 aside {
-    flex: 18.6%;
+    flex: 10.6%; /* 18.6 */
     height: 100%;
     background: #1e1e2d;
     color: #9899ac;
@@ -492,13 +539,22 @@ aside {
 
 .logo-ctn {
     width: 100%;
-    height: 100px;
+    height: 65px;
     float: left;
+    line-height: 65px;
+    border-bottom: 1px dashed #393945;
+}
+
+.logo-ctn img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
 }
 
 .top-bar {
     width: 100%;
     height: 65px;
+    line-height: 65px;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
@@ -548,7 +604,7 @@ aside {
 }
 
 .menu-item a {
-    color: #9899ac;
+    color: #9D9DA6;
     list-style: none;
     text-decoration: none;
 }

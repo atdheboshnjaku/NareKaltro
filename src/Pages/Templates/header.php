@@ -1,7 +1,7 @@
 <?php
 
-use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\Session;
+use Fin\Narekaltro\App\User;
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
@@ -38,12 +38,14 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
     <!-- Side menu -->
     <?php
 
-        $session = new Session();
-        if($session->isLogged()) { ?>
+        $objSession = new Session();
+        if($objSession->isLogged()) { ?>
 
         <aside>
         <div class="logo-ctn">
-            asd
+            <a href="/">
+                <img src="Resources/img/logo-wide.png" title="BluBook" alt="BluBook" />
+            </a>
         </div>
         <div class="menu-item <?= (basename($_SERVER['PHP_SELF'])=="index.php") ? "active" : ""; ?>">
             <a class="menu-link" href="/">
@@ -98,7 +100,23 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
         <!-- View -->
         <div class="app-view">
             <div class="top-bar">
-                sdsdfs
+            <?php $objUser = new User();
+                    $accountID = $objUser->getUserAccountID($objSession->getUserId()); 
+                    // $name = $objUser->getUsername($objSession->getUserId());
+                    ?>
+                    
+                    
+                <div class="client-pic-ctn fl-rt mg-rt-50 mg-tp-7" >
+                    AB
+                </div>   
+                <div class="client-info-ctn fl-rt mg-rt-15 mg-tp-7">
+                    <div class="rec-ctn txt-grey">
+                        <?php echo $accountID; ?>
+                    </div>
+                    <div class="rec-ctn txt-blue">
+                        <?php echo $_SESSION['username']; ?>
+                    </div>
+                </div>
             </div>
         <?php } ?>
         

@@ -19,7 +19,11 @@ $objValidation = new Validation($objForm);
 $objLocation = new Location();
 
 $objUser = new User();
-$clientCount = $objUser->clientCount();
+$userId = $objSession->getUserId();
+$userAccount = $objUser->getUserAccountID($userId);
+$clientCount = $objUser->clientCount($userAccount);
+
+
 
 require_once("Templates/header.php");
 
@@ -46,7 +50,7 @@ require_once("Templates/header.php");
                 <th>Actions</th>
             </tr>
         </thead>
-        <?php $clients = $objUser->getClients(); ?>
+        <?php $clients = $objUser->getClients($userAccount); ?>
         <?php foreach($clients as $client) { ?>
             <tbody>
                 <tr>
@@ -60,7 +64,10 @@ require_once("Templates/header.php");
                         <p class="badge badge-green">
                             <?php 
                                 $location = $objLocation->getLocationById($client['location_id']); 
-                                echo $location['name'];
+                                if($location) {
+                                    echo $location['name'];
+                                }
+                                
                             ?> 
                         </p>
                     </td>

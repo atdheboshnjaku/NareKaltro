@@ -3,8 +3,6 @@
 use Fin\Narekaltro\App\Appointments;
 use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
-use Fin\Narekaltro\App\User;
-use Fin\Narekaltro\App\Url;
 
 require_once("../../../vendor/autoload.php");
 

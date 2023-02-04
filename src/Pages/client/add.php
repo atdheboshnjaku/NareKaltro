@@ -19,9 +19,10 @@ $objValidation = new Validation($objForm);
 $objUser = new User();
 $userId = $objSession->getUserId();
 $userLocationId = $objUser->getUserLocationID($userId);
-$userCount = $objUser->userCount();
+$userAccount = $objUser->getUserAccountID($userId);
+$userCount = $objUser->userCount($userAccount, $objSession->getUserId());
 $objLocation = new Location();
-$locations = $objLocation->getBusinessLocations();
+$locations = $objLocation->getBusinessLocations($userAccount);
 $countries = $objLocation->getCountries();
 $columnName = $objLocation->getColumnName();
 
@@ -29,6 +30,7 @@ if($objForm->isPost("name")) {
 
     $objValidation->expected = [
         "role_id", 
+        "account_id", 
         "location_id", 
         "name", 
         "email", 
@@ -40,7 +42,7 @@ if($objForm->isPost("name")) {
         "status"
     ];
 
-    $objValidation->required = ["location_id", "name", "country"];
+    $objValidation->required = ["account_id", "location_id", "name", "country"];
 
     if(!empty($objForm->getPost("email"))) 
     {
@@ -53,12 +55,14 @@ if($objForm->isPost("name")) {
             $objValidation->addToErrors("user_exists");
         }         
     }
-    
 
     if($objValidation->isValid()) {
+        
         echo "<pre>";
         print_r($objValidation->post);
         echo "</pre>";
+        $objValidation->post['account_id'] = $userAccount;
+        $objValidation->post['hash'] = "";
         if($objUser->createUser($objValidation->post)) {
             echo "<script type='text/javascript'> 
                 function deleteLocalStorage() {
@@ -248,7 +252,7 @@ require_once("../Templates/header.php");
             success: function(data) {
                 console.log(data);
                 $('select[name="city"]').empty();
-                $('select[name="city"]').append('<option value="">Select City</option>');
+                $('select[name="city"]').append('<option value="0">Select City</option>');
                 $.each(JSON.parse(data),function(key,value) {
                     $('select[name="city"]').append('<option value="'+value.id+'">'+value.name+'</option>');
                 });

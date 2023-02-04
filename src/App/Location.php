@@ -45,10 +45,12 @@ class Location extends Database
 
     }
 
-    public function getBusinessLocations(): array|null
+    public function getBusinessLocations(string $accountID): array|null
     {
 
-        $sql = "SELECT * FROM {$this->table}";
+        $sql = "SELECT * FROM {$this->table}
+                WHERE `account_id` = '". $this->escape($accountID) ."'
+                AND `status` = 1";
         return $this->fetchAll($sql);
 
     }
@@ -83,12 +85,14 @@ class Location extends Database
 
     }
 
-    public function getLocationByName(string $name): array|null
+    public function getLocationByName(string $name, string $accountID): array|null
     {
 
         if(!empty($name)) {
             $sql = "SELECT `name` FROM {$this->table} 
-                    WHERE `name` = '" . $this->escape($name) . "'";
+                    WHERE `name` = '" . $this->escape($name) . "'
+                    AND `account_id` = '". $accountID ."'
+                    AND `status` = 1";
             return $this->fetchOne($sql);
         }
 
@@ -108,17 +112,19 @@ class Location extends Database
     {
 
         if(!empty($id)) {
-            if($this->deleteRecord($this->table, $id)) {
+            if($this->deactivateLocation($this->table, $id)) {
                 return true;
             }
         }
 
     }
 
-    public function locationCount(): array 
+    public function locationCount(string $accountID): array 
     {
 
-        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $sql = "SELECT COUNT(*) FROM {$this->table}
+                WHERE `account_id` = '". $this->escape($accountID) ."'
+                AND `status` = 1";
         return $this->fetchOne($sql);
 
     }

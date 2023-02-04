@@ -20,10 +20,11 @@ $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objUser = new User();
 $user = $objUser->getUser($id);
-$userCount = $objUser->userCount();
+$userAccount = $objUser->getUserAccountID($objSession->getUserId());
+$userCount = $objUser->userCount($userAccount, $objSession->getUserId());
 $roles = $objUser->getUserRoles();
 $objLocation = new Location();
-$locations = $objLocation->getBusinessLocations();
+$locations = $objLocation->getBusinessLocations($userAccount);
 
 if($objForm->isPost("name")) {
 
@@ -46,14 +47,6 @@ if($objForm->isPost("name")) {
     if($objForm->getPost("password")) {
         $objValidation->postFormat = ["password" => "password"];
     }
-    
-
-    // $email = $objForm->getPost("email");
-    // $existingUser = $objUser->getUserByEmail($email);
-
-    // if(!empty($existingUser)) {
-    //     $objValidation->addToErrors("user_exists");
-    // }
 
     if($objValidation->isValid()) {
         if($objUser->updateUser($objValidation->post, $id)) {

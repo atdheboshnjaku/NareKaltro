@@ -20,9 +20,10 @@ $id = Url::getParam("id");
 $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objUser = new User();
+$userAccount = $objUser->getUserAccountID($objSession->getUserId());
 $client = $objUser->getClient($id);
 $objLocation = new Location();
-$locations = $objLocation->getBusinessLocations();
+$locations = $objLocation->getBusinessLocations($userAccount);
 $countries = $objLocation->getCountries();
 $columnName = $objLocation->getColumnName();
 

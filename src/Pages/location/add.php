@@ -24,13 +24,17 @@ if($objForm->isPost("name")) {
     $objValidation->required = ["name"];
 
     $location = $objForm->getPost("name");
-    $existingLocation = $objLocation->getLocationByName($location);
+    $objUser = new User();
+    $userAccount = $objUser->getUserAccountID($objSession->getUserId());
+    $existingLocation = $objLocation->getLocationByName($location, $userAccount);
 
     if(!empty($existingLocation)) {
         $objValidation->addToErrors("location_exists");
     } 
 
     if($objValidation->isValid()) {
+       
+        $objValidation->post['account_id'] = $userAccount;
         if($objLocation->createLocation($objValidation->post)) {
             Login::redirectTo("/locations");
         } else {

@@ -8,7 +8,7 @@ class Validation
 {
 
 
-    private array $error = [];
+    private array $errors = [];
 
     public array $message = [
         "login"           => "Email/Password combination is not correct!",

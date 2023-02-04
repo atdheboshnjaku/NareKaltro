@@ -16,7 +16,8 @@ if(!$objSession->isLogged()) {
 }
 
 $objUser = new User();
-$userCount = $objUser->userCount();
+$userAccount = $objUser->getUserAccountID($objSession->getUserId());
+$userCount = $objUser->userCount($userAccount, $objSession->getUserId());
 $objLocation = new Location();
 
 
@@ -43,7 +44,7 @@ require_once("Templates/header.php");
             </tr>
         </thead>
         <tbody>
-            <?php $users = $objUser->getUsers(); ?>
+            <?php $users = $objUser->getUsers($objSession->getUserId(), $userAccount); ?>
             <?php foreach($users as $user) { ?>
                 <tr>
                     <td>
@@ -51,7 +52,7 @@ require_once("Templates/header.php");
                         <p>
                             <?php 
                                 $location = $objLocation->getLocationById($user['location_id']); 
-                                echo $location['name'];
+                                if($location) { echo $location['name']; }
                             ?>    
                         </p>
                     </td>

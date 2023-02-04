@@ -39,6 +39,7 @@
     min-height: 32px;
     user-select: none;
     -webkit-user-select: none;
+    background: var(--main-bg-color);
 }
 .select2-container .select2-selection--multiple .select2-selection__rendered {
     display: inline;

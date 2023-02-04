@@ -17,14 +17,15 @@ if(!$objSession->isLogged()) {
 $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objUser = new User();
-$userCount = $objUser->userCount();
+$userAccount = $objUser->getUserAccountID($objSession->getUserId());
+//$userCount = $objUser->userCount();
 $roles = $objUser->getUserRoles();
 $objLocation = new Location();
-$locations = $objLocation->getBusinessLocations();
+$locations = $objLocation->getBusinessLocations($userAccount);
 
 if($objForm->isPost("name")) {
 
-    $objValidation->expected = ["role_id", "location_id", "name", "email", "password", "status"];
+    $objValidation->expected = ["role_id", "account_id", "location_id", "name", "email", "password", "status"];
     $objValidation->required = ["name", "email", "password"];
 
     $objValidation->special = ["email" => "email"];
@@ -38,6 +39,7 @@ if($objForm->isPost("name")) {
     } 
 
     if($objValidation->isValid()) {
+        $objValidation->post['account_id'] = $userAccount;
         if($objUser->createUser($objValidation->post, $objForm->getPost("password"))) {
             Login::redirectTo("/users");
         } else {

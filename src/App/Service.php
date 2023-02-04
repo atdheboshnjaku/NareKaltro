@@ -9,20 +9,22 @@ class Service extends Database
 
     private string $table = "Services";
 
-    public function getServices(): array 
+    public function getServices(string $accountID): array 
     {
 
         $sql = "SELECT * FROM {$this->table}
-                WHERE `status` = 1";
+                WHERE `status` = 1
+                AND `account_id` = '". $this->escape($accountID) ."'";
                 return $this->fetchAll($sql);
 
     }
 
-    public function serviceCount(): array 
+    public function serviceCount(string $accountID): array 
     {
 
         $sql = "SELECT COUNT(*) FROM {$this->table}
-                WHERE `status` = 1";
+                WHERE `status` = 1
+                AND `account_id` = '". $this->escape($accountID) ."'";
         return $this->fetchOne($sql);
 
     }

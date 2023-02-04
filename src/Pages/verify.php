@@ -1,20 +1,29 @@
 <?php
 
+use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Url;
 use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\Form;
 use Fin\Narekaltro\App\User;
 use Fin\Narekaltro\App\Validation;
-use Fin\Narekaltro\App\Session;
 
 require_once("../../vendor/autoload.php");
 
-// $objSession = new Session();
-// if($objSession->isLogged()) {
-//     Login::redirectTo("/");
-// }
+$objSession = new Session();
+if($objSession->isLogged()) {
+    Login::redirectTo("/");
+}
 
 $hash = Url::getParam('hash');
+
+$objUser = new User();
+if(!$objUser->hashExists($hash)) {
+    Login::redirectTo("register");
+}
+
+if($objUser->hashVerified($hash)) {
+    Login::redirectTo("login");
+}
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
@@ -33,11 +42,10 @@ if($objForm->isPost("password")) {
     if($objValidation->isValid()) {
 
         $objValidation->post['status'] = "1";
-        $objUser = new User();
         if($objUser->verifyHash($hash)) {
             $user = $objUser->verifyHash($hash);
             if($objUser->updateUser($objValidation->post, $user['id'])) {
-
+                $objUser->deleteHash($user['id']);
                 if($objUser->authenticate($user['email'], $objForm->getPost("password"))) {
                     $objSession = new Session();
                     $objSession->login($objUser);

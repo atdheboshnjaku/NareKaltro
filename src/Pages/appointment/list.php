@@ -18,30 +18,35 @@ $session = new Session();
 if(!$session->isLogged()) {
     Login::redirectTo("/login");
 }
+
+$objUser = new User();    
+$userId = $session->getUserId();
+$userLocationId = $objUser->getUserLocationID($userId);
+$userAccount = $objUser->getUserAccountID($userId);
+//$userAccount = $objUser->getUserAccountID($userId) ? : '';
+$clients = $objUser->getClients($userAccount);
+
 $objAppointments = new Appointments();
-$appointments = $objAppointments->getAppointmentsJSON();
-$upcomingAppointments = $objAppointments->numberOfUpcomingAppointments();
+$appointments = $objAppointments->getAppointmentsJSON($userAccount);
+$upcomingAppointments = $objAppointments->numberOfUpcomingAppointments($userAccount);
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
 
 $objLocation = new Location(); 
 $countries = $objLocation->getCountries();
-$locations = $objLocation->getBusinessLocations();
-$objUser = new User();    
-$userId = $session->getUserId();
-$userLocationId = $objUser->getUserLocationID($userId);
-$clients = $objUser->getClients();
+$locations = $objLocation->getBusinessLocations($userAccount);
 $objServices = new Service();
-$services = $objServices->getServices();
+$services = $objServices->getServices($userAccount);
 
 require_once("Templates/header.php");
+
 ?>
 
 <div class="box">
     <div class="box-header">
         <div class="box-lf-ctn">
-            <h2>Appointments from Lists</h2>
+            <h2>Appointments Calendar</h2>
             <p><?php echo array_shift($upcomingAppointments); ?> upcoming appointments in total</p>
         </div>
         <div class="box-rt-ctn">
@@ -65,9 +70,10 @@ require_once("Templates/header.php");
 
         <form id="editevent" action="" method="post" class="add-form">
 
-            <span>ID</span>
+            <span>Client</span>
             <p>
-                <input type="text" name="id" id="id" disabled >
+                <input type="hidden" name="id" id="id" disabled >
+                <input type="text" name="title" id="title" disabled >
             </p>
         
             <?php echo $objValidation->validate('location'); ?>
@@ -88,10 +94,10 @@ require_once("Templates/header.php");
                 </p>
                 <span>Services</span>
                 <p>
-                <select class="csc-select" name="e_service_id" id="e_service_id">
+                <select multiple class="csc-select" name="e_service_id" id="e_service_id">
                     <?php foreach($services as $service) { ?>
                         <option value="<?php echo $service['id']; ?>" 
-                            <?php echo $objForm->stickySelect('e_service_id', $service['id']); ?>>
+                            <?php // echo $objForm->stickySelect('e_service_id', $service['id']); ?>>
                             <?php echo $service['name']; ?>
                         </option>
                     <?php } ?>    
@@ -165,7 +171,7 @@ require_once("Templates/header.php");
                 </p>
                 <span>Services</span>
                 <p>
-                <select class="csc-select" name="service_id" id="service_id">
+                <select multiple class="csc-select" name="service_id" id="service_id">
                     <?php foreach($services as $service) { ?>
                         <option value="<?php echo $service['id']; ?>" 
                             <?php echo $objForm->stickySelect('service_id', $service['id']); ?>>
@@ -291,24 +297,8 @@ require_once("Templates/header.php");
     </div>
 
 </div>
-
-
-
 <!-- Appointments FullCalendar -->
 <script type="text/javascript">
-
-    // $('#submitAddClient').click(function(e){
-    //         e.preventDefault();
-
-    //         $('#addclient').modal('hide').on('hidden.bs.modal', function (ev) {
-
-    //             $('#addappointment').modal('show');
-
-    //             $(this).off('hidden.bs.modal'); // Remove the 'on' event binding
-
-    //         });
-
-    // });
 
     $(function() {
         var newClientCreated = localStorage.getItem("newlyCreatedClient"); 
@@ -342,28 +332,41 @@ require_once("Templates/header.php");
 
     $('#service_id').select2({
         placeholder: 'Select Services',
-        dropdownParent: $('#addappointment')
+        dropdownParent: $('#addappointment'),
     });
 
+    $('#e_service_id').select2({
+        placeholder: 'Select Services',
+        //dropdownParent: $('#addappointment'),
+    });
+
+    function getTimezone() {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
-            timeZone: 'UTC',
+            //timeZone: 'UTC',
             initialView: 'dayGridMonth',
             dayMaxEventRows: true,
             editable: true,
+            eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
             events: '/feed/feed.php',
             eventClick: function(info) {
 
                 info.jsEvent.preventDefault(); // don't let the browser navigate
-
+                var tz = calendar.getOption('timeZone');
+                console.log("Timezone is: " + tz);
                 $('#openappointment #id').text(info.event.id);
                 $('#openappointment #id').val(info.event.id);
+                $('#openappointment #title').val(info.event.title);
 
                 $('#openappointment #title').text(info.event.title);
                 
@@ -371,40 +374,29 @@ require_once("Templates/header.php");
                 $('#openappointment #e_location_id').val(info.event.extendedProps.location_id);
 
                 $('#openappointment #service_id').text(info.event.extendedProps.service);
-                $('#openappointment #e_service_id').val(info.event.extendedProps.service_id);
+                $('#openappointment #e_service_id').val(info.event.extendedProps.service_id).trigger('change');
+
+                ids = info.event.extendedProps.service_id;
+                newA = ids.split(",");
+                $('#openappointment #e_service_id').val(newA).trigger('change');
+                console.log('IDs: ' + newA);
 
                 $('#openappointment #start_date').text(info.event.start);
                 $('#openappointment #e_start_date').val(info.event.start.toJSON().slice(0,19));
 
-                $('#openappointment #end_date').text(info.event.end);
-
-                if(!info.event.end) {
-                    $('#openappointment #e_end_date').val(info.event.end);
-                }
+                $('#openappointment #end_date').text(info.event.end); 
 
                 if(info.event.end) {
                     $('#openappointment #e_end_date').val(info.event.end.toJSON().slice(0,19));
+                    console.log(info.event.end);
+                } else {
+                    $('#openappointment #e_end_date').val(info.event.end);
                 }
-                
 
                 $('#openappointment #appointment_notes').text(info.event.extendedProps.notes);
                 $('#openappointment #appointment_notes').val(info.event.extendedProps.notes);
 
                 $('#openappointment').modal('show');
-
-                // $('#openappointment #edit_appointment_id').val(info.event.id);
-
-                // $('#openappointment #edit_location_id').val(info.event.extendedProps.location_id);
-
-                // $('#openappointment #edit_service_id').val(info.event.extendedProps.service_id);
-
-                // $('#openappointment #edit_start_date').val(info.event.start.toJSON().slice(0,19));
-
-                // $('#openappointment #edit_end_date').val(info.event.end.toJSON().slice(0,19));
-
-                // $('#openappointment #edit_notes').val(info.event.extendedProps.notes);
-               
-
                 
             },
             selectable: true,
@@ -441,6 +433,9 @@ require_once("Templates/header.php");
             eventDisplay: 'block'
         });
         calendar.render();
+
+        calendar.setOption('timeZone', Intl.DateTimeFormat().resolvedOptions().timeZone);
+
     });
 
     $(function() {
@@ -449,11 +444,15 @@ require_once("Templates/header.php");
         $("#submitApp").click(function(event) {
 
             //event.preventDefault();
+            originalArray = $("#service_id").val();
+            separator = ',';
+            implodedArray = originalArray.join(separator);
 
             var addAppointmentData = {
                 location_id: $("#location_id").val(),
                 client_id: $("#client_id").val(),
-                service_id: $("#service_id").val(),
+                // service_id: $("#service_id").val(),
+                implodedArray,
                 start_date: $("#start_date").val(),
                 end_date: $("#end_date").val(),
                 a_appointment_notes: $("#a_appointment_notes").val()
@@ -498,11 +497,15 @@ require_once("Templates/header.php");
         $("#submitAppUpdate").click(function(event) {
 
             //event.preventDefault();
+            originalArray = $("#e_service_id").val();
+            separator = ',';
+            implodedServicesArray = originalArray.join(separator);
 
             var updateAppointmentData = {
                 id: $("#id").val(),
                 e_location_id: $("#e_location_id").val(),
-                e_service_id: $("#e_service_id").val(),
+                // 
+                implodedServicesArray,
                 e_start_date: $("#e_start_date").val(),
                 e_end_date: $("#e_end_date").val(),
                 appointment_notes: $("#appointment_notes").val(),

@@ -30,7 +30,12 @@ if($objForm->isPost("name")) {
         $objValidation->addToErrors("service_exists");
     } 
 
+    $objUser = new User();
+    $userAccount = $objUser->getUserAccountID($objSession->getUserId());
+   
+
     if($objValidation->isValid()) {
+        $objValidation->post['account_id'] = $userAccount;
         if($objService->createService($objValidation->post)) {
             Login::redirectTo("/services");
         } else {

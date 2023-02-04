@@ -9,8 +9,9 @@ class User extends Database
 
     protected $table   = "Users";
     private $table_2   = "User_Roles";
+    private $table_3   = "User_Tokens";
 
-    public int $id;
+    public int|string $id;
 
     public function getColumnName(): array  
     {
@@ -19,7 +20,7 @@ class User extends Database
 
     }
 
-    public function authenticate(string $email, string $password): bool
+    public function authenticate(string $email, string $password, bool $remember = false): bool
     {
 
         if(!empty($email) && !empty($password)) {
@@ -29,8 +30,14 @@ class User extends Database
             $user = $this->fetchOne($sql);
             if($user) {
                 if(password_verify($password, $user["password"])) {
-                    $this->id = (int) $user['id'];
+                    // $this->id = (int) $user['id'];
+                    $this->id = $user['id'];
                     $_SESSION['username'] = $user['name'];
+                    $_SESSION['userId'] = $this->id;
+                    //$_SESSION['userId'] = $user['id'];
+                    if($remember) {
+                        $this->rememberMe($this->id);
+                    }
                     return true;
                 } else {
                     return false;
@@ -40,6 +47,26 @@ class User extends Database
 
         }
         return false;
+
+    }
+
+    public function rememberMe(string $userID, int $day = 30): void 
+    {
+
+        [$selector, $validator, $token] = $this->generateTokens();
+
+
+        $this->deleteUserToken($userID);
+
+
+        $expiredSeconds = time() + 60 * 60 * 24 * $day;
+
+        $hashValidator = password_hash($validator, PASSWORD_DEFAULT);
+        $expiry = date('Y-m-d H:i:s', $expiredSeconds);
+
+        if($this->insertUserToken($userID, $selector, $hashValidator, $expiry)) {
+            setcookie('remember_me', $token, $expiredSeconds);
+        }
 
     }
 
@@ -75,6 +102,22 @@ class User extends Database
 
     }
 
+    public function generateHash():string 
+    {
+
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $randomHash = '';
+        $length = 8;
+
+        for($i = 0; $i < $length; $i++) {
+            $index = rand(0, strlen($characters) -1);
+            $randomHash .= $characters[$index];
+        }
+
+        return $randomHash;
+
+    }
+
     public function verifyHash(string $hash):?array
     {
 
@@ -85,15 +128,119 @@ class User extends Database
             return false;
         }
 
-        // if(!empty($hash)) {
-        //     if($this->hashExists($hash)) {
-        //         $id = $this->hashExists($hash);
-        //         return $id['id'];
-        //     }
-        //     return false;
-        // }
+    }
+
+    public function deleteHash(string $id):bool 
+    {
+
+        if(!empty($id)) {
+            
+            $args['hash'] = '';
+            $this->prepareToUpdate($args);
+            if($this->update($this->table, $id)) {
+                return true;
+            }
+            
+        }
 
     }
+
+    public function generateTokens(): array 
+    {
+
+        $selector = bin2hex(random_bytes(16));
+        $validator = bin2hex(random_bytes(32));
+
+        return [$selector, $validator, $selector . ':' . $validator];
+
+    }
+
+    // public function parseToken(string $token): ?array 
+    // {
+
+    //     $parts = explode(':', $token);
+
+    //     if($parts && count($parts) == 2) {
+    //         return [$parts[0], $parts[1]];
+    //     }
+
+    //     return null;
+
+    // }
+
+    public function insertUserToken(string $userID, string $selector, string $hashValidator, string $expiry): bool 
+    {
+
+        $params = [
+            "user_id" => $userID, 
+            "selector" => $selector, 
+            "hashed_validator" => $hashValidator, 
+            "expiry" => $expiry
+        ];
+        $this->prepareToInsert($params);
+        if($this->insert($this->table_3)) {
+            return true;
+        }
+        return false;
+
+    }
+
+    // public function getUserTokenBySelector(string $selector): ?array 
+    // {
+
+    //     $sql = "SELECT *
+    //             FROM $this->table_3
+    //             -- WHERE `selector` = '". $this->escape($selector) ."'
+    //             WHERE `selecto` = '$selector'
+    //             AND `expiry` >= NOW()
+    //             LIMIT 1";
+
+    //         return $this->fetchOne($sql);
+
+    // }
+
+    public function deleteUserToken(string $userID): bool 
+    {
+        
+        $sql = "DELETE FROM $this->table_3
+                WHERE `user_id` = $userID";
+
+            return $this->query($sql);
+
+    }
+
+    // public function getUserByToken(string $token): ?array
+    // {
+
+    //     $tokens = $this->parseToken($token);
+    //     if(!$tokens) {
+    //         return null;
+    //     }
+
+    //     $sql = "SELECT `Users.id`, `name` 
+    //             FROM $this->table
+    //             INNER JOIN $this->table_3 ON `user_id` = Users.id
+    //             WHERE `selector` = '". $this->escape($tokens[0]) ."'
+    //             AND expiry > NOW()
+    //             LIMIT 1";
+
+    //         return $this->fetchOne($sql);
+
+
+    // }
+
+    // public function tokenIsValid(string $token): bool 
+    // {
+
+    //     [$selector, $validator] = $this->parseToken($token);
+    //     $tokens = $this->getUserTokenBySelector($selector);
+    //     if(!$tokens) {
+    //         return false;
+    //     }
+
+    //     return password_verify($validator, $tokens['hashed_validator']);
+
+    // }
 
     public function verifyUser(array $args, string $password, string $hash): ?bool 
     {
@@ -114,13 +261,28 @@ class User extends Database
 
     }
 
-    private function hashExists(string $hash): array|null
+    public function hashExists(string $hash): array|null
     {
 
         $sql = "SELECT `id`, `email`, `hash` FROM {$this->table}
                 WHERE `hash` = '". $this->escape($hash) ."'";
 
             return $this->fetchOne($sql);
+
+    }
+
+    public function hashVerified(string $hash):bool 
+    {
+
+        if(!empty($hash)) {
+            $sql = "SELECT `hash` FROM $this->table
+                    WHERE `hash` = '". $this->escape($hash) ."' AND `status` = 1";
+                $result = $this->fetchOne($sql);
+                if($result) {
+                    return true;
+                }
+                return false;
+        }
 
     }
 
@@ -151,6 +313,14 @@ class User extends Database
         if(mail($to, $subject, $message, $headers)) {
             return true;
         }
+
+    }
+
+    public function getUserAccountID(string $id):string 
+    {
+
+        $user = $this->getUser($id);
+        return $user['account_id'];
 
     }
 
@@ -185,7 +355,7 @@ class User extends Database
     }
 
 
-    public function getUser(string $id): array
+    public function getUser(string $id): ?array
     {
 
         $sql = "SELECT * FROM {$this->table}
@@ -194,12 +364,14 @@ class User extends Database
 
     }
 
-    public function getUsers(): array
+    public function getUsers(string $id, string $accountID): array
     {
 
         $sql = "SELECT * FROM {$this->table}
                 WHERE `status` = 1
-                AND `role_id` > 1";
+                AND `role_id` > 1
+                AND `account_id` = '". $this->escape($accountID) ."'
+                AND NOT `id` = '". $this->escape($id) ."'";
         return $this->fetchAll($sql);
 
     }
@@ -213,12 +385,14 @@ class User extends Database
 
     }
 
-    public function getClients(): array
+    public function getClients(string $accountID): array
     {
 
         $sql = "SELECT * FROM {$this->table}
                 WHERE `status` = 1
-                AND `role_id` = 1";
+                AND `role_id` = 1
+                AND `account_id` = '". $this->escape($accountID) ."'
+                AND NOT `account_id` = 0";
         return $this->fetchAll($sql);
 
     }
@@ -258,6 +432,17 @@ class User extends Database
 
     }
 
+    public function getUsername(string $id): array 
+    {
+
+        $columnName = $this->getColumnName();
+        $sql = "SELECT `name` FROM {$this->table}
+                WHERE `{$this->escape($columnName['COLUMN_NAME'])}` = '". $this->escape($id) ."'";
+
+            return $this->fetchOne($sql);
+
+    }
+
     public function deleteUser(string $id): bool
     {
 
@@ -280,34 +465,41 @@ class User extends Database
 
     }
 
-    public function userCount(): array 
+    public function userCount(string $accountID, string $userID): array 
     {
 
         $sql = "SELECT COUNT(*) FROM {$this->table} 
                 WHERE `status` = 1
-                AND `role_id` > 1";
+                AND `role_id` > 1
+                AND `account_id` = '". $this->escape($accountID) ."'
+                AND NOT `status` = 0
+                AND NOT `id` = '". $this->escape($userID) ."'";
         return $this->fetchOne($sql);
 
     }
 
-    public function clientCount(): array 
+    public function clientCount(string $accountID): array 
     {
 
         $sql = "SELECT COUNT(*) FROM {$this->table}
                 WHERE `status` = 1
-                AND `role_id` = 1";
+                AND `role_id` = 1
+                AND `account_id` = '". $this->escape($accountID) ."'
+                AND NOT `account_id` = 0";
                 return $this->fetchOne($sql);
 
     }
 
-    public function employeeLocationCountById(string $id): array 
+    public function employeeLocationCountById(string $id, string $accountID): array 
     {
 
         if(!empty($id)) {
             $sql = "SELECT COUNT(*) FROM {$this->table}
                     WHERE `location_id` = '". $this->escape($id) ."'
                     AND `status` = 1
-                    AND `role_id` > 1 ";
+                    AND `role_id` > 1 
+                    AND `account_id` = '". $this->escape($accountID) ."'
+                    AND NOT `status` = 0";
         }
         return $this->fetchOne($sql);
 
@@ -324,26 +516,29 @@ class User extends Database
 
     }
 
-    public function clientLocationCountById(string $id): array 
+    public function clientLocationCountById(string $id, string $accountID): array 
     {
 
         if(!empty($id)) {
             $sql = "SELECT COUNT(*) FROM {$this->table}
                     WHERE `location_id` = '". $this->escape($id) ."'
                     AND `role_id` = 1
-                    AND `status` = 1";
+                    AND `status` = 1
+                    AND `account_id` = '". $this->escape($accountID) ."'
+                    AND NOT `status` = 0";
             return $this->fetchOne($sql);
         }
 
     }
 
-    public function checkUserHasThisLocation(string $id): bool 
+    public function checkUserHasThisLocation(string $id, string $accountID): bool 
     {
 
         if(!empty($id)) {
             $sql = "SELECT `location_id` FROM {$this->table}
                     WHERE `location_id` = '". $this->escape($id) ."'
-                    AND `status` = 1";
+                    AND `status` = 1
+                    AND `account_id` = '". $this->escape($accountID) ."'";
                 $result = $this->fetchAll($sql);
                 if($result) {
                     return true;

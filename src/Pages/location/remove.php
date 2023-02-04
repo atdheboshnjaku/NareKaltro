@@ -18,7 +18,8 @@ $id = $_POST['id'];
 if(!empty($id)) {
     $objLocation = new Location();
     $objUser = new User();
-    if(!$objUser->checkUserHasThisLocation($id)) {
+    $userAccount = $objUser->getUserAccountID($objSession->getUserId());
+    if(!$objUser->checkUserHasThisLocation($id, $userAccount)) {
         if($objLocation->deleteLocation($id)) {
         Login::redirectTo("/locations");
         } else {

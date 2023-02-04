@@ -18,8 +18,9 @@ $objForm = new Form();
 $objValidation = new Validation($objForm);
 $objService = new Service();
 $objUser = new User();
-$services = $objService->getServices();
-$serviceCount = $objService->serviceCount();
+$userAccount = $objUser->getUserAccountID($objSession->getUserId());
+$services = $objService->getServices($userAccount);
+$serviceCount = $objService->serviceCount($userAccount);
 
 require_once("Templates/header.php");
 

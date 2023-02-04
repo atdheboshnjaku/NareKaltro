@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
@@ -19,7 +22,8 @@ $objValidation = new Validation($objForm);
 if($objForm->isPost("email")) {
     
     $objUser = new User();
-    if($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"))) {
+    //$check = isset($_POST['remember_me']) ? "checked" : false;
+    if($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"), $objForm->isChecked("remember_me"))) {
         $objSession->login($objUser);
         Login::redirectTo("/");
     } else {
@@ -48,7 +52,7 @@ require_once("Templates/header.php");
                 <input type="email" name="email" placeholder="Email" required="">
                 <?php echo $objValidation->validate("password"); ?>
                 <input type="password" name="password" placeholder="Password" required="">
-
+                <input type="checkbox" name="remember_me" id="remember_me" value="checked" />Remember Me
                 <input type="submit" name="submit">
                 
             </form>

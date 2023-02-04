@@ -19,12 +19,14 @@ class Appointments extends Database
 
     }
 
-    public function getAppointmentsJSON(): ?string 
+    public function getAppointmentsJSON(?string $accountID): ?string 
     {
 
         $columnName = $this->getColumnName();
         $appointmentList = [];
-        $sql = "SELECT * FROM {$this->table} WHERE status = 1";
+        $sql = "SELECT * FROM {$this->table} 
+                WHERE `account_id` = '" . $this->escape($accountID) . "' 
+                AND status = 1";
         $appointments = $this->fetchAll($sql);
         if($appointments) {
             foreach($appointments as $appointment):
@@ -40,7 +42,8 @@ class Appointments extends Database
                         'extendedProps' => [
                             'location_id' =>  $location['id'],
                             'location' => $location['name'],
-                            'service_id' => $service['id'],
+                            //'service_id' => $service['id'],
+                            'service_id' => $appointment['service_id'],
                             'service' => $service['name'],
                             'notes' => $appointment['appointment_notes'] 
                         ],
@@ -58,7 +61,7 @@ class Appointments extends Database
                         'extendedProps' => [
                             'location_id' =>  $location['id'],
                             'location' => $location['name'],
-                            'service_id' => $service['id'],
+                            'service_id' => $appointment['service_id'],
                             'service' => $service['name'],
                             'notes' => $appointment['appointment_notes']  
                         ],
@@ -72,6 +75,8 @@ class Appointments extends Database
             endforeach;
 
             return json_encode($appointmentList);
+        } else {
+            return "";
         }
 
     }
@@ -103,6 +108,15 @@ class Appointments extends Database
     }
 
     public function getService(string $id): array 
+    {
+
+        $sql = "SELECT `id`, `name`, `background`, `color` FROM {$this->table_3}
+                WHERE `id` = '". $this->escape($id) . "'";
+                return $this->fetchOne($sql);
+
+    }
+
+    public function getServiceIDs(string $id): array 
     {
 
         $sql = "SELECT `id`, `name`, `background`, `color` FROM {$this->table_3}
@@ -157,10 +171,14 @@ class Appointments extends Database
 
     }
 
-    public function numberOfUpcomingAppointments(): array 
+    public function numberOfUpcomingAppointments(string $accountID): array 
     {
 
-        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE `start_date` >= NOW() AND `status` = 1";
+        $sql = "SELECT COUNT(*) FROM {$this->table} 
+                WHERE `start_date` >= NOW() 
+                AND `account_id` = '". $this->escape($accountID) ."' 
+                AND `status` = 1
+                AND NOT `status` = 0";
                 return $this->fetchOne($sql);
 
     }

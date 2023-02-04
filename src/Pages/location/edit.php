@@ -26,8 +26,10 @@ if($objForm->isPost("name")) {
     $objValidation->expected = ["name"];
     $objValidation->required = ["name"];
 
+    $objUser = new User();
+    $userAccount = $objUser->getUserAccountID($objSession->getUserId());
     $location = $objForm->getPost("name");
-    $existingLocation = $objLocation->getLocationByName($location);
+    $existingLocation = $objLocation->getLocationByName($location, $userAccount);
 
     if(!empty($existingLocation)) {
         $objValidation->addToErrors("location_exists");

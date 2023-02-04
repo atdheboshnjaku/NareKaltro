@@ -24,12 +24,28 @@ class Form
 
     }
 
-    public function getPost(string $field): string|null
+    public function getPost(mixed $field): mixed
     {
 
         if(!empty($field)) {
             return $this->isPost($field) ? strip_tags($_POST[$field]) : null;
         }
+        // $result = [];
+        // if(!empty($field)) {
+
+        //     if(is_array($field)) {
+        //         foreach($field as $key => $value) {
+        //             if(is_array($value)) {
+        //                 $result[$key] = strip_tags($value);
+        //             } elseif(is_string($field)) {
+        //                 $result[$key] = strip_tags($value);
+        //             } else {
+        //                 $result[$key] = $value;
+        //             }
+        //         }
+        //     }
+        //     return $result;
+        // }
 
     }
 
@@ -60,6 +76,14 @@ class Form
         } else {
             return !empty($default) && $default == $value ? " selected=\"selected\"" : null;
         }
+
+    }
+
+    public function isChecked($field)
+    {
+        //$check = isset($_POST['remember_me']) ? "checked" : false;
+        //return $this->isPost($field) ? strip_tags($_POST[$field]) : null;
+        return $this->isPost($field) ? "checked" : false;
 
     }
 

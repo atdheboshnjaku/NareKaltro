@@ -9,7 +9,7 @@ use Dotenv\Dotenv;
 class Database
 {
 
-    private $db = false;
+    protected $db = false;
 
     public ?string $lastQuery  = null;
     
@@ -18,7 +18,7 @@ class Database
 
     public array $updateSets   = [];
     
-    public int $id;
+    public int|string $id;
 
     public function __construct() 
     {
@@ -36,6 +36,7 @@ class Database
 
         // Creating a mysqli object and using the variables from withing the .env file located 
         // in the root directory of the project 
+        
         $this->db = new \Mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME']);
         $this->db->set_charset("utf8mb4");
         if($this->db->connect_errno) {
@@ -259,6 +260,16 @@ class Database
 
     }
 
+    public function deactivateLocation(string $table = null, string $id = null): bool 
+    {
+
+        if(!empty($table) && !empty($id)) {
+            $sql = "UPDATE `{$table}` SET status = 0 WHERE `id` = '". $this->escape($id) ."'";
+            return $this->query($sql);
+        }
+
+    }
+
     public function deactivateStatus(string $table = null, string $id = null): bool 
     {
 
@@ -274,7 +285,7 @@ class Database
     public function totalCountById(string $table, string $id): array 
     {
 
-        $sql = "SELECT COUNT(*) FROM {$this->table}
+        $sql = "SELECT COUNT(*) FROM {$table}
                 WHERE `location_id` = '". $this->escape($id) ."' 
                 AND `status` = 1
                 AND `role_id` = 2 

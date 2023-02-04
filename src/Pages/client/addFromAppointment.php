@@ -18,6 +18,10 @@ if(!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
+$objUser = new User();
+$userId = $objSession->getUserId();
+$userAccount = $objUser->getUserAccountID($userId);
+
 $c_role_id = $_POST['c_role_id'];
 $c_location_id = $_POST['c_location_id'];
 $c_name = $_POST['c_name'];
@@ -35,6 +39,7 @@ if(!empty($c_location_id) && !empty($c_name)) {
     $params = [
 
         'role_id' => $c_role_id,
+        'account_id' => $userAccount,
         'location_id' => $c_location_id,
         'name' => $c_name,
         'email' => $c_email,

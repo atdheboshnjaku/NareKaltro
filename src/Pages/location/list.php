@@ -16,9 +16,11 @@ if(!$objSession->isLogged()) {
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
-$objLocation = new Location();
-$locationCount = $objLocation->locationCount();
 $objUser = new User();
+$userAccount = $objUser->getUserAccountID($objSession->getUserId());
+$objLocation = new Location();
+$locationCount = $objLocation->locationCount($userAccount);
+
 
 require_once("Templates/header.php");
 
@@ -45,7 +47,7 @@ require_once("Templates/header.php");
                 <th>Actions</th>
             </tr>
         </thead>
-        <?php $locations = $objLocation->getBusinessLocations(); ?>
+        <?php $locations = $objLocation->getBusinessLocations($userAccount); ?>
         <?php foreach($locations as $location) { ?>
             <tbody>
                 <tr>
@@ -58,7 +60,7 @@ require_once("Templates/header.php");
                     <td>
                         <p class="badge badge-blue">
                         <?php 
-                            $total = $objUser->employeeLocationCountById($location['id']); 
+                            $total = $objUser->employeeLocationCountById($location['id'], $userAccount); 
                             $emp = "";
                             $totalEmployees = array_pop($total);
                             if($totalEmployees <= 1) {
@@ -77,7 +79,7 @@ require_once("Templates/header.php");
                     <td>
                         <p class="badge badge-green">
                         <?php 
-                            $total = $objUser->clientLocationCountById($location['id']); 
+                            $total = $objUser->clientLocationCountById($location['id'], $userAccount); 
                             $cli = "";
                             $totalClients = array_pop($total);
                             if($totalClients <= 1) {
@@ -97,8 +99,7 @@ require_once("Templates/header.php");
                         <a href="/location/edit?id=<?php echo $location['id']; ?>">
                             <div class="btn btn-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
                         </a> 
-                        <?php if(!$objUser->checkUserHasThisLocation($location['id'])) { ?>
-                        <!-- href="/location/remove?id=<?php // echo $location['id']; ?>" -->
+                        <?php if(!$objUser->checkUserHasThisLocation($location['id'], $userAccount)) { ?>
                         <input type="hidden" class="delete-id" value="<?php echo $location['id']; ?>" >
                         <a class="delete-confirmation">
                             <div class="btn btn-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>
