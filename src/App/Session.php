@@ -44,32 +44,26 @@ class Session extends Database
     public function login($user = null): bool
     {
 
-        // try {
-
-            if($user) {
-                session_regenerate_id();
-                if(is_array($user)) {
-                    // echo "<pre>";
-                    // var_dump($user);
-                    // echo "</pre>";
-                    $this->userId = $user['id']; 
-                    $_SESSION['username'] = $user['name']; 
-                    $_SESSION['userId'] = $this->userId;
-                }
-
-                if(is_object($user)) {
-                    return true;
-                }
-                
-                      
-                // return true;
+        if($user) {
+            session_regenerate_id();
+            if(is_array($user)) {
+                // echo "<pre>";
+                // var_dump($user);
+                // echo "</pre>";
+                $this->userId = $user['id']; 
+                $_SESSION['username'] = $user['name']; 
+                $_SESSION['userId'] = $this->userId;
             }
 
-            return true;
+            if(is_object($user)) {
+                return true;
+            }
+            
+                    
+            // return true;
+        }
 
-        // } catch (\Exception $e) {
-        //     return $e->getMessage();
-        // }
+        return true;
 
     }
 
