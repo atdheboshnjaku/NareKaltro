@@ -47,9 +47,6 @@ class Session extends Database
         if($user) {
             session_regenerate_id();
             if(is_array($user)) {
-                // echo "<pre>";
-                // var_dump($user);
-                // echo "</pre>";
                 $this->userId = $user['id']; 
                 $_SESSION['username'] = $user['name']; 
                 $_SESSION['userId'] = $this->userId;
@@ -59,8 +56,6 @@ class Session extends Database
                 return true;
             }
             
-                    
-            // return true;
         }
 
         return true;
