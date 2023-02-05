@@ -469,7 +469,7 @@ require_once("Templates/header.php");
                 $('#addappointment').modal('hide');
                 console.log(data);
                 calendar.refetchEvents();
-                location.reload();
+                //location.reload();
             });
 
         });
