@@ -300,6 +300,17 @@ require_once("Templates/header.php");
 <!-- Appointments FullCalendar -->
 <script type="text/javascript">
 
+var el = document.getElementById("t");
+el.addEventListener("click", avoidNSError, false); //Firefox
+
+function avoidNSError(){
+  ElementInterval = setInterval(function () {
+ /* Tracking or other request code goes here */
+  clearInterval(ElementInterval);
+ },0);
+
+};
+
     $(function() {
         var newClientCreated = localStorage.getItem("newlyCreatedClient"); 
         if(newClientCreated) {
