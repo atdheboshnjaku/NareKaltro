@@ -5,14 +5,15 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     max-width: 100%;
     height: 100%;
     overflow-x: hidden;
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
     font-size: 13px;
-} 
+}
 
 a {
     color: var(--soft-grey-text);
@@ -165,7 +166,7 @@ a:hover {
 
 .alab:hover {
     cursor: pointer;
-} 
+}
 
 .swal-button--danger {
     background: var(--warning-red) !important;
@@ -195,7 +196,7 @@ a:hover {
     border: none !important;
 }
 
-.swal-button:hover  {
+.swal-button:hover {
     background: var(--blue-btn-hover);
 }
 
@@ -276,17 +277,19 @@ table.action-table.center-title thead tr th:nth-child(1) {
     box-sizing: border-box;
 }
 
-table.action-table td, tr {
-    height: 70px;  
+table.action-table td,
+tr {
+    height: 70px;
     border-width: 1px;
     font-weight: 500;
     color: var(--main-text-color);
     border-style: none none dashed none;
-    border-color: var(--border-grey); 
+    border-color: var(--border-grey);
     vertical-align: middle !important;
 }
 
-.action-table td:nth-child(2), .action-table td:nth-child(3) {
+.action-table td:nth-child(2),
+.action-table td:nth-child(3) {
     color: var(--soft-grey-text);
 }
 
@@ -336,12 +339,14 @@ table.action-table th {
     box-sizing: border-box;
 }
 
-.badge-active, .badge-blue {
+.badge-active,
+.badge-blue {
     background: #f1faff;
     color: #009ef7 !important;
 }
 
-.badge-vacation, .badge-green {
+.badge-vacation,
+.badge-green {
     background: #e8fff3;
     color: #50cd89 !important;
 }
@@ -355,7 +360,8 @@ table.action-table th {
 
 /* Add forms */
 
-.add-form input, .add-form select {
+.add-form input,
+.add-form select {
     width: 100%;
     height: 45px;
     display: inline-block;
@@ -367,7 +373,9 @@ table.action-table th {
     box-sizing: border-box;
 }
 
-.add-form input:focus, .add-form select:focus, .add-form textarea {
+.add-form input:focus,
+.add-form select:focus,
+.add-form textarea {
     outline-color: var(--border-grey);
     outline-width: 1px;
 }
@@ -396,7 +404,8 @@ table.action-table th {
     width: 100% !important;
 }
 
-.profile-card input, .profile-card select {
+.profile-card input,
+.profile-card select {
     width: 100% !important;
     height: 30px !important;
     display: inline-block !important;
@@ -404,10 +413,11 @@ table.action-table th {
     font-weight: 300 !important;
     color: var(--soft-grey-text) !important;
     margin: 0 0 10px 0 !important;
-    padding: 1% 1% 1% 0 !important; 
+    padding: 1% 1% 1% 0 !important;
 }
 
-.profile-card input:focus, .profile-card select:focus {
+.profile-card input:focus,
+.profile-card select:focus {
     outline: none !important;
 }
 
@@ -418,6 +428,14 @@ table.action-table th {
 
 
 /* End: Select2 */
+
+.required-warning {
+    display: none !important;
+}
+
+.required-warning.visible {
+    display: block !important;
+}
 
 span.warn {
     display: inline-block;
@@ -430,7 +448,7 @@ span.warn {
     width: 100%;
     height: 100%;
     display: flex;
-    flex-wrap: wrap;   
+    flex-wrap: wrap;
 }
 
 .login-intro-img {
@@ -521,7 +539,8 @@ span.warn {
 }
 
 aside {
-    flex: 10.6%; /* 18.6 */
+    flex: 10.6%;
+    /* 18.6 */
     height: 100%;
     background: #1e1e2d;
     color: #9899ac;
@@ -595,11 +614,11 @@ aside {
     padding-left: 18px;
 }
 
-.menu-item.active > a{
+.menu-item.active>a {
     color: #fff;
 }
 
-.menu-item:hover > a {
+.menu-item:hover>a {
     color: #fff;
 }
 
@@ -681,7 +700,7 @@ aside {
     float: left;
     height: 60px;
     margin-bottom: 5px;
-} 
+}
 
 .box-lf-ctn {
     width: 80%;
@@ -701,7 +720,7 @@ aside {
 
 .box-header p {
     color: var(--soft-grey-text);
-    
+
 }
 
 /* End::Box layout containers */
@@ -725,13 +744,13 @@ aside {
 @media screen and (min-width: 481px) and (max-width: 768px) {
 
 
-.login-intro-img {
-    flex: 50%;
-}
+    .login-intro-img {
+        flex: 50%;
+    }
 
-.login-form-ctn {
-    flex: 50%;
-}
+    .login-form-ctn {
+        flex: 50%;
+    }
 
 }
 
@@ -739,47 +758,22 @@ aside {
 /* Mobile Screens */
 @media screen and (max-width: 480px) {
 
-.login-intro-img {
-    flex: 100%;
+    .login-intro-img {
+        flex: 100%;
+    }
+
+    .login-form-ctn {
+        height: 0;
+    }
+
+    .login-intro-img img {
+        width: 100%;
+        height: 30%;
+    }
+
+    .form-ctn {
+        margin-top: -400px;
+        background: #ffffff;
+    }
+
 }
-
-.login-form-ctn {
-    height: 0;
-}
-
-.login-intro-img img {
-    width: 100%;
-    height: 30%;
-}
-
-.form-ctn {
-    margin-top: -400px;
-    background: #ffffff;
-}
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

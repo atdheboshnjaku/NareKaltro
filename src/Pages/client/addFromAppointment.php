@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
- 
+
 use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\User;
@@ -14,7 +14,7 @@ use Fin\Narekaltro\App\Location;
 require_once("../../../vendor/autoload.php");
 
 $objSession = new Session();
-if(!$objSession->isLogged()) {
+if (!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
@@ -33,7 +33,7 @@ $city = (isset($_POST['city'])) ? $_POST['city'] : "NULL";
 $c_status = $_POST['c_status'];
 
 
-if(!empty($c_location_id) && !empty($c_name)) {
+if (!empty($c_location_id) && !empty($c_name)) {
 
     $objUser = new User();
     $params = [
@@ -47,19 +47,12 @@ if(!empty($c_location_id) && !empty($c_name)) {
         'country' => $country,
         'state' => $state,
         'city' => $city,
-        'status' => $c_status      
+        'status' => $c_status
     ];
 
     //$objUser->createUser($params);
 
-    if($objUser->createUser($params)) {
+    if ($objUser->createUser($params)) {
         echo $objUser->getCreatedUserID();
     }
-
 }
-
-
-
-
-
-
