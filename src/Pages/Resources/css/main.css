@@ -55,6 +55,12 @@ a:hover {
 
 /* Buttons */
 
+.hideme {
+    background: rgba(255, 255, 255, 0);
+    color: rgba(255, 255, 255, 0);
+    border: none;
+}
+
 .action-btn {
     height: 35px;
     background: var(--soft-grey);
@@ -87,11 +93,13 @@ a:hover {
 }
 
 .blue-btn {
-    width: 120px !important;
+    min-width: 120px !important;
     height: 40px !important;
     background: var(--blue-btn) !important;
     border-radius: 5px;
+    border: none;
     margin-right: 10px;
+    padding: 1% 2%;
     color: var(--white-text);
 }
 
@@ -108,6 +116,10 @@ a:hover {
     float: right;
 }
 
+.fl-lt {
+    float: left;
+}
+
 .pd-rt-50 {
     padding-right: 50px;
 }
@@ -116,8 +128,20 @@ a:hover {
     margin-right: 50px;
 }
 
+.mg-rt-35 {
+    margin-right: 35px;
+}
+
 .mg-rt-15 {
     margin-right: 15px;
+}
+
+.mg-rt-5 {
+    margin-right: 5px;
+}
+
+.mg-lt-5 {
+    margin-left: 5px;
 }
 
 .mg-tp-7 {
@@ -557,17 +581,29 @@ aside {
 }
 
 .logo-ctn {
-    width: 100%;
+    width: 80%;
     height: 65px;
     float: left;
     line-height: 65px;
     border-bottom: 1px dashed #393945;
+    padding-left: 5%;
+    box-sizing: border-box;
 }
 
 .logo-ctn img {
     width: 70%;
     height: 70%;
     object-fit: contain;
+}
+
+.menu-toggle-ctn {
+    width: 20%;
+    height: 65px;
+    float: left;
+    line-height: 65px;
+    font-size: 2em;
+    border-bottom: 1px dashed #393945;
+    display: none;
 }
 
 .top-bar {
@@ -581,6 +617,10 @@ aside {
     color: #060600;
     box-shadow: 0px 0px 20px var(--main-bg-color);
     z-index: 10;
+}
+
+.mob-menu {
+    display: none;
 }
 
 .menu-item .menu-link .menu-title {
@@ -644,8 +684,9 @@ aside {
 
 .profile-box-ctn {
     width: 95.5%;
-    min-height: 400px;
+    min-height: 560px;
     margin: 25px;
+    clear: right;
 }
 
 .profile-card {
@@ -723,6 +764,14 @@ aside {
 
 }
 
+/* div.box button {
+    width: 10px;
+    height: 10px;
+    /* color: rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0); */
+}
+
+*/
 /* End::Box layout containers */
 
 /* Footer */
@@ -734,14 +783,36 @@ aside {
     background: #ffffff;
     clear: both;
     color: var(--soft-grey-text);
-    padding: 0 2%;
+    padding: 2%;
     box-sizing: border-box;
+}
+
+.footer p {
+    margin: 2% 5%;
 }
 
 /* End::Footer  */
 
 /* Tablet Screens */
 @media screen and (min-width: 481px) and (max-width: 768px) {
+
+    aside {
+        flex: 22%;
+        /* 18.6 */
+        height: 100%;
+        background: #1e1e2d;
+        color: #9899ac;
+        /*overflow: hidden;*/
+    }
+
+    .app-view {
+        flex: 78%;
+        height: 100%;
+        min-height: 100%;
+        /*padding: 20px;*/
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
 
 
     .login-intro-img {
@@ -775,5 +846,69 @@ aside {
         margin-top: -400px;
         background: #ffffff;
     }
+
+    .box {
+        margin: 8px;
+        padding: 20px;
+        /* min-height: 550px; */
+        box-sizing: border-box;
+    }
+
+    aside {
+        /* display: none; */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        /* Added */
+        overflow: hidden;
+        z-index: 20;
+        transition: .7s;
+    }
+
+    /* .app-view {
+        position: relative;
+        width: 100%;
+    } */
+
+    .box-lf-ctn,
+    .box-rt-ctn {
+        width: 50%;
+    }
+
+    aside.show-aside {
+        width: 70%;
+        display: block;
+        transition: .7s;
+    }
+
+    .mob-menu {
+        display: block;
+    }
+
+    .menu-toggle-ctn {
+        display: block;
+    }
+
+    .profile-box-ctn {
+        margin: 10px;
+        box-sizing: border-box;
+    }
+
+    .profile-card,
+    .profile-info {
+        width: 95%;
+        margin: 2.5%;
+        float: left;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1em !important;
+    }
+
+    .box-header h2 {
+        font-size: 1.2em;
+    }
+
 
 }

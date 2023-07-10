@@ -56,9 +56,11 @@ require_once("Templates/header.php");
             <!-- <a href="/appointment/add"><button id="add-event" class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New Appointment</button> -->
         </div>
     </div>
+    <br>
     <div>
-        <button></button>
+        <button class="hideme">Add Appointment</button>
     </div>
+    <br>
     <div id="calendar"></div>
 
     <!-- Modal: View/Edit/Delete Appointment -->
