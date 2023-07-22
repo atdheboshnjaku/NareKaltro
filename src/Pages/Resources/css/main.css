@@ -93,7 +93,7 @@ a:hover {
 }
 
 .blue-btn {
-    min-width: 120px !important;
+    width: 140px !important;
     height: 40px !important;
     background: var(--blue-btn) !important;
     border-radius: 5px;
@@ -104,7 +104,7 @@ a:hover {
 }
 
 .red-btn {
-    width: 120px !important;
+    width: 140px !important;
     height: 40px !important;
     background: var(--warning-red) !important;
     border-radius: 5px;

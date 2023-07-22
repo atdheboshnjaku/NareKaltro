@@ -19,3 +19,5 @@ require_once("Templates/header.php");
         </div>
     </div>
 </div>
+
+<?php require_once("Templates/footer.php"); ?>
