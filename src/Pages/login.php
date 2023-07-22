@@ -12,25 +12,25 @@ use Fin\Narekaltro\App\Validation;
 require_once("../../vendor/autoload.php");
 
 $objSession = new Session();
-if($objSession->isLogged()) {
+if ($objSession->isLogged()) {
     Login::redirectTo("/");
 }
 
 $objForm = new Form();
 $objValidation = new Validation($objForm);
 
-if($objForm->isPost("email")) {
-    
+if ($objForm->isPost("email")) {
+
     $objUser = new User();
     //$check = isset($_POST['remember_me']) ? "checked" : false;
-    if($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"), $objForm->isChecked("remember_me"))) {
+    if ($objUser->authenticate($objForm->getPost("email"), $objForm->getPost("password"), $objForm->isChecked("remember_me"))) {
         $objSession->login($objUser);
         Login::redirectTo("/");
     } else {
         $objValidation->addToErrors("login");
     }
 
-} 
+}
 
 require_once("Templates/header.php");
 ?>
@@ -54,9 +54,9 @@ require_once("Templates/header.php");
                 <input type="password" name="password" placeholder="Password" required="">
                 <input type="checkbox" name="remember_me" id="remember_me" value="checked" />Remember Me
                 <input type="submit" name="submit">
-                
-            </form>
 
+            </form>
+            Don't have an account? <a href="/register">Sign-up</a>
         </div>
 
     </div>

@@ -9,7 +9,7 @@ use Fin\Narekaltro\App\Validation;
 require_once("../../vendor/autoload.php");
 
 $objSession = new Session();
-if($objSession->isLogged()) {
+if ($objSession->isLogged()) {
     Login::redirectTo("/");
 }
 
@@ -17,7 +17,7 @@ $objForm = new Form();
 $objValidation = new Validation($objForm);
 require_once("Templates/header.php");
 
-if($objForm->isPost("email")) {
+if ($objForm->isPost("email")) {
 
     $objValidation->expected = [
         "account_id",
@@ -35,11 +35,11 @@ if($objForm->isPost("email")) {
     $objUser = new User();
     $existingUser = $objUser->getUserByEmail($email);
 
-    if(!empty($existingUser)) {
+    if (!empty($existingUser)) {
         $objValidation->addToErrors("user_exists");
-    } 
+    }
 
-    if($objValidation->isValid()) {
+    if ($objValidation->isValid()) {
 
         $objValidation->post['account_id'] = uniqid('', true);
         $objValidation->post['role_id'] = "2";
@@ -52,22 +52,22 @@ if($objForm->isPost("email")) {
         $objValidation->post['email'] = $_POST['email'];
         $objValidation->post['status'] = "0";
 
-        if($objUser->registerUser($objValidation->post)) { ?>   
-        <script type="text/javascript">
+        if ($objUser->registerUser($objValidation->post)) { ?>
+            <script type="text/javascript">
 
-            $(document).ready(function(){
+                $(document).ready(function () {
 
-                swal({
-                    title: "Thank you for joining us!",
-                    text: "We have sent a verification email to the email address you provided, please also check your spam/junk box and click on Verify",
-                    icon: "success",
-                    showConfirmButton: true,
-                    //timer: 5000,
-                })
-            });
+                    swal({
+                        title: "Thank you for joining us!",
+                        text: "We have sent a verification email to the email address you provided, please also check your spam/junk box and click on Verify",
+                        icon: "success",
+                        showConfirmButton: true,
+                        //timer: 5000,
+                    })
+                });
 
-        </script>
-        <?php
+            </script>
+            <?php
             //Login::redirectTo("login");
         } else {
             $objValidation->addToErrors("reg_failed");
@@ -76,7 +76,7 @@ if($objForm->isPost("email")) {
     }
 
 
-} 
+}
 
 //require_once("Templates/header.php");
 ?>
@@ -99,9 +99,9 @@ if($objForm->isPost("email")) {
                 <input type="email" name="email" placeholder="Enter Your Email Address" required="">
 
                 <input type="submit" name="submit" value="Sign Up">
-                
-            </form>
 
+            </form>
+            Already have an account? <a href="/login">Login</a>
         </div>
 
     </div>
@@ -110,23 +110,23 @@ if($objForm->isPost("email")) {
 
 <script type="text/javascript">
 
-    
-$(document).ready(function(){
 
-    function registrationComplete() {
+    $(document).ready(function () {
 
-        e.preventDefault();
+        function registrationComplete() {
 
-        swal({
-            title: "Thank you joining us!",
-            text: "We have sent a verification email to the email address you entered, please also check your spam/junk box and click on Verify",
-            icon: "success",
-            timer: 5000,
-        });
+            e.preventDefault();
 
-    };
+            swal({
+                title: "Thank you joining us!",
+                text: "We have sent a verification email to the email address you entered, please also check your spam/junk box and click on Verify",
+                icon: "success",
+                timer: 5000,
+            });
 
-});
+        };
+
+    });
 
 </script>
 
