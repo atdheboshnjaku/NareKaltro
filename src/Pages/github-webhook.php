@@ -4,10 +4,10 @@
 $githubSecret = 'NK_GITHUB_TO_LIVE_011023';
 
 // Path to your Git repository on the server
-$repoPath = 'https://fin.narekaltro.com/github-webhook.php';
+$repoPath = 'https://fin.narekaltro.com/src/Pages/github-webhook.php';
 
 // Log file for webhook requests (optional)
-$logFile = '/path/to/log/webhook.log';
+$logFile = 'https://fin.narekaltro.com/src/Pages/webhook.log';
 
 // Get the webhook payload and signature
 $payload = file_get_contents('php://input');
@@ -29,11 +29,11 @@ $event = $_SERVER['HTTP_X_GITHUB_EVENT'];
 if ($event === 'push') {
     // Handle a push event (git pull)
     $output = shell_exec("cd $repoPath && git pull 2>&1");
-    //logRequest('Git pull executed: ' . $output, $logFile);
+    logRequest('Git pull executed: ' . $output, $logFile);
     http_response_code(200);
     echo 'Git pull executed successfully.';
 } else {
-    //logRequest('Unsupported GitHub event: ' . $event, $logFile);
+    logRequest('Unsupported GitHub event: ' . $event, $logFile);
     http_response_code(400);
     die('Unsupported event.');
 }
