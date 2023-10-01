@@ -14,12 +14,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy to Live
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          HOST: ${{ secrets.HOST }}
-          USER: ${{ secrets.USER }}
-          PORT: ${{ secrets.PORT }}
-        run: |
-          echo "$DEPLOY_KEY" > deploy_key.pem
-          chmod 600 deploy_key.pem
-          ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i deploy_key.pem autopaza@107.6.169.66 -p $PORT "export LC_ALL=C.UTF-8 && cd public_html/fin && git pull origin main"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: ${{ secrets.PORT }}
+          script: cd public_html/fin && git pull origin main
