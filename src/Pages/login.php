@@ -45,7 +45,7 @@ require_once("Templates/header.php");
     <div class="login-form-ctn">
 
         <div class="form-ctn">
-            <h1>Welcome back!!@</h1>
+            <h1>Welcome back@</h1>
             <form action="" method="post" class="login-form">
                 <?php echo $objValidation->validate("login"); ?>
                 <?php echo $objValidation->validate("email"); ?>
