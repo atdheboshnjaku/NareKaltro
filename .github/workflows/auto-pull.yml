@@ -1,0 +1,17 @@
+name: Auto Pull on Push
+
+on:
+  push:
+    branches:
+      - main  # Change this to match your branch name
+
+jobs:
+  auto-pull:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Git Pull
+        run: git pull
