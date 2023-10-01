@@ -13,6 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_HOST_KEY }}" >> ~/.ssh/known_hosts
+
       - name: Deploy to Live
         uses: appleboy/ssh-action@master
         with:
