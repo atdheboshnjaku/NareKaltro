@@ -22,4 +22,4 @@ jobs:
         run: |
           echo "$DEPLOY_KEY" > deploy_key.pem
           chmod 600 deploy_key.pem
-          ssh -o StrictHostKeyChecking=no -i deploy_key.pem $USER@$HOST -p $PORT "cd public_html/fin && git pull origin main"
+          ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i deploy_key.pem $USER@$HOST -p $PORT "export LC_ALL=C.UTF-8 && cd public_html/fin && git pull origin main"
