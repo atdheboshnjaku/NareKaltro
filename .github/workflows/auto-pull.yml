@@ -1,17 +1,25 @@
-name: Auto Pull on Push
+name: Deploy to Live Site
 
 on:
   push:
     branches:
-      - main  # Change this to match your branch name
+      - main  # Trigger the action on push events to the main branch
 
 jobs:
-  auto-pull:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Git Pull
-        run: git pull
+      - name: Deploy to Live
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+          PORT: ${{ secrets.PORT }}
+        run: |
+          echo "$DEPLOY_KEY" > deploy_key.pem
+          chmod 600 deploy_key.pem
+          ssh -o StrictHostKeyChecking=no -i deploy_key.pem $USER@$HOST -p $PORT "cd public_html/fin && git pull origin main"
