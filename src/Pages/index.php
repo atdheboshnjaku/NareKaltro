@@ -1,4 +1,4 @@
-<?php 
+<?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -21,14 +21,16 @@ require_once("Templates/header.php");
 ?>
 
 <div class="box">
-    
-<?php 
+
+<?php
 
 echo "ID: ".$_SESSION['userId'];
 echo "<br><hr><br>";
 echo "Name: ".$_SESSION['username'];
 
 ?>
+<br>
+
 </div>
 
 <?php require_once("Templates/footer.php"); ?>
