@@ -25,4 +25,4 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           port: ${{ secrets.PORT }}
-          script: cd public_html/fin && git pull origin main
+          script: cd /home/autopaza/public_html/fin && git pull origin main
