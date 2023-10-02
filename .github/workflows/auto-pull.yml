@@ -22,4 +22,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/***/public_html/fin
-            git -c http.extraheader="AUTHORIZATION: basic $(echo -n "${{ secrets.USER }}:${{ secrets.GH_PAT }}" | base64)" pull origin main
+            git -c http.extraheader="AUTHORIZATION: basic $(echo -n "${{ secrets.USER }}:${{ secrets.GH_PAT }}" | base64)" pull https://github.com/atdheboshnjaku/NareKaltro.git main
