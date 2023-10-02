@@ -25,3 +25,4 @@ jobs:
             cd /home/***/public_html/fin
             git remote set-url origin git@github.com:atdheboshnjaku/NareKaltro.git  # Switch back to SSH
             git pull origin main
+            ssh -v git@github.com
