@@ -21,6 +21,12 @@ jobs:
           password: ${{ secrets.GH_PAT }}  # use PAT for authentication
           port: ${{ secrets.PORT }}
           script: |
+            git credential approve <<EOF
+            protocol=https
+            host=github.com
+            username=${{ secrets.USER }}
+            password=${{ secrets.GH_PAT }}
+            EOF
             cd /home/***/public_html/fin
             git remote set-url origin https://github.com/atdheboshnjaku/NareKaltro.git
-            git -c http.extraheader="AUTHORIZATION: basic $(echo -n "${{ secrets.USER }}:${{ secrets.GH_PAT }}" | base64)" pull origin main
+            git pull origin main
