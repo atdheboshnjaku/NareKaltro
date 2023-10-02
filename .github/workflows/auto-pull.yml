@@ -18,15 +18,10 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
-          password: ${{ secrets.GH_PAT }}  # use PAT for authentication
+          password: ${{ secrets.SSH_KEY }}  # Use your SSH key as a secret
           port: ${{ secrets.PORT }}
           script: |
-            git credential approve <<EOF
-            protocol=https
-            host=github.com
-            username=${{ secrets.USER }}
-            password=${{ secrets.GH_PAT }}
-            EOF
+            ssh-keyscan github.com >> ~/.ssh/known_hosts  # Add GitHub's SSH key to known_hosts
             cd /home/***/public_html/fin
-            git remote set-url origin https://github.com/atdheboshnjaku/NareKaltro.git
+            git remote set-url origin git@github.com:atdheboshnjaku/NareKaltro.git  # Switch back to SSH
             git pull origin main
