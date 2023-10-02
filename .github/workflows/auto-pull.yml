@@ -18,7 +18,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
-          password: ${{ secrets.SSH_KEY }}  # Use your SSH key as a secret
+          password: ${{ secrets.DEPLOY_KEY }}  # Use your SSH key as a secret
           port: ${{ secrets.PORT }}
           script: |
             ssh-keyscan github.com >> ~/.ssh/known_hosts  # Add GitHub's SSH key to known_hosts
