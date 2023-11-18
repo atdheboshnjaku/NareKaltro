@@ -1,28 +1,25 @@
-name: Deploy to Live Site
-
+name: 🚀 SSH Deploy
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  run_pull:
+    name: run pull
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: 🖊 Write SSH keys
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+        echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
-      - name: Deploy to Live
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          password: ${{ secrets.DEPLOY_KEY }}  # Use your SSH key as a secret
-          port: ${{ secrets.PORT }}
-          script: |
-            ssh-keyscan github.com >> ~/.ssh/known_hosts  # Add GitHub's SSH key to known_hosts
-            cd /home/***/public_html/fin
-            git remote set-url origin git@github.com:atdheboshnjaku/NareKaltro.git  # Switch back to SSH
-            git pull origin main
-            ssh -v git@github.com
+    - name: 🔗 Connect and Pull
+      run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit"
+
+    - name: 🧹 Cleanup
+      run: rm -rf ~/.ssh
