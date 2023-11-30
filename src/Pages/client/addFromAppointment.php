@@ -15,7 +15,7 @@ require_once("../../../vendor/autoload.php");
 
 $objSession = new Session();
 if (!$objSession->isLogged()) {
-    Login::redirectTo("/login");
+	Login::redirectTo("/login");
 }
 
 $objUser = new User();
@@ -32,27 +32,26 @@ $state = $_POST['state'];
 $city = (isset($_POST['city'])) ? $_POST['city'] : "NULL";
 $c_status = $_POST['c_status'];
 
-
 if (!empty($c_location_id) && !empty($c_name)) {
 
-    $objUser = new User();
-    $params = [
+	$objUser = new User();
+	$params = [
 
-        'role_id' => $c_role_id,
-        'account_id' => $userAccount,
-        'location_id' => $c_location_id,
-        'name' => $c_name,
-        'email' => $c_email,
-        'number' => $c_number,
-        'country' => $country,
-        'state' => $state,
-        'city' => $city,
-        'status' => $c_status
-    ];
+		'role_id' => $c_role_id,
+		'account_id' => $userAccount,
+		'location_id' => $c_location_id,
+		'name' => $c_name,
+		'email' => $c_email,
+		'number' => $c_number,
+		'country' => $country,
+		'state' => $state,
+		'city' => $city,
+		'status' => $c_status
+	];
 
-    //$objUser->createUser($params);
+	//$objUser->createUser($params);
 
-    if ($objUser->createUser($params)) {
-        echo $objUser->getCreatedUserID();
-    }
+	if ($objUser->createUser($params)) {
+		echo $objUser->getCreatedUserID();
+	}
 }

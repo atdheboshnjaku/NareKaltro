@@ -7,516 +7,514 @@ namespace Fin\Narekaltro\App;
 class User extends Database
 {
 
-    protected $table   = "Users";
-    private $table_2   = "User_Roles";
-    private $table_3   = "User_Tokens";
+	protected $table = "Users";
+	private $table_2 = "User_Roles";
+	private $table_3 = "User_Tokens";
 
-    public int|string $id;
+	public int $id;
 
-    public function getColumnName(): array
-    {
+	public function getColumnName(): array
+	{
 
-        return $this->getTableColumnName($this->table);
-    }
+		return $this->getTableColumnName($this->table);
+	}
 
-    public function authenticate(string $email, string $password, bool $remember = false): bool
-    {
+	public function authenticate(string $email, string $password, bool $remember = false): bool
+	{
 
-        if (!empty($email) && !empty($password)) {
+		if (!empty($email) && !empty($password)) {
 
-            $sql = "SELECT * FROM {$this->table} 
+			$sql = "SELECT * FROM {$this->table}
                     WHERE `email` = '" . $this->escape($email) . "'";
-            $user = $this->fetchOne($sql);
-            if ($user) {
-                if (password_verify($password, $user["password"])) {
-                    // $this->id = (int) $user['id'];
-                    $this->id = $user['id'];
-                    $_SESSION['username'] = $user['name'];
-                    $_SESSION['userId'] = $this->id;
-                    //$_SESSION['userId'] = $user['id'];
-                    if ($remember) {
-                        $this->rememberMe($this->id);
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            return false;
-        }
-        return false;
-    }
+			$user = $this->fetchOne($sql);
+			if ($user) {
+				if (password_verify($password, $user["password"])) {
+					$this->id = (int) $user['id'];
+					//$this->id = $user['id'];
+					$_SESSION['username'] = $user['name'];
+					$_SESSION['userId'] = $this->id;
+					//$_SESSION['userId'] = $user['id'];
+					if ($remember) {
+						$this->rememberMe($this->id);
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+			return false;
+		}
+		return false;
+	}
 
-    public function rememberMe(string $userID, int $day = 30): void
-    {
+	public function rememberMe(string $userID, int $day = 30): void
+	{
 
-        [$selector, $validator, $token] = $this->generateTokens();
+		[$selector, $validator, $token] = $this->generateTokens();
 
+		$this->deleteUserToken($userID);
 
-        $this->deleteUserToken($userID);
+		$expiredSeconds = time() + 60 * 60 * 24 * $day;
 
+		$hashValidator = password_hash($validator, PASSWORD_DEFAULT);
+		$expiry = date('Y-m-d H:i:s', $expiredSeconds);
 
-        $expiredSeconds = time() + 60 * 60 * 24 * $day;
+		if ($this->insertUserToken($userID, $selector, $hashValidator, $expiry)) {
+			setcookie('remember_me', $token, $expiredSeconds);
+		}
+	}
 
-        $hashValidator = password_hash($validator, PASSWORD_DEFAULT);
-        $expiry = date('Y-m-d H:i:s', $expiredSeconds);
+	public function createUser(array $args = null, ?string $password = null): bool
+	{
 
-        if ($this->insertUserToken($userID, $selector, $hashValidator, $expiry)) {
-            setcookie('remember_me', $token, $expiredSeconds);
-        }
-    }
+		if (!empty($args)) {
+			$args["date"] = date("Y-m-d H:i:s");
+			$args["hash"] = $this->generateHash();
+			$this->prepareToInsert($args);
+			if ($this->insert($this->table)) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
 
-    public function createUser(array $args = null, ?string $password = null): bool
-    {
+	public function registerUser(array $args = null): bool
+	{
 
-        if (!empty($args)) {
-            $args["date"] = date("Y-m-d H:i:s");
-            $args["hash"] = $this->generateHash();
-            $this->prepareToInsert($args);
-            if ($this->insert($this->table)) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
+		if (!empty($args)) {
+			$this->prepareToInsert($args);
+			if ($this->insert($this->table)) {
+				if ($this->sendEmail($args['email'], $args['hash'])) {
 
-    public function registerUser(array $args = null): bool
-    {
+					return true;
+				}
+			}
+			return false;
+		}
+		return false;
+	}
 
-        if (!empty($args)) {
-            $this->prepareToInsert($args);
-            if ($this->insert($this->table)) {
-                if ($this->sendEmail($args['email'], $args['hash'])) {
+	public function generateHash(): string
+	{
 
-                    return true;
-                }
-            }
-            return false;
-        }
-        return false;
-    }
+		$characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		$randomHash = '';
+		$length = 8;
 
-    public function generateHash(): string
-    {
+		for ($i = 0; $i < $length; $i++) {
+			$index = rand(0, strlen($characters) - 1);
+			$randomHash .= $characters[$index];
+		}
 
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $randomHash = '';
-        $length = 8;
+		return $randomHash;
+	}
 
-        for ($i = 0; $i < $length; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomHash .= $characters[$index];
-        }
+	public function verifyHash(string $hash): ?array
+	{
 
-        return $randomHash;
-    }
+		if (!empty($hash)) {
+			if ($this->hashExists($hash)) {
+				return $this->hashExists($hash);
+			}
+			return false;
+		}
+	}
 
-    public function verifyHash(string $hash): ?array
-    {
+	public function deleteHash(int $id): bool
+	{
 
-        if (!empty($hash)) {
-            if ($this->hashExists($hash)) {
-                return $this->hashExists($hash);
-            }
-            return false;
-        }
-    }
+		if (!empty($id)) {
 
-    public function deleteHash(string $id): bool
-    {
+			$args['hash'] = '';
+			$this->prepareToUpdate($args);
+			if ($this->update($this->table, $id)) {
+				return true;
+			}
+		}
+	}
 
-        if (!empty($id)) {
+	public function generateTokens(): array
+	{
 
-            $args['hash'] = '';
-            $this->prepareToUpdate($args);
-            if ($this->update($this->table, $id)) {
-                return true;
-            }
-        }
-    }
+		$selector = bin2hex(random_bytes(16));
+		$validator = bin2hex(random_bytes(32));
 
-    public function generateTokens(): array
-    {
+		return [$selector, $validator, $selector . ':' . $validator];
+	}
 
-        $selector = bin2hex(random_bytes(16));
-        $validator = bin2hex(random_bytes(32));
+	// public function parseToken(string $token): ?array
+	// {
 
-        return [$selector, $validator, $selector . ':' . $validator];
-    }
+	//     $parts = explode(':', $token);
 
-    // public function parseToken(string $token): ?array 
-    // {
+	//     if($parts && count($parts) == 2) {
+	//         return [$parts[0], $parts[1]];
+	//     }
 
-    //     $parts = explode(':', $token);
+	//     return null;
 
-    //     if($parts && count($parts) == 2) {
-    //         return [$parts[0], $parts[1]];
-    //     }
+	// }
 
-    //     return null;
+	public function insertUserToken(string $userID, string $selector, string $hashValidator, string $expiry): bool
+	{
 
-    // }
+		$params = [
+			"user_id" => $userID,
+			"selector" => $selector,
+			"hashed_validator" => $hashValidator,
+			"expiry" => $expiry
+		];
+		$this->prepareToInsert($params);
+		if ($this->insert($this->table_3)) {
+			return true;
+		}
+		return false;
+	}
 
-    public function insertUserToken(string $userID, string $selector, string $hashValidator, string $expiry): bool
-    {
+	// public function getUserTokenBySelector(string $selector): ?array
+	// {
 
-        $params = [
-            "user_id" => $userID,
-            "selector" => $selector,
-            "hashed_validator" => $hashValidator,
-            "expiry" => $expiry
-        ];
-        $this->prepareToInsert($params);
-        if ($this->insert($this->table_3)) {
-            return true;
-        }
-        return false;
-    }
+	//     $sql = "SELECT *
+	//             FROM $this->table_3
+	//             -- WHERE `selector` = '". $this->escape($selector) ."'
+	//             WHERE `selecto` = '$selector'
+	//             AND `expiry` >= NOW()
+	//             LIMIT 1";
 
-    // public function getUserTokenBySelector(string $selector): ?array 
-    // {
+	//         return $this->fetchOne($sql);
 
-    //     $sql = "SELECT *
-    //             FROM $this->table_3
-    //             -- WHERE `selector` = '". $this->escape($selector) ."'
-    //             WHERE `selecto` = '$selector'
-    //             AND `expiry` >= NOW()
-    //             LIMIT 1";
+	// }
 
-    //         return $this->fetchOne($sql);
+	public function deleteUserToken(string $userID): bool
+	{
 
-    // }
-
-    public function deleteUserToken(string $userID): bool
-    {
-
-        $sql = "DELETE FROM $this->table_3
+		$sql = "DELETE FROM $this->table_3
                 WHERE `user_id` = $userID";
 
-        return $this->query($sql);
-    }
+		return $this->query($sql);
+	}
 
-    // public function getUserByToken(string $token): ?array
-    // {
+	// public function getUserByToken(string $token): ?array
+	// {
 
-    //     $tokens = $this->parseToken($token);
-    //     if(!$tokens) {
-    //         return null;
-    //     }
+	//     $tokens = $this->parseToken($token);
+	//     if(!$tokens) {
+	//         return null;
+	//     }
 
-    //     $sql = "SELECT `Users.id`, `name` 
-    //             FROM $this->table
-    //             INNER JOIN $this->table_3 ON `user_id` = Users.id
-    //             WHERE `selector` = '". $this->escape($tokens[0]) ."'
-    //             AND expiry > NOW()
-    //             LIMIT 1";
+	//     $sql = "SELECT `Users.id`, `name`
+	//             FROM $this->table
+	//             INNER JOIN $this->table_3 ON `user_id` = Users.id
+	//             WHERE `selector` = '". $this->escape($tokens[0]) ."'
+	//             AND expiry > NOW()
+	//             LIMIT 1";
 
-    //         return $this->fetchOne($sql);
+	//         return $this->fetchOne($sql);
 
 
-    // }
+	// }
 
-    // public function tokenIsValid(string $token): bool 
-    // {
+	// public function tokenIsValid(string $token): bool
+	// {
 
-    //     [$selector, $validator] = $this->parseToken($token);
-    //     $tokens = $this->getUserTokenBySelector($selector);
-    //     if(!$tokens) {
-    //         return false;
-    //     }
+	//     [$selector, $validator] = $this->parseToken($token);
+	//     $tokens = $this->getUserTokenBySelector($selector);
+	//     if(!$tokens) {
+	//         return false;
+	//     }
 
-    //     return password_verify($validator, $tokens['hashed_validator']);
+	//     return password_verify($validator, $tokens['hashed_validator']);
 
-    // }
+	// }
 
-    public function verifyUser(array $args, string $password, string $hash): ?bool
-    {
+	public function verifyUser(array $args, string $password, string $hash): ?bool
+	{
 
-        if (!empty($args) && !empty($password) && !empty($hash)) {
+		if (!empty($args) && !empty($password) && !empty($hash)) {
 
-            $user = $this->hashExists($hash);
-            if ($user) {
-                $id = $user['id'];
-                $args['status'] = "1";
-                $this->prepareToUpdate($args);
-                if ($this->update($this->table, $id)) {
-                    return $this->authenticate($user['email'], $password);
-                }
-            }
-        }
-    }
+			$user = $this->hashExists($hash);
+			if ($user) {
+				$id = $user['id'];
+				$args['status'] = "1";
+				$this->prepareToUpdate($args);
+				if ($this->update($this->table, $id)) {
+					return $this->authenticate($user['email'], $password);
+				}
+			}
+		}
+	}
 
-    public function hashExists(string $hash): array|null
-    {
+	public function hashExists(string $hash): array|null
+	{
 
-        $sql = "SELECT `id`, `email`, `hash` FROM {$this->table}
+		$sql = "SELECT `id`, `email`, `hash` FROM {$this->table}
                 WHERE `hash` = '" . $this->escape($hash) . "'";
 
-        return $this->fetchOne($sql);
-    }
+		return $this->fetchOne($sql);
+	}
 
-    public function hashVerified(string $hash): bool
-    {
+	public function hashVerified(string $hash): bool
+	{
 
-        if (!empty($hash)) {
-            $sql = "SELECT `hash` FROM $this->table
+		if (!empty($hash)) {
+			$sql = "SELECT `hash` FROM $this->table
                     WHERE `hash` = '" . $this->escape($hash) . "' AND `status` = 1";
-            $result = $this->fetchOne($sql);
-            if ($result) {
-                return true;
-            }
-            return false;
-        }
-    }
+			$result = $this->fetchOne($sql);
+			if ($result) {
+				return true;
+			}
+			return false;
+		}
+	}
 
-    public function sendEmail(string $email, string $hash): bool
-    {
+	public function sendEmail(string $email, string $hash): bool
+	{
 
-        $to       = $email;
-        $subject  = 'Please verify your account';
-        $message  = '
+		$to = $email;
+		$subject = 'Please verify your account';
+		$message = '
                     <html>
                     <head>
-                        <title>Please verify email</title> 
+                        <title>Please verify email</title>
                     </head>
                     <body>
                         <h1>Verify account by clicking on the link below</h1><br>
-                        <p><a href="https://fin.narekaltro.com/verify?hash=' . $hash  . '">Verify Email</a></p>
+                        <p><a href="https://fin.narekaltro.com/verify?hash=' . $hash . '">Verify Email</a></p>
                         <p>If the link above does not work, please visit this url to verify: <br>
                         https://fin.narekaltro.com/verify?hash=' . $hash . '
                         </p>
                     </body>
                     </html>';
-        $headers  = 'MIME-Version: 1.0' . "\r\n" .
-            'Content-Type: text/html; charset=UTF-8' . "\r\n" .
-            'From: noreply@narekaltro.com'       . "\r\n" .
-            'Reply-To: noreply@narekaltro.com' . "\r\n" .
-            'X-Mailer: PHP/' . phpversion();
+		$headers = 'MIME-Version: 1.0' . "\r\n" .
+			'Content-Type: text/html; charset=UTF-8' . "\r\n" .
+			'From: noreply@narekaltro.com' . "\r\n" .
+			'Reply-To: noreply@narekaltro.com' . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
 
-        if (mail($to, $subject, $message, $headers)) {
-            return true;
-        }
-    }
+		if (mail($to, $subject, $message, $headers)) {
+			return true;
+		}
+	}
 
-    public function getUserAccountID(string $id): string
-    {
+	public function getUserAccountID(int $id): string
+	{
 
-        $user = $this->getUser($id);
-        return $user['account_id'];
-    }
+		$user = $this->getUser($id);
+		return $user['account_id'];
+	}
 
-    public function updateUser(array $args, string $id): bool
-    {
+	public function updateUser(array $args, int $id): bool
+	{
 
-        if (!empty($args) && !empty($id)) {
-            $this->prepareToUpdate($args);
-            return $this->update($this->table, $id);
-        }
-    }
+		if (!empty($args) && !empty($id)) {
+			$this->prepareToUpdate($args);
+			return $this->update($this->table, $id);
+		}
+	}
 
-    public function getCreatedUserID(): int|string
-    {
+	public function getCreatedUserID(): int|string
+	{
 
-        return $this->lastId();
-    }
+		return $this->lastId();
+	}
 
-    public function getUserByEmail(string $email, string $id = null): array|null
-    {
-        if (!empty($email)) {
-            $sql = "SELECT `id` FROM {$this->table} 
+	public function getUserByEmail(string $email, int $id = null): array|null
+	{
+		if (!empty($email)) {
+			$sql = "SELECT `id` FROM {$this->table}
                     WHERE `email` = '" . $this->escape($email) . "' ";
-            if (!empty($id)) {
-                $sql .= "AND NOT `id` = '" . $this->escape($id) . "'";
-            }
-            return $this->fetchOne($sql);
-        }
-    }
+			if (!empty($id)) {
+				$sql .= "AND NOT `id` = '" . (int) $id . "'";
+			}
+			return $this->fetchOne($sql);
+		}
+	}
 
 
-    public function getUser(string $id): ?array
-    {
+	public function getUser(int $id): ?array
+	{
 
-        $sql = "SELECT * FROM {$this->table}
-                 WHERE `id` =" . $this->escape($id);
-        return $this->fetchOne($sql);
-    }
+		$sql = "SELECT * FROM {$this->table}
+                 WHERE `id` =" . (int) $id;
+		return $this->fetchOne($sql);
+	}
 
-    public function getUsers(string $id, string $accountID): array
-    {
+	public function getUsers(int $id, string $accountID): array
+	{
 
-        $sql = "SELECT * FROM {$this->table}
+		$sql = "SELECT * FROM {$this->table}
                 WHERE `status` = 1
                 AND `role_id` > 1
                 AND `account_id` = '" . $this->escape($accountID) . "'
-                AND NOT `id` = '" . $this->escape($id) . "'";
-        return $this->fetchAll($sql);
-    }
+                AND NOT `id` = '" . (int) $id . "'";
+		return $this->fetchAll($sql);
+	}
 
-    public function getUserLocationID(string $id): ?array
-    {
+	public function getUserLocationID(int $id): ?array
+	{
 
-        $sql = "SELECT `location_id` FROM $this->table
-                WHERE `id` = '" . $this->escape($id) . "'";
-        return $this->fetchOne($sql);
-    }
+		$sql = "SELECT `location_id` FROM $this->table
+                WHERE `id` = '" . (int) $id . "'";
+		return $this->fetchOne($sql);
+	}
 
-    public function getClients(string $accountID): array
-    {
+	public function getClients(string $accountID): array
+	{
 
-        $sql = "SELECT * FROM {$this->table}
+		$sql = "SELECT * FROM {$this->table}
                 WHERE `status` = 1
                 AND `role_id` = 1
                 AND `account_id` = '" . $this->escape($accountID) . "'
                 AND NOT `account_id` = 0";
-        return $this->fetchAll($sql);
-    }
+		return $this->fetchAll($sql);
+	}
 
-    public function getClient(string $value): array
-    {
+	public function getClient(string $value): array
+	{
 
-        $columnName = $this->getColumnName();
-        $column = $columnName['COLUMN_NAME'];
-        return $this->getRecordFromTableColumnValue($this->table, $column, $value);
-        // $sql = "SELECT * FROM {$this->table}
-        //         WHERE `".$this->escape($columnName['COLUMN_NAME'])."` = '". $this->escape($id) ."'";
-        //         return $this->fetchOne($sql);
+		$columnName = $this->getColumnName();
+		$column = $columnName['COLUMN_NAME'];
+		return $this->getRecordFromTableColumnValue($this->table, $column, $value);
+		// $sql = "SELECT * FROM {$this->table}
+		//         WHERE `".$this->escape($columnName['COLUMN_NAME'])."` = '". (int)$id ."'";
+		//         return $this->fetchOne($sql);
 
-    }
+	}
 
-    public function getClientCountryById(string $id): array
-    {
+	public function getClientCountryById(int $id): array
+	{
 
-        $columnName = $this->getColumnName();
-        $sql = "SELECT `country` FROM {$this->table}
-               WHERE `{$this->escape($columnName['COLUMN_NAME'])}` = '" . $this->escape($id) . "'";
-        return $this->fetchOne($sql);
-    }
+		$columnName = $this->getColumnName();
+		$sql = "SELECT `country` FROM {$this->table}
+               WHERE `{$this->escape($columnName['COLUMN_NAME'])}` = '" . (int) $id . "'";
+		return $this->fetchOne($sql);
+	}
 
-    public function getClientInitials(string $fullname): string
-    {
+	public function getClientInitials(string $fullname): string
+	{
 
-        $safeFullname = [];
-        $safeFullname[] = $this->escape($fullname);
-        $initials = implode('', array_map(function ($name) {
-            preg_match_all('/\b\w/', $name, $matches);
-            return implode('', $matches[0]);
-        }, $safeFullname));
-        return $initials;
-    }
+		$safeFullname = [];
+		$safeFullname[] = $this->escape($fullname);
+		$initials = implode('', array_map(function ($name) {
+			preg_match_all('/\b\w/', $name, $matches);
+			return implode('', $matches[0]);
+		}, $safeFullname));
+		return $initials;
+	}
 
-    public function getUsername(string $id): array
-    {
+	public function getUsername(int $id): array
+	{
 
-        $columnName = $this->getColumnName();
-        $sql = "SELECT `name` FROM {$this->table}
-                WHERE `{$this->escape($columnName['COLUMN_NAME'])}` = '" . $this->escape($id) . "'";
+		$columnName = $this->getColumnName();
+		$sql = "SELECT `name` FROM {$this->table}
+                WHERE `{$this->escape($columnName['COLUMN_NAME'])}` = '" . (int) $id . "'";
 
-        return $this->fetchOne($sql);
-    }
+		return $this->fetchOne($sql);
+	}
 
-    public function deleteUser(string $id): bool
-    {
+	public function deleteUser(int $id): bool
+	{
 
-        if (!empty($id)) {
-            if ($this->deleteRecord($this->table, $id)) {
-                return true;
-            }
-        }
-    }
+		if (!empty($id)) {
+			if ($this->deleteRecord($this->table, $id)) {
+				return true;
+			}
+		}
+	}
 
-    public function removeUser(string $id): bool
-    {
+	public function removeUser(int $id): bool
+	{
 
-        if (!empty($id)) {
-            if ($this->deactivateUser($this->table, $id)) {
-                return true;
-            }
-        }
-    }
+		if (!empty($id)) {
+			if ($this->deactivateUser($this->table, $id)) {
+				return true;
+			}
+		}
+	}
 
-    public function userCount(string $accountID, string $userID): array
-    {
+	public function userCount(string $accountID, string $userID): array
+	{
 
-        $sql = "SELECT COUNT(*) FROM {$this->table} 
+		$sql = "SELECT COUNT(*) FROM {$this->table}
                 WHERE `status` = 1
                 AND `role_id` > 1
                 AND `account_id` = '" . $this->escape($accountID) . "'
                 AND NOT `status` = 0
                 AND NOT `id` = '" . $this->escape($userID) . "'";
-        return $this->fetchOne($sql);
-    }
+		return $this->fetchOne($sql);
+	}
 
-    public function clientCount(string $accountID): array
-    {
+	public function clientCount(string $accountID): array
+	{
 
-        $sql = "SELECT COUNT(*) FROM {$this->table}
+		$sql = "SELECT COUNT(*) FROM {$this->table}
                 WHERE `status` = 1
                 AND `role_id` = 1
                 AND `account_id` = '" . $this->escape($accountID) . "'
                 AND NOT `account_id` = 0";
-        return $this->fetchOne($sql);
-    }
+		return $this->fetchOne($sql);
+	}
 
-    public function employeeLocationCountById(string $id, string $accountID): array
-    {
+	public function employeeLocationCountById(int $id, string $accountID): array
+	{
 
-        if (!empty($id)) {
-            $sql = "SELECT COUNT(*) FROM {$this->table}
-                    WHERE `location_id` = '" . $this->escape($id) . "'
+		if (!empty($id)) {
+			$sql = "SELECT COUNT(*) FROM {$this->table}
+                    WHERE `location_id` = '" . (int) $id . "'
                     AND `status` = 1
-                    AND `role_id` > 1 
+                    AND `role_id` > 1
                     AND `account_id` = '" . $this->escape($accountID) . "'
                     AND NOT `status` = 0";
-        }
-        return $this->fetchOne($sql);
-    }
+		}
+		return $this->fetchOne($sql);
+	}
 
-    public function getUserLevelName(string $id): array
-    {
+	public function getUserLevelName(int $id): array
+	{
 
-        if (!empty($id)) {
-            $sql = "SELECT `name` FROM {$this->table_2}
-                    WHERE `level` = '" . $this->escape($id) . "'";
-            return $this->fetchOne($sql);
-        }
-    }
+		if (!empty($id)) {
+			$sql = "SELECT `name` FROM {$this->table_2}
+                    WHERE `level` = '" . (int) $id . "'";
+			return $this->fetchOne($sql);
+		}
+	}
 
-    public function clientLocationCountById(string $id, string $accountID): array
-    {
+	public function clientLocationCountById(int $id, string $accountID): array
+	{
 
-        if (!empty($id)) {
-            $sql = "SELECT COUNT(*) FROM {$this->table}
-                    WHERE `location_id` = '" . $this->escape($id) . "'
+		if (!empty($id)) {
+			$sql = "SELECT COUNT(*) FROM {$this->table}
+                    WHERE `location_id` = '" . (int) $id . "'
                     AND `role_id` = 1
                     AND `status` = 1
                     AND `account_id` = '" . $this->escape($accountID) . "'
                     AND NOT `status` = 0";
-            return $this->fetchOne($sql);
-        }
-    }
+			return $this->fetchOne($sql);
+		}
+	}
 
-    public function checkUserHasThisLocation(string $id, string $accountID): bool
-    {
+	public function checkUserHasThisLocation(int $id, string $accountID): bool
+	{
 
-        if (!empty($id)) {
-            $sql = "SELECT `location_id` FROM {$this->table}
-                    WHERE `location_id` = '" . $this->escape($id) . "'
+		if (!empty($id)) {
+			$sql = "SELECT `location_id` FROM {$this->table}
+                    WHERE `location_id` = '" . (int) $id . "'
                     AND `status` = 1
                     AND `account_id` = '" . $this->escape($accountID) . "'";
-            $result = $this->fetchAll($sql);
-            if ($result) {
-                return true;
-            }
-        }
-        return false;
-    }
+			$result = $this->fetchAll($sql);
+			if ($result) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public function getUserRoles(): array
-    {
+	public function getUserRoles(): array
+	{
 
-        $sql = "SELECT * FROM {$this->table_2}
+		$sql = "SELECT * FROM {$this->table_2}
                 WHERE `level` > 1";
-        return $this->fetchAll($sql);
-    }
+		return $this->fetchAll($sql);
+	}
 }

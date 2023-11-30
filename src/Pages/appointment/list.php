@@ -50,7 +50,9 @@ require_once("Templates/header.php");
 	<div class="box-header">
 		<div class="box-lf-ctn">
 			<h2>Appointments Calendar</h2>
-			<p><?php echo array_shift($upcomingAppointments); ?> upcoming appointments in total</p>
+			<p>
+				<?php echo array_shift($upcomingAppointments); ?> upcoming appointments in total
+			</p>
 		</div>
 		<div class="box-rt-ctn">
 			<!-- <a href="/appointment/add"><button id="add-event" class="action-btn align-middle"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp; New Appointment</button> -->
@@ -101,7 +103,7 @@ require_once("Templates/header.php");
 							<select multiple class="csc-select required-field" name="e_service_id" id="e_service_id">
 								<?php foreach ($services as $service) { ?>
 									<option value="<?php echo $service['id']; ?>" <?php // echo $objForm->stickySelect('e_service_id', $service['id']);
-																					?>>
+									   	?>>
 										<?php echo $service['name']; ?>
 									</option>
 								<?php } ?>
@@ -121,9 +123,11 @@ require_once("Templates/header.php");
 							<textarea rows="4" name="appointment_notes" id="appointment_notes"></textarea>
 						</p>
 						<p>
-							<input type="button" name="submitAppUpdate" id="submitAppUpdate" class="blue-btn alab" value="Update">
+							<input type="button" name="submitAppUpdate" id="submitAppUpdate" class="blue-btn alab"
+								value="Update">
 							<input type="hidden" class="delete-id" id="id">
-							<input type="button" name="submitRemove" id="submitRemove" class="red-btn fl-rt" value="Delete">
+							<input type="button" name="submitRemove" id="submitRemove" class="red-btn fl-rt"
+								value="Delete">
 						</p>
 
 					</form>
@@ -167,7 +171,8 @@ require_once("Templates/header.php");
 						</p>
 						<span>Client</span>
 						<p>
-							<select class="csc-select client_id required-field" name="client_id" id="client_id" required>
+							<select class="csc-select client_id required-field" name="client_id" id="client_id"
+								required>
 								<option value="">Select Client</option>
 								<?php foreach ($clients as $client) { ?>
 									<option value="<?php echo $client['id']; ?>" <?php echo $objForm->stickySelect('client_id', $client['id']); ?>>
@@ -180,7 +185,8 @@ require_once("Templates/header.php");
 						<?php echo $objValidation->validate('appointment_service'); ?>
 						<span>Services</span>
 						<p>
-							<select class="csc-select required-field" name="service_id" id="service_id" multiple required>
+							<select class="csc-select required-field" name="service_id" id="service_id" multiple
+								required>
 								<?php foreach ($services as $service) { ?>
 									<option value="<?php echo $service['id']; ?>" <?php echo $objForm->stickySelect('service_id', $service['id']); ?>>
 										<?php echo $service['name']; ?>
@@ -207,7 +213,8 @@ require_once("Templates/header.php");
 						</p>
 
 					</form>
-					<input type="submit" name="submitApp" id="submitApp" class="blue-btn alab del-ls" value="Add Appointment">
+					<input type="submit" name="submitApp" id="submitApp" class="blue-btn alab del-ls"
+						value="Add Appointment">
 				</div>
 			</div>
 		</div>
@@ -232,7 +239,8 @@ require_once("Templates/header.php");
 							</div>
 							<p>
 								<span>Phone</span>
-								<input type="number" name="c_number" placeholder="Client number" autocomplete="off" id="c_number">
+								<input type="number" name="c_number" placeholder="Client number" autocomplete="off"
+									id="c_number">
 							</p>
 							<?php echo $objValidation->validate('country'); ?>
 							<p>
@@ -283,16 +291,20 @@ require_once("Templates/header.php");
 							<?php echo $objValidation->validate('user_exists'); ?>
 							<p>
 								<span>Email</span>
-								<input type="email" name="c_email" value="<?php echo $objForm->stickyText('c_email'); ?>" placeholder="" autocomplete="false" id="c_email">
+								<input type="email" name="c_email"
+									value="<?php echo $objForm->stickyText('c_email'); ?>" placeholder=""
+									autocomplete="false" id="c_email">
 							</p>
 							<?php echo $objValidation->validate('name'); ?>
 							<p>
 								<span>Client name</span>
 								<input type="hidden" name="c_status" id="c_status" value="1">
-								<input type="text" name="c_name" value="<?php echo $objForm->stickyText('c_name'); ?>" placeholder="" id="c_name">
+								<input type="text" name="c_name" value="<?php echo $objForm->stickyText('c_name'); ?>"
+									placeholder="" id="c_name">
 							</p>
 							<p>
-								<input type="button" name="submitAddClient" id="submitAddClient" class="blue-btn alab" value="Add client">
+								<input type="button" name="submitAddClient" id="submitAddClient" class="blue-btn alab"
+									value="Add client">
 							</p>
 						</div>
 
@@ -304,10 +316,58 @@ require_once("Templates/header.php");
 		</div>
 	</div>
 
+	<!-- Modal: Add Location-->
+	<div class="modal fade" id="addclientlocation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="">Please add a location first</h5>
+					<button type="button" class="btn-close del-ls" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<form id="addevent" action="" method="post" class="add-form">
+
+						<?php echo $objValidation->validate('location_exists'); ?>
+						<p>
+							<span>Location name</span>
+							<input type="text" name="l_name" id="l_name" placeholder="Location name" required="">
+						</p>
+						<p>
+							<input type="button" name="submitAddLocation" id="submitAddLocation" class="blue-btn alab"
+								value="Add Location">
+						</p>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 <!-- Appointments FullCalendar -->
 <script type="text/javascript">
-	$(function() {
+	// Redirect users who do not have a location associated with their account
+	$(function () {
+		var clientLocationExists = <?php echo !empty($userLocationId) ? 'true' : 'false'; ?>;
+		if (clientLocationExists) {
+			swal({
+				title: "No location associated with your account!",
+				text: "Please add a location first.",
+				icon: "info",
+				button: "Add Location",
+				closeOnClickOutside: false,
+				closeOnEsc: false,
+			}).then((willAdd) => {
+				if (willAdd) {
+					window.location.href = '/locations';
+				}
+			});
+		}
+	});
+
+	$(function () {
 		var newClientCreated = localStorage.getItem("newlyCreatedClient");
 		if (newClientCreated) {
 			$('#addappointment').modal('show');
@@ -316,7 +376,7 @@ require_once("Templates/header.php");
 	});
 
 	// Adding global requirement status trigger
-	$('.required-field').change(function() {
+	$('.required-field').change(function () {
 		var $field = $(this);
 		var $warn = $field.siblings('.required-warning');
 
@@ -330,14 +390,14 @@ require_once("Templates/header.php");
 		placeholder: "Select Client",
 		dropdownParent: $('#addappointment'),
 		language: {
-			noResults: function() {
+			noResults: function () {
 				return `<input value="Add Client" style="width: 100%" type="button"
 				class="btn blue-btn wt-on-hv" id="ACB"
 				onClick='addClient()'>`;
 			}
 		},
 
-		escapeMarkup: function(markup) {
+		escapeMarkup: function (markup) {
 			return markup;
 		}
 	});
@@ -366,7 +426,7 @@ require_once("Templates/header.php");
 		return Intl.DateTimeFormat().resolvedOptions().timeZone;
 	}
 
-	document.addEventListener('DOMContentLoaded', function() {
+	document.addEventListener('DOMContentLoaded', function () {
 
 		var calendarEl = document.getElementById('calendar');
 		var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -385,7 +445,7 @@ require_once("Templates/header.php");
 				right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
 			},
 			events: '/feed/feed.php',
-			eventClick: function(info) {
+			eventClick: function (info) {
 
 				info.jsEvent.preventDefault(); // don't let the browser navigate
 				var tz = calendar.getOption('timeZone');
@@ -426,7 +486,7 @@ require_once("Templates/header.php");
 
 			},
 			selectable: true,
-			select: function(info) {
+			select: function (info) {
 
 				$('#addappointment #start_date').val(info.start.toJSON().slice(0, 19));
 
@@ -435,7 +495,7 @@ require_once("Templates/header.php");
 				var newClientID = localStorage.getItem("newlyCreatedClient");
 				$("#client_id").val(newClientID).trigger('change');
 			},
-			eventDrop: function(info) {
+			eventDrop: function (info) {
 
 				var appointment_id = info.event.id;
 				var start_date = info.event.start.toJSON().slice(0, 19);
@@ -451,7 +511,7 @@ require_once("Templates/header.php");
 						start_date: start_date,
 						end_date: end_date
 					},
-					success: function(data) {
+					success: function (data) {
 						console.log(data);
 						calendar.refetchEvents();
 					}
@@ -468,10 +528,10 @@ require_once("Templates/header.php");
 
 	});
 
-	$(function() {
+	$(function () {
 
 		//twitter bootstrap script adding new appointments
-		$("#submitApp").click(function(event) {
+		$("#submitApp").click(function (event) {
 
 			//event.preventDefault();
 			originalArray = $("#service_id").val();
@@ -518,18 +578,18 @@ require_once("Templates/header.php");
 				dataType: "json",
 				encode: true,
 				cache: false,
-			}).then(function(data) {
+			}).then(function (data) {
 				console.log(data);
 				calendar.refetchEvents();
 				//location.reload();
-			}).catch(function(jqXHR, textStatus, errorThrown) {
+			}).catch(function (jqXHR, textStatus, errorThrown) {
 				console.log(xhr.responseText);
 				alert('Error: Appointment was not added successfully!');
-			}).always(function() {
+			}).always(function () {
 				if ($('#addappointment').hasClass('show')) {
 					$('#addappointment').modal('hide');
 				}
-				setTimeout(function() {
+				setTimeout(function () {
 					location.reload();
 				}, 500); // Wait for 500ms before reloading the page
 			});
@@ -541,7 +601,7 @@ require_once("Templates/header.php");
 	});
 
 	// Triggering the deleteLocalStorage function in case the client is not created and the back button is clicked
-	$('.del-ls').click(function() {
+	$('.del-ls').click(function () {
 		deleteLocalStorage();
 	});
 
@@ -556,10 +616,10 @@ require_once("Templates/header.php");
 		localStorage.removeItem('newlyCreatedClient');
 	}
 
-	$(function() {
+	$(function () {
 
 		//twitter bootstrap script updating appointment
-		$("#submitAppUpdate").click(function(event) {
+		$("#submitAppUpdate").click(function (event) {
 
 			//event.preventDefault();
 			originalArray = $("#e_service_id").val();
@@ -604,18 +664,18 @@ require_once("Templates/header.php");
 				dataType: "json",
 				encode: true,
 				cache: false,
-			}).then(function(data) {
+			}).then(function (data) {
 				console.log(data);
 				calendar.refetchEvents();
 				//location.reload();
-			}).catch(function(jqXHR, textStatus, errorThrown) {
+			}).catch(function (jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
 				//alert('Error: Appointment was not edited successfully!');
-			}).always(function() {
+			}).always(function () {
 				if ($('#openappointment').hasClass('show')) {
 					$('#openappointment').modal('hide');
 				}
-				setTimeout(function() {
+				setTimeout(function () {
 					location.reload();
 				}, 500); // Wait for 500ms before reloading the page
 			});
@@ -624,18 +684,18 @@ require_once("Templates/header.php");
 
 	});
 
-	$('#submitRemove').click(function(e) {
+	$('#submitRemove').click(function (e) {
 		e.preventDefault();
 
 		var id = $("#id").val();
 
 		swal({
-				title: "Are you sure?",
-				text: "Once deleted, you will not be able to recover this appointment!",
-				icon: "warning",
-				buttons: true,
-				dangerMode: true,
-			})
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this appointment!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
 			.then((willDelete) => {
 				if (willDelete) {
 
@@ -645,7 +705,7 @@ require_once("Templates/header.php");
 						data: {
 							"id": id,
 						},
-						success: function(response) {
+						success: function (response) {
 							console.log(response);
 							swal("Appointment Deleted Successfully!", {
 								icon: "success",
@@ -661,10 +721,10 @@ require_once("Templates/header.php");
 
 	});
 
-	$(function() {
+	$(function () {
 
 		//twitter bootstrap script updating appointment, from click to submit test
-		$("#submitAddClient").click(function(event) {
+		$("#submitAddClient").click(function (event) {
 
 			//event.preventDefault();
 
@@ -680,29 +740,6 @@ require_once("Templates/header.php");
 				c_name: $("#c_name").val()
 			};
 
-			// $.ajax({
-			//     type: "POST",
-			//     url: "/src/Pages/client/addFromAppointment.php",
-			//     data: addClientData,
-			//     dataType: "json",
-			//     encode: true,
-			// }).done(function(data) {
-			//     $('#addclient').modal('hide');
-			//     var newClientID = data;
-			//     localStorage.setItem("newlyCreatedClient", newClientID);
-			//     console.log(data);
-			//     calendar.refetchEvents();
-			//     setTimeout(function() {
-			//         location.reload();
-			//     }, 500);
-			// });
-
-			// if ($("#client_id").val() == '') {
-			//     event.preventDefault();
-			//     $('.required-warning').addClass("visible");
-			//     return false;
-			// }
-
 			$.ajax({
 				type: "POST",
 				url: "/src/Pages/client/addFromAppointment.php",
@@ -710,20 +747,20 @@ require_once("Templates/header.php");
 				dataType: "json",
 				encode: true,
 				cache: false,
-			}).done(function(data) {
+			}).done(function (data) {
 				console.log(data);
 				//calendar.refetchEvents();
 				//location.reload();
 				var newClientID = data;
 				localStorage.setItem("newlyCreatedClient", newClientID);
-			}).fail(function(jqXHR, textStatus, errorThrown) {
+			}).fail(function (jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
 				//alert('Error: Client was not added successfully!');
-			}).always(function() {
+			}).always(function () {
 				if ($('#addclient').hasClass('show')) {
 					$('#addclient').modal('hide');
 				}
-				setTimeout(function() {
+				setTimeout(function () {
 					location.reload();
 				}, 500); // Wait for 500ms before reloading the page
 			});
@@ -734,7 +771,7 @@ require_once("Templates/header.php");
 		var state_id = localStorage.getItem("select2StateValue");
 		var page_load = true; //added this
 
-		$('select[name="country"]').on('change', function() {
+		$('select[name="country"]').on('change', function () {
 			var country_id = $(this).val();
 			localStorage.setItem("select2CountryValue", country_id);
 			if (country_id) {
@@ -746,11 +783,11 @@ require_once("Templates/header.php");
 					},
 					dataType: "json",
 					//contentType: "application/json; charset=utf-8",
-					success: function(data) {
+					success: function (data) {
 						console.log(data);
 						$('select[name="state"]').empty();
 						$('select[name="state"]').append('<option value="0">Select State</option>');
-						$.each(JSON.parse(data), function(key, value) {
+						$.each(JSON.parse(data), function (key, value) {
 							$('select[name="state"]').append('<option value="' + value.id + '">' + value.name + '</option>');
 						});
 						//check if the change is called on page load
@@ -767,7 +804,7 @@ require_once("Templates/header.php");
 
 		$('#country').val(country_id).trigger('change');
 
-		$('select[name="state"]').on('change', function() {
+		$('select[name="state"]').on('change', function () {
 
 			var country_id = $('#country').val();
 			var state_id = $(this).val();
@@ -781,11 +818,11 @@ require_once("Templates/header.php");
 						"state_id": state_id
 					},
 					dataType: "json",
-					success: function(data) {
+					success: function (data) {
 						console.log(data);
 						$('select[name="city"]').empty();
 						$('select[name="city"]').append('<option value="0">Select City</option>');
-						$.each(JSON.parse(data), function(key, value) {
+						$.each(JSON.parse(data), function (key, value) {
 							$('select[name="city"]').append('<option value="' + value.id + '">' + value.name + '</option>');
 						});
 					}

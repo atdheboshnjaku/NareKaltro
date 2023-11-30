@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Fin\Narekaltro\App;
 
@@ -9,302 +9,302 @@ use Dotenv\Dotenv;
 class Database
 {
 
-    protected $db = false;
+	protected $db = false;
 
-    public ?string $lastQuery  = null;
-    
-    public array $insertKeys   = [];
-    public array $insertValues = [];
+	public ?string $lastQuery = null;
 
-    public array $updateSets   = [];
-    
-    public int|string $id;
+	public array $insertKeys = [];
+	public array $insertValues = [];
 
-    public function __construct() 
-    {
-        // Initializing a connection to the Database
-        $this->connect();
-    
-    }
+	public array $updateSets = [];
 
-    public function connect()  
-    {
-        // Using vlucas/phpdotenv package to load the environment (.env) file and call variables 
-        // for the database credentials
-        $dotenv = Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
-        $dotenv->load();
+	public int $id;
 
-        // Creating a mysqli object and using the variables from withing the .env file located 
-        // in the root directory of the project 
-        
-        $this->db = new \Mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME']);
-        $this->db->set_charset("utf8mb4");
-        if($this->db->connect_errno) {
-            $msg  = "Connection to the Database failed: ";
-            $msg .= $this->db->connect_error;
-            $msg .= " (" . $this->db->connect_errno . ")";
-            exit($msg);
-        } 
+	public function __construct()
+	{
+		// Initializing a connection to the Database
+		$this->connect();
 
-    }
+	}
 
-    public function closeConnection(): void  
-    {
+	public function connect()
+	{
+		// Using vlucas/phpdotenv package to load the environment (.env) file and call variables
+		// for the database credentials
+		$dotenv = Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
+		$dotenv->load();
 
-        if(isset($this->db)) {
-            $this->db->close();
-        }
+		// Creating a mysqli object and using the variables from withing the .env file located
+		// in the root directory of the project
 
-    }
+		$this->db = new \Mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME']);
+		$this->db->set_charset("utf8mb4");
+		if ($this->db->connect_errno) {
+			$msg = "Connection to the Database failed: ";
+			$msg .= $this->db->connect_error;
+			$msg .= " (" . $this->db->connect_errno . ")";
+			exit($msg);
+		}
 
-    public function escape(string|int $value): string|int
-    {
+	}
 
-        $escape_string = $this->db->escape_string($value);
-        return $escape_string;
+	public function closeConnection(): void
+	{
 
-    }
+		if (isset($this->db)) {
+			$this->db->close();
+		}
 
-    public function query(string $query): bool
-    {
+	}
 
-        $this->lastQuery = $query;
-        $result = $this->db->query($query);
-        $this->confirmQuery($result);
-        return $result;
+	public function escape(string $value): string
+	{
 
-    }
+		$escape_string = $this->db->escape_string($value);
+		return $escape_string;
 
-    public function confirmQuery(bool $result): void
-    {
+	}
 
-        if(!$result) {
-            $output  = "Database query failed\n ";
-            $output .= "Last SQL query: ". $this->lastQuery;
-            $output .= "\n Error: " . $this->db->error;
-            $output .= "\n Error number: " . $this->db->errno;
-            die($output);
-        } else {
-            $this->db->affected_rows;
-        }
+	public function query(string $query): bool
+	{
 
-    }
+		$this->lastQuery = $query;
+		$result = $this->db->query($query);
+		$this->confirmQuery($result);
+		return $result;
 
-    public function fetchAll(string $query): array
-    {
+	}
 
-        $result = $this->db->query($query);
-        $output = [];
-        while($row = $result->fetch_assoc()) {
-            $output[] = $row;
-        }
-        $result->free();
-        return $output;
+	public function confirmQuery(bool $result): void
+	{
 
-    }
+		if (!$result) {
+			$output = "Database query failed\n ";
+			$output .= "Last SQL query: " . $this->lastQuery;
+			$output .= "\n Error: " . $this->db->error;
+			$output .= "\n Error number: " . $this->db->errno;
+			die($output);
+		} else {
+			$this->db->affected_rows;
+		}
 
-    public function fetchOne(string $query): array|null
-    {
+	}
 
-        $result = $this->fetchAll($query);
-        return array_shift($result);
+	public function fetchAll(string $query): array
+	{
 
-    }
-    
-    public function lastId(): int
-    {
+		$result = $this->db->query($query);
+		$output = [];
+		while ($row = $result->fetch_assoc()) {
+			$output[] = $row;
+		}
+		$result->free();
+		return $output;
 
-        return $this->db->insert_id;
+	}
 
-    }
+	public function fetchOne(string $query): array|null
+	{
 
-    public function prepareToInsert(array $args = null): void
-    {
+		$result = $this->fetchAll($query);
+		return array_shift($result);
 
-        if(!empty($args)) {
+	}
 
-            foreach($args as $key => $value) {
-                $this->insertKeys[] = $key;
-                $this->insertValues[] = $this->escape($value);
-            }
+	public function lastId(): int
+	{
 
-        }
+		return $this->db->insert_id;
 
-    }
+	}
 
-    public function insert(string $table = null): bool
-    {
+	public function prepareToInsert(array $args = null): void
+	{
 
-        if(
-            !empty($table) && 
-            !empty($this->insertKeys) && 
-            !empty($this->insertValues)
-        ) {
+		if (!empty($args)) {
 
-            $sql  = "INSERT INTO `{$table}` (`";
-            $sql .= implode("`, `", $this->insertKeys);
-            $sql .= "`) VALUES ('";
-            $sql .= implode("', '", $this->insertValues);
-            $sql .= "')";
+			foreach ($args as $key => $value) {
+				$this->insertKeys[] = $key;
+				$this->insertValues[] = $this->escape($value);
+			}
 
-            if($this->query($sql)) {
-                $this->id = $this->lastId();
-                return true;
-            }
-            return false;
+		}
 
-        }
+	}
 
-    }
+	public function insert(string $table = null): bool
+	{
 
-    public function prepareToUpdate(array $args = null)
-    {
+		if (
+			!empty($table) &&
+			!empty($this->insertKeys) &&
+			!empty($this->insertValues)
+		) {
 
-        if(!empty($args)) {
-            foreach($args as $key => $value) {
-                $this->updateSets[] = "`{$key}` = '". $this->escape($value) ."'";
-            }
-        }
+			$sql = "INSERT INTO `{$table}` (`";
+			$sql .= implode("`, `", $this->insertKeys);
+			$sql .= "`) VALUES ('";
+			$sql .= implode("', '", $this->insertValues);
+			$sql .= "')";
 
-    }
+			if ($this->query($sql)) {
+				$this->id = $this->lastId();
+				return true;
+			}
+			return false;
 
-    public function update(string $table = null, string $id = null) 
-    {
+		}
 
-        $columnName = $this->getTableColumnName($table);
-        if(
-            !empty($table) && 
-            !empty($id) && 
-            !empty($this->updateSets)
-        ) {
-            $sql  = "UPDATE `{$table}` SET ";
-            $sql .= implode(", ", $this->updateSets);
-            $sql .= " WHERE `". $columnName['COLUMN_NAME'] ."` = '". $this->escape($id) ."'";
-            //$sql .= " WHERE `id` = '". $this->escape($id) ."'";
-            return $this->query($sql);
-        }
+	}
 
-    }
+	public function prepareToUpdate(array $args = null)
+	{
 
-    public function getTableColumnName(string $table): array  
-    {
+		if (!empty($args)) {
+			foreach ($args as $key => $value) {
+				$this->updateSets[] = "`{$key}` = '" . $this->escape($value) . "'";
+			}
+		}
 
-        $sql = "SELECT COLUMN_NAME
+	}
+
+	public function update(string $table = null, int $id = null)
+	{
+
+		$columnName = $this->getTableColumnName($table);
+		if (
+			!empty($table) &&
+			!empty($id) &&
+			!empty($this->updateSets)
+		) {
+			$sql = "UPDATE `{$table}` SET ";
+			$sql .= implode(", ", $this->updateSets);
+			$sql .= " WHERE `" . $columnName['COLUMN_NAME'] . "` = '" . (int) $id . "'";
+			//$sql .= " WHERE `id` = '". (int)$id ."'";
+			return $this->query($sql);
+		}
+
+	}
+
+	public function getTableColumnName(string $table): array
+	{
+
+		$sql = "SELECT COLUMN_NAME
                 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-                WHERE TABLE_NAME = '". $this->escape($table) ."'
+                WHERE TABLE_NAME = '" . $this->escape($table) . "'
                 AND CONSTRAINT_NAME = 'PRIMARY'";
-                return $this->fetchOne($sql);
+		return $this->fetchOne($sql);
 
-    }
+	}
 
-    public function getAllCountries(string $table): array  
-    {
+	public function getAllCountries(string $table): array
+	{
 
-        $sql = "SELECT * FROM `". $this->escape($table) . "`
+		$sql = "SELECT * FROM `" . $this->escape($table) . "`
                 ORDER BY `name` ASC";
-                return $this->fetchAll($sql);
+		return $this->fetchAll($sql);
 
-    }
+	}
 
-    public function getRecordsFromTableColumnValue(string $table = null, string $column = null, string $value = null): array 
-    {
+	public function getRecordsFromTableColumnValue(string $table = null, string $column = null, string $value = null): array
+	{
 
-        $sql = "SELECT * FROM `{$table}`";
-                if(!empty($column)) {
-                    $sql .= " WHERE `{$this->escape($column)}` = '". $this->escape($value) ."'";
-                }
-                $sql .= " ORDER BY ASC";
-                return $this->fetchAll($sql);
+		$sql = "SELECT * FROM `{$table}`";
+		if (!empty($column)) {
+			$sql .= " WHERE `{$this->escape($column)}` = '" . $this->escape($value) . "'";
+		}
+		$sql .= " ORDER BY ASC";
+		return $this->fetchAll($sql);
 
-    }
+	}
 
-    public function getRecordFromTableColumnValue(string $table = null, string $column = null, string $value = null): array 
-    {
+	public function getRecordFromTableColumnValue(string $table = null, string $column = null, string $value = null): array
+	{
 
-        $sql = "SELECT * FROM `{$table}`";
-                if(!empty($column)) {
-                    $sql .= " WHERE `{$this->escape($column)}` = '". $this->escape($value) ."'";
-                }
-                return $this->fetchOne($sql);
+		$sql = "SELECT * FROM `{$table}`";
+		if (!empty($column)) {
+			$sql .= " WHERE `{$this->escape($column)}` = '" . $this->escape($value) . "'";
+		}
+		return $this->fetchOne($sql);
 
-    }
+	}
 
-    public function deleteRecord(string $table = null, string $id = null): bool
-    {
+	public function deleteRecord(string $table = null, int $id = null): bool
+	{
 
-        if(!empty($table) && !empty($id)) {
-            $sql = "DELETE FROM `{$table}`
-                    WHERE `id` = '". $this->escape($id) ."' LIMIT 1";
-                    return $this->query($sql);
-        }
+		if (!empty($table) && !empty($id)) {
+			$sql = "DELETE FROM `{$table}`
+                    WHERE `id` = '" . (int) $id . "' LIMIT 1";
+			return $this->query($sql);
+		}
 
-    }
+	}
 
-    public function deactivateUser(string $table = null, string $id = null): bool
-    {
+	public function deactivateUser(string $table = null, int $id = null): bool
+	{
 
-        if(!empty($table) && !empty($id)) {
-            $sql = "UPDATE `{$table}` SET status = '0', location_id = '0' WHERE `id` = '". $this->escape($id) ."'";
-            return $this->query($sql);
-        }
+		if (!empty($table) && !empty($id)) {
+			$sql = "UPDATE `{$table}` SET status = '0', location_id = '0' WHERE `id` = '" . (int) $id . "'";
+			return $this->query($sql);
+		}
 
-    }
+	}
 
-    public function deactivateService(string $table = null, string $id = null): bool 
-    {
+	public function deactivateService(string $table = null, int $id = null): bool
+	{
 
-        if(!empty($table) && !empty($id)) {
-            $sql = "UPDATE `{$table}` SET status = 0 WHERE `id` = '". $this->escape($id) ."'";
-            return $this->query($sql);
-        }
+		if (!empty($table) && !empty($id)) {
+			$sql = "UPDATE `{$table}` SET status = 0 WHERE `id` = '" . (int) $id . "'";
+			return $this->query($sql);
+		}
 
-    }
+	}
 
-    public function deactivateLocation(string $table = null, string $id = null): bool 
-    {
+	public function deactivateLocation(string $table = null, int $id = null): bool
+	{
 
-        if(!empty($table) && !empty($id)) {
-            $sql = "UPDATE `{$table}` SET status = 0 WHERE `id` = '". $this->escape($id) ."'";
-            return $this->query($sql);
-        }
+		if (!empty($table) && !empty($id)) {
+			$sql = "UPDATE `{$table}` SET status = 0 WHERE `id` = '" . (int) $id . "'";
+			return $this->query($sql);
+		}
 
-    }
+	}
 
-    public function deactivateStatus(string $table = null, string $id = null): bool 
-    {
+	public function deactivateStatus(string $table = null, int $id = null): bool
+	{
 
-        $columnName = $this->getTableColumnName($table);
-        if(!empty($table) && !empty($id)) {
-            $sql = "UPDATE `{$table}` SET status = 0 WHERE `". $columnName['COLUMN_NAME'] ."` = '". $this->escape($id) ."'";
-            return $this->query($sql);
-        }
+		$columnName = $this->getTableColumnName($table);
+		if (!empty($table) && !empty($id)) {
+			$sql = "UPDATE `{$table}` SET status = 0 WHERE `" . $columnName['COLUMN_NAME'] . "` = '" . (int) $id . "'";
+			return $this->query($sql);
+		}
 
-    }
+	}
 
 
-    public function totalCountById(string $table, string $id): array 
-    {
+	public function totalCountById(string $table, int $id): array
+	{
 
-        $sql = "SELECT COUNT(*) FROM {$table}
-                WHERE `location_id` = '". $this->escape($id) ."' 
+		$sql = "SELECT COUNT(*) FROM {$table}
+                WHERE `location_id` = '" . (int) $id . "'
                 AND `status` = 1
-                AND `role_id` = 2 
-                OR `role_id` = 3 
+                AND `role_id` = 2
+                OR `role_id` = 3
                 OR `role_id` = 4";
-        return $this->fetchOne($sql);
+		return $this->fetchOne($sql);
 
-    }
+	}
 
-    // Testing Dotenv
-    public static function genv(): string 
-    {
-        $dotenv = Dotenv::createImmutable("../../");
-        $dotenv->load();
+	// Testing Dotenv
+	public static function genv(): string
+	{
+		$dotenv = Dotenv::createImmutable("../../");
+		$dotenv->load();
 
-        return $_ENV['DB_NAME'] . " " . $_ENV['DB_PASS'];
-    }
+		return $_ENV['DB_NAME'] . " " . $_ENV['DB_PASS'];
+	}
 
-    
+
 
 }
 

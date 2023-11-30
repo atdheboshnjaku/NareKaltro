@@ -1,197 +1,196 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Fin\Narekaltro\App;
 
 class Session extends Database
 {
 
-    public $userId;
-    private $table   = "User_Tokens";
-    private $table_2   = "Users";
+	public $userId;
+	private $table = "User_Tokens";
+	private $table_2 = "Users";
 
-    public function __construct()
-    {
-        
-        if(session_status() === PHP_SESSION_NONE)
-        {
-            session_start();
-        }
+	public function __construct()
+	{
 
-        parent::__construct();
-    
-        $this->checkLogin();
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
 
-    }
+		parent::__construct();
 
-    // public function login($user = null): array|bool|int
-    // {
+		$this->checkLogin();
 
-    //     if($user) {
+	}
 
-    //         // Regenerating the session id after login to prevent session fixation
-    //         session_regenerate_id();
-    //         $_SESSION['userId'] = (int) $user->id;
-    //         $this->userId = $user->id;        
+	// public function login($user = null): array|bool|int
+	// {
 
-    //     }
+	//     if($user) {
 
-    //     return true;
+	//         // Regenerating the session id after login to prevent session fixation
+	//         session_regenerate_id();
+	//         $_SESSION['userId'] = (int) $user->id;
+	//         $this->userId = $user->id;
 
-    // }
+	//     }
 
-    public function login($user = null): bool
-    {
+	//     return true;
 
-        if($user) {
-            session_regenerate_id();
-            if(is_array($user)) {
-                $this->userId = $user['id']; 
-                $_SESSION['username'] = $user['name']; 
-                $_SESSION['userId'] = $this->userId;
-            }
+	// }
 
-            if(is_object($user)) {
-                return true;
-            }
-            
-        }
+	public function login($user = null): bool
+	{
 
-        return true;
+		if ($user) {
+			session_regenerate_id();
+			if (is_array($user)) {
+				$this->userId = $user['id'];
+				$_SESSION['username'] = $user['name'];
+				$_SESSION['userId'] = $this->userId;
+			}
 
-    }
+			if (is_object($user)) {
+				return true;
+			}
 
-    public function isLogged(): bool|string 
-    {
+		}
 
-        //return isset($this->userId);
-        if(isset($_SESSION['userId'])) {
-            return true;
-        }
+		return true;
 
-        $token = filter_input(INPUT_COOKIE, 'remember_me', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if($token && $this->tokenIsValid($token)) {
-            $user = $this->getUserByToken($token);
-            
-            if($user) {
-                return $this->login($user);
-            } 
-        }
+	}
 
-        return false;
+	public function isLogged(): bool|string
+	{
 
-    }
+		//return isset($this->userId);
+		if (isset($_SESSION['userId'])) {
+			return true;
+		}
 
-    public function tokenIsValid(string $token): bool 
-    {
+		$token = filter_input(INPUT_COOKIE, 'remember_me', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		if ($token && $this->tokenIsValid($token)) {
+			$user = $this->getUserByToken($token);
 
-        [$selector, $validator] = $this->parseToken($token);
-        $tokens = $this->getUserTokenBySelector($selector);
-        if(!$tokens) {
-            return false;
-        }
+			if ($user) {
+				return $this->login($user);
+			}
+		}
 
-        return password_verify($validator, $tokens['hashed_validator']);
+		return false;
 
-    }
+	}
 
-    public function parseToken(string $token): ?array 
-    {
+	public function tokenIsValid(string $token): bool
+	{
 
-        $parts = explode(':', $token);
+		[$selector, $validator] = $this->parseToken($token);
+		$tokens = $this->getUserTokenBySelector($selector);
+		if (!$tokens) {
+			return false;
+		}
 
-        if($parts && count($parts) == 2) {
-            return [$parts[0], $parts[1]];
-        }
+		return password_verify($validator, $tokens['hashed_validator']);
 
-        return null;
+	}
 
-    }
+	public function parseToken(string $token): ?array
+	{
 
-    public function getUserTokenBySelector(string $selector): ?array 
-    {
+		$parts = explode(':', $token);
 
-        $sql = "SELECT * FROM $this->table 
-                WHERE `selector` = '". $this->escape($selector) ."'
+		if ($parts && count($parts) == 2) {
+			return [$parts[0], $parts[1]];
+		}
+
+		return null;
+
+	}
+
+	public function getUserTokenBySelector(string $selector): ?array
+	{
+
+		$sql = "SELECT * FROM $this->table
+                WHERE `selector` = '" . $this->escape($selector) . "'
                 AND `expiry` >= NOW()
                 LIMIT 1";
 
-            return $this->fetchOne($sql);
+		return $this->fetchOne($sql);
 
-    }
+	}
 
-    public function getUserByToken(string $token): ?array
-    {
+	public function getUserByToken(string $token): ?array
+	{
 
-        try {
-        $tokens = $this->parseToken($token);
-        if(!$tokens) {
-            return null;
-        }
+		try {
+			$tokens = $this->parseToken($token);
+			if (!$tokens) {
+				return null;
+			}
 
-        $sql = "SELECT Users.id, name
+			$sql = "SELECT Users.id, name
                 FROM $this->table_2
                 INNER JOIN $this->table ON user_id = Users.id
-                WHERE selector = '". $this->escape($tokens[0]) ."'
+                WHERE selector = '" . $this->escape($tokens[0]) . "'
                 AND expiry > NOW()
                 LIMIT 1";
 
-            return $this->fetchOne($sql);
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+			return $this->fetchOne($sql);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
 
-    }
+	}
 
-    public function logout(): bool 
-    {
+	public function logout(): bool
+	{
 
-        if($this->isLogged()) {
+		if ($this->isLogged()) {
 
-            //$this->deleteUserToken($this->userId);
-            unset($_SESSION['userId'], $_SESSION['username']);
-            unset($this->userId);
+			//$this->deleteUserToken($this->userId);
+			unset($_SESSION['userId'], $_SESSION['username']);
+			unset($this->userId);
 
-            if(isset($_COOKIE['remember_me'])) {
-                unset($_COOKIE['remember_me']);
-                //setcookie('remember_me', null, -1);
-                setcookie("remember_me", "", time() - 3600);
-            }
+			if (isset($_COOKIE['remember_me'])) {
+				unset($_COOKIE['remember_me']);
+				//setcookie('remember_me', null, -1);
+				setcookie("remember_me", "", time() - 3600);
+			}
 
-            session_destroy();
+			session_destroy();
 
-            return true;
+			return true;
 
-        }
+		}
 
-    }
+	}
 
-    private function checkLogin(): void
-    {
+	private function checkLogin(): void
+	{
 
-        if(isset($_SESSION['userId'])) {
-            $this->userId = $_SESSION['userId'];
-        } 
+		if (isset($_SESSION['userId'])) {
+			$this->userId = $_SESSION['userId'];
+		}
 
-    }
+	}
 
-    public function getUserId(): string|int 
-    {
+	public function getUserId(): string|int
+	{
 
-        if(isset($_SESSION['userId'])) {
-            return $this->userId = $_SESSION['userId'];
-        }
+		if (isset($_SESSION['userId'])) {
+			return $this->userId = $_SESSION['userId'];
+		}
 
-    }
-    //testing
-    public function getU(string $id): ?array
-    {
+	}
+	//testing
+	public function getU(int $id): ?array
+	{
 
-        $sql = "SELECT * FROM {$this->table_2}
-                 WHERE `id` =" . $this->escape($id);
-        return $this->fetchOne($sql);
+		$sql = "SELECT * FROM {$this->table_2}
+                 WHERE `id` =" . (int) $id;
+		return $this->fetchOne($sql);
 
-    }
+	}
 
 }
