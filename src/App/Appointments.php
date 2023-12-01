@@ -125,7 +125,7 @@ class Appointments extends Database
 
 	}
 
-	public function getLocation(int $id): array
+	public function getLocation(int $id): ?array
 	{
 
 		$sql = "SELECT `id`, `name` FROM {$this->table_4}
