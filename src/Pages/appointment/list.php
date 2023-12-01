@@ -351,7 +351,8 @@ require_once("Templates/header.php");
 	// Redirect users who do not have a location associated with their account
 	$(function () {
 		var clientLocationExists = <?php echo !empty($userLocationId) ? 'true' : 'false'; ?>;
-		if (clientLocationExists) {
+
+		if (!clientLocationExists) {
 			swal({
 				title: "No location associated with your account!",
 				text: "Please add a location first.",
