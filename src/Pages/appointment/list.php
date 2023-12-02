@@ -25,6 +25,7 @@ if (!$session->isLogged()) {
 $objUser = new User();
 $userId = $session->getUserId();
 $userLocationId = $objUser->getUserLocationID($userId);
+
 $userAccount = $objUser->getUserAccountID($userId);
 //$userAccount = $objUser->getUserAccountID($userId) ? : '';
 $clients = $objUser->getClients($userAccount);
@@ -39,6 +40,7 @@ $objValidation = new Validation($objForm);
 $objLocation = new Location();
 $countries = $objLocation->getCountries();
 $locations = $objLocation->getBusinessLocations($userAccount);
+
 $objServices = new Service();
 $services = $objServices->getServices($userAccount);
 
@@ -350,7 +352,7 @@ require_once("Templates/header.php");
 <script type="text/javascript">
 	// Redirect users who do not have a location associated with their account
 	$(function () {
-		var clientLocationExists = <?php echo !empty($userLocationId) ? 'true' : 'false'; ?>;
+		var clientLocationExists = <?php echo !empty($locations) ? 'true' : 'false'; ?>;
 
 		if (!clientLocationExists) {
 			swal({
