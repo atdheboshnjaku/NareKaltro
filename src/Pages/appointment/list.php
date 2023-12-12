@@ -27,7 +27,7 @@ $userId = $session->getUserId();
 $userLocationId = $objUser->getUserLocationID($userId);
 
 $userAccount = $objUser->getUserAccountID($userId);
-//$userAccount = $objUser->getUserAccountID($userId) ? : '';
+
 $clients = $objUser->getClients($userAccount);
 
 $objAppointments = new Appointments();
@@ -437,7 +437,7 @@ require_once("Templates/header.php");
 			initialView: 'dayGridMonth',
 			dayMaxEventRows: true,
 			editable: true,
-			// longPressDelay: 0.5,
+			longPressDelay: 0.5,
 			eventTimeFormat: {
 				hour: 'numeric',
 				minute: '2-digit'
