@@ -451,7 +451,7 @@ require_once("Templates/header.php");
 			events: '/feed/feed.php',
 			eventClick: function (info) {
 
-				info.jsEvent.preventDefault(); // don't let the browser navigate
+				//info.jsEvent.preventDefault(); // don't let the browser navigate
 				var tz = calendar.getOption('timeZone');
 				console.log("Timezone is: " + tz);
 				$('#openappointment #id').text(info.event.id);
