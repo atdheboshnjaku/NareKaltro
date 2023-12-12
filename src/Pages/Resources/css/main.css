@@ -375,7 +375,8 @@ table.action-table th {
     color: #50cd89 !important;
 }
 
-.badge-absent {
+.badge-absent,
+.badge-red {
     background: #fff5f8;
     color: #f1416c !important;
 }
@@ -910,5 +911,20 @@ aside {
         font-size: 1.2em;
     }
 
+	.fc .fc-toolbar.fc-header-toolbar {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk {
+		flex-basis: 50%; /* Each child starts at 50% of the parent width */
+		flex-grow: 0; /* Prevents them from growing */
+		flex-shrink: 0; /* Prevents them from shrinking */
+	}
+
+	.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(3) {
+		display: flex;
+		margin-top: 20px;
+	}
 
 }
