@@ -437,8 +437,8 @@ require_once("Templates/header.php");
 			initialView: 'dayGridMonth',
 			dayMaxEventRows: true,
 			editable: true,
-			eventLongPressDelay: 0.5,
-			selectLongPressDelay: 0.5,
+			eventLongPressDelay: 500,
+			selectLongPressDelay: 500,
 			eventTimeFormat: {
 				hour: 'numeric',
 				minute: '2-digit'
