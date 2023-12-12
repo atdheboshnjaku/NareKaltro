@@ -438,7 +438,7 @@ require_once("Templates/header.php");
 			dayMaxEventRows: true,
 			editable: true,
 			eventLongPressDelay: 500,
-			selectLongPressDelay: 500,
+			selectLongPressDelay: 0.5,
 			eventTimeFormat: {
 				hour: 'numeric',
 				minute: '2-digit'
