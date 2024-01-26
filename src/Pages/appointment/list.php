@@ -372,9 +372,12 @@ require_once("Templates/header.php");
 
 	$(function () {
 		var newClientCreated = localStorage.getItem("newlyCreatedClient");
-		if (newClientCreated) {
+		var savedStartDate = localStorage.getItem('appointmentStartDate');
+
+		if (newClientCreated && savedStartDate) {
 			$('#addappointment').modal('show');
 			$("#client_id").val(newClientCreated).trigger('change');
+			$('#start_date').val(savedStartDate);
 		}
 	});
 
@@ -388,6 +391,11 @@ require_once("Templates/header.php");
 		}
 	});
 
+	$('#addappointment').on('show.bs.modal', function() {
+		// Store the current value of start_date in localStorage
+		var startDate = $('#start_date').val();
+		localStorage.setItem('appointmentStartDate', startDate);
+	});
 
 	$('#client_id').select2({
 		placeholder: "Select Client",
@@ -618,6 +626,7 @@ require_once("Templates/header.php");
 		localStorage.removeItem('select2CountryValue');
 		localStorage.removeItem('select2StateValue');
 		localStorage.removeItem('newlyCreatedClient');
+		localStorage.removeItem('appointmentStartDate');
 	}
 
 	$(function () {
