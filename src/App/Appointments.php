@@ -183,6 +183,27 @@ class Appointments extends Database
 
 	}
 
+	public function getClientHistory(int $clientID) : array {
+		$sql = "
+		SELECT
+		  location_id,
+		  service_id,
+		  start_date,
+		  end_date,
+		  appointment_notes
+		FROM " . $this->table . "
+		WHERE `client_id` = '" . (int)$clientID . "'
+		ORDER BY `start_date` DESC";
 
+		return $this->fetchAll($sql);
+	}
+
+	public function totalClientAppointments(int $clientID) : array {
+		$sql = "
+		SELECT COUNT(*) AS total FROM " . $this->table . "
+		WHERE `client_id` = '" . (int)$clientID . "'";
+		//var_dump($sql);die;
+		return $this->fetchOne($sql);
+	}
 
 }

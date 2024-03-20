@@ -9,7 +9,7 @@ use Dotenv\Dotenv;
 class Database
 {
 
-	protected $db = false;
+	public $db = false;
 
 	public ?string $lastQuery = null;
 
@@ -57,11 +57,13 @@ class Database
 
 	}
 
-	public function escape(string $value): string
+	public function escape(mixed $value): mixed
 	{
 
-		$escape_string = $this->db->escape_string($value);
-		return $escape_string;
+		if (is_string($value)) {
+			return $this->db->escape_string($value);
+		}
+		return $value;
 
 	}
 
@@ -120,6 +122,10 @@ class Database
 
 	public function prepareToInsert(array $args = null): void
 	{
+
+		// Clear previous keys and values
+		$this->insertKeys = [];
+		$this->insertValues = [];
 
 		if (!empty($args)) {
 

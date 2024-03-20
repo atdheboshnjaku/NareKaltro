@@ -291,6 +291,7 @@ a:hover {
 /* ENd: Client Area */
 
 /* Action tables */
+.history-table td { color: var(--soft-grey-text) !important; }
 
 table.action-table {
     width: 100%;
@@ -350,7 +351,8 @@ table.action-table th {
     color: var(--soft-grey-text);
     text-align: left;
 }
-
+.align-left { text-align: left !important; }
+.align-right { text-align: right; }
 .badge {
     display: inline-block;
     padding: .5em .85em;
