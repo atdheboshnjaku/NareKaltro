@@ -25,7 +25,7 @@ class User extends Database
 		if (!empty($email) && !empty($password)) {
 
 			$sql = "SELECT * FROM {$this->table}
-                    WHERE `email` = '" . $this->escape($email) . "'";
+					WHERE `email` = '" . $this->escape($email) . "'";
 			$user = $this->fetchOne($sql);
 			if ($user) {
 				if (password_verify($password, $user["password"])) {
@@ -47,7 +47,7 @@ class User extends Database
 		return false;
 	}
 
-	public function rememberMe(string $userID, int $day = 30): void
+	public function rememberMe(int $userID, int $day = 30): void
 	{
 
 		[$selector, $validator, $token] = $this->generateTokens();
