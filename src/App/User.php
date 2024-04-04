@@ -186,7 +186,7 @@ class User extends Database
 
 	// }
 
-	public function deleteUserToken(string $userID): bool
+	public function deleteUserToken(int $userID): bool
 	{
 
 		$sql = "DELETE FROM $this->table_3
