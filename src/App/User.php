@@ -156,14 +156,14 @@ class User extends Database
 
 	// }
 
-	public function insertUserToken(string $userID, string $selector, string $hashValidator, string $expiry): bool
+	public function insertUserToken(int $userID, string $selector, string $hashValidator, string $expiry): bool
 	{
 
 		$params = [
-			"user_id" => $userID,
-			"selector" => $selector,
+			"user_id"          => $userID,
+			"selector"         => $selector,
 			"hashed_validator" => $hashValidator,
-			"expiry" => $expiry
+			"expiry"           => $expiry
 		];
 		$this->prepareToInsert($params);
 		if ($this->insert($this->table_3)) {
@@ -313,7 +313,7 @@ class User extends Database
 		}
 	}
 
-	public function getCreatedUserID(): int|string
+	public function getCreatedUserID(): int
 	{
 
 		return $this->lastId();
@@ -433,7 +433,7 @@ class User extends Database
 		}
 	}
 
-	public function userCount(string $accountID, string $userID): array
+	public function userCount(string $accountID, int $userID): array
 	{
 
 		$sql = "SELECT COUNT(*) FROM {$this->table}
