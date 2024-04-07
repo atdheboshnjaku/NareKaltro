@@ -47,7 +47,7 @@ class User extends Database
 		return false;
 	}
 
-	public function rememberMe(int $userID, int $day = 30): void
+	public function rememberMe(int $userID, int $day = 90): void
 	{
 
 		[$selector, $validator, $token] = $this->generateTokens();
