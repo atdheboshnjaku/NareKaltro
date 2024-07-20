@@ -45,6 +45,8 @@ a:hover {
 	--warning-red-hover: #FF0000;
 }
 
+/* run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit" */
+/* run: ssh -o "StrictHostKeyChecking no" ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit" */
 .fc .fc-daygrid-day.fc-day-today {
 	background: #f4f6f9 !important;
 	border: 2px solid #fff !important;
