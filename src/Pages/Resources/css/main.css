@@ -47,7 +47,7 @@ a:hover {
 
 .fc .fc-daygrid-day.fc-day-today {
 	background: #f4f6f9 !important;
-	border: 1px solid #fff !important;
+	border: 2px solid #fff !important;
 }
 
 .codepen-button {
