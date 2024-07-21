@@ -19,7 +19,7 @@ jobs:
         echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
     - name: 🔗 Connect and Pull
-      run: ssh -T -o "StrictHostKeyChecking no" -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit"
+      run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit"
 
     - name: 🧹 Cleanup
       run: rm -rf ~/.ssh
