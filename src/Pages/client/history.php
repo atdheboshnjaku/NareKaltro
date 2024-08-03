@@ -52,8 +52,12 @@ require_once("../Templates/header.php");
 			<tbody>
 				<tr>
 					<td>
+						<p>
 						<?php $location = $objLocation->getLocationById($history['location_id']); echo $location['name']; ?>
 						</p>
+						<?php if ($history['status'] == 0) : ?>
+							<p class="badge" style="background:red;color:#fff;">Cancelled/Deleted</p>
+						<?php endif; ?>
 					</td>
 					<td>
 						<?php

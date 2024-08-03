@@ -164,7 +164,7 @@ class Appointments extends Database
 
 		if (!empty($id)) {
 
-			$safeID = (int) $id;
+			$safeID = (int)$id;
 			return $this->deactivateStatus($this->table, $safeID);
 
 		}
@@ -174,11 +174,13 @@ class Appointments extends Database
 	public function numberOfUpcomingAppointments(string $accountID): array
 	{
 
-		$sql = "SELECT COUNT(*) FROM {$this->table}
-                WHERE `start_date` >= NOW()
-                AND `account_id` = '" . $this->escape($accountID) . "'
-                AND `status` = 1
-                AND NOT `status` = 0";
+		$sql = "
+		SELECT
+		  COUNT(*) FROM {$this->table}
+		WHERE `start_date` >= NOW()
+		AND `account_id` = '" . $this->escape($accountID) . "'
+		  AND `status` = 1
+		    AND NOT `status` = 0";
 		return $this->fetchOne($sql);
 
 	}
@@ -190,7 +192,8 @@ class Appointments extends Database
 		  service_id,
 		  start_date,
 		  end_date,
-		  appointment_notes
+		  appointment_notes,
+		  status
 		FROM " . $this->table . "
 		WHERE `client_id` = '" . (int)$clientID . "'
 		ORDER BY `start_date` DESC";
@@ -202,7 +205,7 @@ class Appointments extends Database
 		$sql = "
 		SELECT COUNT(*) AS total FROM " . $this->table . "
 		WHERE `client_id` = '" . (int)$clientID . "'";
-		//var_dump($sql);die;
+
 		return $this->fetchOne($sql);
 	}
 
