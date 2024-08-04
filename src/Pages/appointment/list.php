@@ -48,7 +48,7 @@ require_once("Templates/header.php");
 
 ?>
 
-<div class="box">
+<div class="box" id="appointments-box">
 	<div class="box-header">
 		<div class="box-lf-ctn">
 			<h2>Appointments Calendar</h2>

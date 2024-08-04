@@ -11,6 +11,8 @@ class User extends Database
 	private $table_2 = "User_Roles";
 	private $table_3 = "User_Tokens";
 
+	private $table_4 = "Business_Locations";
+
 	public int $id;
 
 	public function getColumnName(): array
@@ -142,19 +144,6 @@ class User extends Database
 
 		return [$selector, $validator, $selector . ':' . $validator];
 	}
-
-	// public function parseToken(string $token): ?array
-	// {
-
-	//     $parts = explode(':', $token);
-
-	//     if($parts && count($parts) == 2) {
-	//         return [$parts[0], $parts[1]];
-	//     }
-
-	//     return null;
-
-	// }
 
 	public function insertUserToken(int $userID, string $selector, string $hashValidator, string $expiry): bool
 	{
@@ -516,5 +505,48 @@ class User extends Database
 		$sql = "SELECT * FROM {$this->table_2}
                 WHERE `level` > 1";
 		return $this->fetchAll($sql);
+	}
+
+	public function searchClients(string $accountID, string $searchParameter): array
+	{
+
+		$sql = "
+		SELECT
+		  id,
+		  name,
+		  email,
+		  location_id
+		FROM {$this->table}
+		WHERE account_id = '" . $this->escape($accountID) . "'
+		AND (name LIKE '%" . $this->escape($searchParameter) . "%' OR email LIKE '%" . $this->escape($searchParameter) . "%')";
+		//var_dump($sql);
+		$clients = $this->fetchAll($sql);
+		//var_dump($clients);
+		$results = [];
+
+		foreach ($clients as $client) {
+			$initials = $this->getClientInitials($client['name']);
+			$location = $this->getLocationById((int)$client['location_id']);
+
+			$results[] = [
+				'id'       => $client['id'],
+				'name'     => $client['name'],
+				'email'    => $client['email'] ?? '',
+				'initials' => $initials,
+				'location' => $location['name'] ?? ''
+			];
+		}
+		//var_dump($results);die;
+		return $results;
+	}
+
+	public function getLocationById(int $id)
+	{
+
+		if (!empty($id)) {
+			$sql = "SELECT `name` FROM {$this->table} WHERE `id` = '" . (int) $id . "'";
+			return $this->fetchOne($sql);
+		}
+
 	}
 }

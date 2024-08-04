@@ -385,6 +385,43 @@ table.action-table th {
 	background: #fff5f8;
 	color: #f1416c !important;
 }
+	/* Table Search */
+	.search-form_wrapper {
+		display: flex;
+		align-items: center;
+		flex-grow: 1;
+		margin-right: 10px;
+		position: relative;
+	}
+
+	.button-search {
+		position: absolute;
+		z-index: 6;
+		left: 15px;
+		top: 8px;
+		font-size: ;
+		width: 45px;
+		height: 100%;
+		cursor: pointer;
+		color: var(--soft-grey-text);
+		border: 0;
+	}
+
+	.search-form_wrapper input {
+		font-size: 1.1em;
+		width: 230px;
+		height: 35px;
+		background-color: var(--soft-grey);
+		border: 0;
+		border-radius: 3px;
+		color: var(--soft-grey-text);
+		padding-left: 55px;
+		transition: width .7s ease;
+	}
+
+	.search-form_wrapper input:focus {
+		outline: none;
+	}
 
 /* End:tables */
 
