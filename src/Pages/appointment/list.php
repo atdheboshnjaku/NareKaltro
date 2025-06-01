@@ -421,8 +421,6 @@ require_once("Templates/header.php");
 
 	function addClient() {
 		$('#addappointment').modal('hide');
-		// $('.required-warning').hide();
-		// $('#addappointment').find('form')[0].reset();
 		$('#addclient').modal('show');
 	}
 
@@ -462,7 +460,6 @@ require_once("Templates/header.php");
 
 	$('#e_service_id').select2({
 		placeholder: 'Select Services2',
-		//dropdownParent: $('#addappointment'),
 	});
 
 	let originalServiceCosts = {};
@@ -625,23 +622,8 @@ require_once("Templates/header.php");
 				const serviceId = $(this).attr('name').match(/\[(\d+)\]/)[1];
 				serviceCosts[serviceId] = $(this).val();
 			});
-			addAppointmentData['service_cost'] = serviceCosts;
 
-			// $.ajax({
-			//     type: "POST",
-			//     url: "/src/Pages/appointment/add.php",
-			//     data: addAppointmentData,
-			//     dataType: "json",
-			//     encode: true,
-			//     }).done(function (data) {
-			//     if ($('#addappointment').hasClass('show')) {
-			//         $('#addappointment').modal('hide');
-			//     }
-			//     //$('#addappointment').modal('hide');
-			//     console.log(data);
-			//     calendar.refetchEvents();
-			//     location.reload();
-			// });
+			addAppointmentData['service_cost'] = serviceCosts;
 
 			if ($("#service_id").val() == '') {
 				event.preventDefault();
@@ -720,22 +702,8 @@ require_once("Templates/header.php");
 				const serviceId = $(this).attr('name').match(/\[(\d+)\]/)[1];
 				serviceCosts[serviceId] = $(this).val();
 			});
-			updateAppointmentData['service_cost'] = serviceCosts;
 
-			// $.ajax({
-			//     type: "POST",
-			//     url: "/src/Pages/appointment/edit.php",
-			//     data: updateAppointmentData,
-			//     dataType: "json",
-			//     encode: true,
-			// }).done(function(data) {
-			//     $('#openappointment').modal('hide');
-			//     console.log(data.error);
-			//     calendar.refetchEvents();
-			// }).fail(function(jqXHR, textStatus, errorThrown) {
-			//     console.log(jqXHR.responseText);
-			//     alert('Error: Appointment not edited!');
-			// });
+			updateAppointmentData['service_cost'] = serviceCosts;
 
 			if ($("#e_service_id").val() == '') {
 				event.preventDefault();
@@ -920,7 +888,4 @@ require_once("Templates/header.php");
 
 	});
 </script>
-
-
-
 <?php require_once("Templates/footer.php"); ?>
