@@ -1,15 +1,13 @@
-<?php 
+<?php
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-use Fin\Narekaltro\App\Database;
 use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\User;
 use Fin\Narekaltro\App\Appointments;
-use Fin\Narekaltro\App\Location;
 
 require_once("../../../vendor/autoload.php");
 
@@ -18,17 +16,13 @@ if(!$objSession->isLogged()) {
     Login::redirectTo("/login");
 }
 
-$objUser = new User();    
+$objUser = new User();
 $userId = $objSession->getUserId();
 $userAccount = $objUser->getUserAccountID($userId);
-//$userLocationId = $objUser->getUserLocationID($userId);
-//$clients = $objUser->getClients();
 
 $location = $_POST['location_id'];
 $client = $_POST['client_id'];
 
-
-//$services = $_POST['service_id'];
 $services = $_POST['implodedArray'];
 $notes = $_POST['a_appointment_notes'];
 $appStart = $_POST['start_date'];
@@ -60,5 +54,5 @@ if(!empty($_POST['end_date'])) {
     $objAppointment->addAppointment($params);
 }
 
-
-
+$appointmentId = $objAppointment->getCreatedAppointmentId();
+$objAppointment->saveServiceCosts($appointmentId, $_POST['service_cost']);

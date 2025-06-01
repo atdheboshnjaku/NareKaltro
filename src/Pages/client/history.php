@@ -4,9 +4,6 @@ use Fin\Narekaltro\App\Session;
 use Fin\Narekaltro\App\Login;
 use Fin\Narekaltro\App\Url;
 use Fin\Narekaltro\App\Appointments;
-use Fin\Narekaltro\App\User;
-use Fin\Narekaltro\App\Form;
-use Fin\Narekaltro\App\Validation;
 use Fin\Narekaltro\App\Location;
 
 require_once("../../../vendor/autoload.php");
@@ -61,16 +58,20 @@ require_once("../Templates/header.php");
 					</td>
 					<td>
 						<?php
-							$services = explode(',', $history['service_id']);//var_dump($history);
+							$services = explode(',', $history['service_id']);
 							$serviceArray = [];
+							$serviceCosts = $objAppointment->getServiceCostsByAppointment((int)$history['appointment_id'] ?? 0);
 
 							foreach($services as $key => $value) {
-								$serviceArray[] = $objAppointment->getService($value);
+								$service = $objAppointment->getService((int)$value);
+								$service['price'] = $serviceCosts[$value] ?? null;
+								$serviceArray[] = $service;
 							}
 						?>
 						<?php foreach ($serviceArray as $service) : ?>
 						<p class="badge" style="background:<?php echo $service['background']; ?>;color:<?php echo $service['color']; ?>">
 						<?php echo $service['name']; ?>
+						<?php if ($service['price']) echo ": €" . $service['price']; ?>
 						</p>
 						<?php endforeach; ?>
 					</td>

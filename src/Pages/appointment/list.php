@@ -112,6 +112,9 @@ require_once("Templates/header.php");
 							</select>
 							<span class="required-warning warn">Please choose at least 1 service</span>
 						</p>
+						<p>
+							<div id="edit-service-costs"></div>
+						</p>
 						<span>Appointment Start Date & Time</span>
 						<p>
 							<input type="datetime-local" name="e_start_date" id="e_start_date">
@@ -196,6 +199,9 @@ require_once("Templates/header.php");
 								<?php } ?>
 							</select>
 							<span class="required-warning warn">Please choose at least 1 service</span>
+						</p>
+						<p>
+							<div id="add-service-costs"></div>
 						</p>
 						<span>Appointment Start Date & Time</span>
 						<p>
@@ -420,6 +426,35 @@ require_once("Templates/header.php");
 		$('#addclient').modal('show');
 	}
 
+	function renderServiceCostInputs(serviceIds, containerId, existingCosts = {}) {
+		const container = document.getElementById(containerId);
+		container.innerHTML = '';
+
+		serviceIds.forEach(serviceId => {
+			const serviceOption = document.querySelector(`option[value="${serviceId}"]`);
+			const serviceName = serviceOption ? serviceOption.textContent.trim() : `Service ${serviceId}`;
+
+			const wrapper = document.createElement('div');
+			wrapper.classList.add('mb-2');
+
+			const label = document.createElement('label');
+			label.textContent = `${serviceName} price:`;
+			label.setAttribute('for', `service_cost_${serviceId}`);
+
+			const input = document.createElement('input');
+			input.type = 'number';
+			input.step = '0.01';
+			input.name = `service_cost[${serviceId}]`;
+			input.id = `service_cost_${serviceId}`;
+			input.className = 'form-control';
+			input.value = existingCosts[serviceId] || '';
+
+			wrapper.appendChild(label);
+			wrapper.appendChild(input);
+			container.appendChild(wrapper);
+		});
+	}
+
 	$('#service_id').select2({
 		placeholder: 'Select Services1',
 		dropdownParent: $('#addappointment'),
@@ -430,8 +465,28 @@ require_once("Templates/header.php");
 		//dropdownParent: $('#addappointment'),
 	});
 
-	// $('#service_id').attr("required", "required");
-	// $('#e_service_id').attr("required", "required");
+	let originalServiceCosts = {};
+
+	$('#service_id').on('change', function () {
+		const selected = $(this).val() || [];
+		renderServiceCostInputs(selected, 'add-service-costs');
+	});
+
+	$('#e_service_id').on('change', function () {
+		const selected = $(this).val() || [];
+		const currentCosts = {};
+
+		$('#edit-service-costs input[name^="service_cost"]').each(function () {
+			const idMatch = $(this).attr('name').match(/\[(\d+)\]/);
+			if (idMatch) {
+				currentCosts[idMatch[1]] = $(this).val();
+			}
+		});
+
+		const mergedCosts = { ...originalServiceCosts, ...currentCosts };
+
+		renderServiceCostInputs(selected, 'edit-service-costs', mergedCosts);
+	});
 
 	function getTimezone() {
 		return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -477,6 +532,10 @@ require_once("Templates/header.php");
 				ids = info.event.extendedProps.service_id;
 				newA = ids.split(",");
 				$('#openappointment #e_service_id').val(newA).trigger('change');
+
+				originalServiceCosts = info.event.extendedProps.service_costs || {};
+				renderServiceCostInputs(newA, 'edit-service-costs', originalServiceCosts);
+
 				console.log('IDs: ' + newA);
 
 				$('#openappointment #start_date').text(info.event.start);
@@ -560,6 +619,13 @@ require_once("Templates/header.php");
 				end_date: $("#end_date").val(),
 				a_appointment_notes: $("#a_appointment_notes").val()
 			};
+
+			var serviceCosts = {};
+			$('#add-service-costs input[name^="service_cost"]').each(function () {
+				const serviceId = $(this).attr('name').match(/\[(\d+)\]/)[1];
+				serviceCosts[serviceId] = $(this).val();
+			});
+			addAppointmentData['service_cost'] = serviceCosts;
 
 			// $.ajax({
 			//     type: "POST",
@@ -648,6 +714,13 @@ require_once("Templates/header.php");
 				e_end_date: $("#e_end_date").val(),
 				appointment_notes: $("#appointment_notes").val(),
 			};
+
+			var serviceCosts = {};
+			$('#edit-service-costs input[name^="service_cost"]').each(function () {
+				const serviceId = $(this).attr('name').match(/\[(\d+)\]/)[1];
+				serviceCosts[serviceId] = $(this).val();
+			});
+			updateAppointmentData['service_cost'] = serviceCosts;
 
 			// $.ajax({
 			//     type: "POST",
