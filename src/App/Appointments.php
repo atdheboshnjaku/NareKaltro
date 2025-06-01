@@ -97,7 +97,7 @@ class Appointments extends Database
 			$this->prepareToInsert($params);
 			$out = $this->insert($this->table);
 			if ($out) {
-				$this->id = $this->lastId(); // 👈 crucial
+				$this->id = $this->lastId();
 			}
 			return $out;
 
@@ -256,6 +256,7 @@ class Appointments extends Database
 
 	public function getClientHistory(int $clientID) : array {
 		$sql = "
+		-- src/App/Appointments ::getClientHistory
 		SELECT
 		  appointment_id,
 		  location_id,
