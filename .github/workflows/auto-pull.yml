@@ -22,7 +22,7 @@ jobs:
       run: ssh-keygen -R ${{ secrets.SSH_HOST }}
 
     - name: 🔗 Connect and Pull
-      run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit"
+      run: ssh -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit"
 
     - name: 🧹 Cleanup
       run: rm -rf ~/.ssh
