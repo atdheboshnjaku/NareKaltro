@@ -18,6 +18,9 @@ jobs:
         echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
         echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
+    - name: 🔓 Remove old host key if it changed
+      run: ssh-keygen -R ${{ secrets.SSH_HOST }}
+
     - name: 🔗 Connect and Pull
       run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && exit"
 
