@@ -107,11 +107,11 @@ class Appointments extends Database
 
 	}
 
-	public function getUser(int $id): array
+	public function getUser(int $id): ?array
 	{
 
 		$sql = "SELECT `name` FROM {$this->table_2}
-                WHERE `id` = '" . (int) $id . "'";
+			WHERE `id` = '" . (int) $id . "'";
 		return $this->fetchOne($sql);
 
 	}
