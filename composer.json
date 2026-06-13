@@ -1,20 +1,18 @@
 {
     "name": "fin/narekaltro",
-    "description": "Simple POS System for NareKaltro",
+    "description": "Blu Advanced Booking System",
     "type": "project",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "Fin\\Narekaltro\\": "src/"
         }
     },
-    "authors": [
-        {
-            "name": "Atdhe Boshnjaku",
-            "email": "atdhe.boshnjaku@gmail.com"
-        }
-    ],
     "require": {
-        "vlucas/phpdotenv": "^5.3",
+        "php": ">=8.5",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
         "phpmailer/phpmailer": "^6.6"
     }
 }
