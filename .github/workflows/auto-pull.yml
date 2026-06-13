@@ -19,7 +19,7 @@ jobs:
         echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
     - name: 🔗 Connect and Pull
-      run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && php composer.phar install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress && exit"
+      run: ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ vars.WORK_DIR }} && git checkout ${{ vars.MAIN_BRANCH }} && git pull && { test -f composer.phar || curl -sS https://getcomposer.org/composer-stable.phar -o composer.phar; } && php composer.phar install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress && exit"
 
     - name: 🧹 Cleanup
       run: rm -rf ~/.ssh
