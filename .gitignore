@@ -1,2 +1,7 @@
 /vendor/
+composer.phar
 .env
+.env.docker
+docker-compose.yml
+/docker/
+.dockerignore
