@@ -1,7 +1,10 @@
-AddHandler application/x-httpd-alt-php80 .php .php8 .phtml
-
 Options +FollowSymLinks -MultiViews
-RewriteEngine on
+RewriteEngine On
 
-# send all the traffic to /public/
+# send all the traffic to legacy app
 RewriteRule .* src/Pages/$0 [L]
+
+# use once we move to new mvc
+# RewriteRule ^$ public/index.php [END,QSA]
+# RewriteRule ^assets/(.*)$ public/assets/$1 [END,QSA]
+# RewriteRule ^(.*)$ public/index.php [END,QSA]
