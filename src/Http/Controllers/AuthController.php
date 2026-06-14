@@ -438,15 +438,17 @@ final class AuthController extends Controller
 
 	private function requestIp(Request $request): string
 	{
-		$forwardedFor = (string) $request->server('HTTP_X_FORWARDED_FOR', '');
-		if ($forwardedFor !== '') {
-			$ip = trim(explode(',', $forwardedFor)[0]);
-			if (filter_var($ip, FILTER_VALIDATE_IP)) {
-				return $ip;
+		$remoteAddress = (string) $request->server('REMOTE_ADDR', '');
+
+		if (filter_var($remoteAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+			$forwardedFor = (string) $request->server('HTTP_X_FORWARDED_FOR', '');
+			if ($forwardedFor !== '') {
+				$ip = trim(explode(',', $forwardedFor)[0]);
+				if (filter_var($ip, FILTER_VALIDATE_IP)) {
+					return $ip;
+				}
 			}
 		}
-
-		$remoteAddress = (string) $request->server('REMOTE_ADDR', '');
 
 		return filter_var($remoteAddress, FILTER_VALIDATE_IP) ? $remoteAddress : 'unknown';
 	}

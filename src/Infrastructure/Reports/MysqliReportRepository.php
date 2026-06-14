@@ -554,7 +554,7 @@ final class MysqliReportRepository implements ReportRepository
 			return ' AND 1 = 0';
 		}
 
-		return ' AND ' . $column . ' IN (' . implode(',', $locationIds) . ')';
+		return ' AND ' . $column . ' IN (' . implode(',', array_map(intval(...), $locationIds)) . ')';
 	}
 
 	private function employeeConstraint(ReportScope $scope, string $column): string
@@ -563,7 +563,7 @@ final class MysqliReportRepository implements ReportRepository
 			return '';
 		}
 
-		return ' AND ' . $column . ' = ' . $scope->employeeFilterId;
+		return ' AND ' . $column . ' = ' . (int) $scope->employeeFilterId;
 	}
 
 	private function db(): mysqli

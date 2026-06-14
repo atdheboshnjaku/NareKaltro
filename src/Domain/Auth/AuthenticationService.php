@@ -178,13 +178,6 @@ final class AuthenticationService
 
 	private function verificationHash(): string
 	{
-		$characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-		$hash = '';
-
-		for ($i = 0; $i < 8; $i++) {
-			$hash .= $characters[random_int(0, strlen($characters) - 1)];
-		}
-
-		return $hash;
+		return bin2hex(random_bytes(16));
 	}
 }
