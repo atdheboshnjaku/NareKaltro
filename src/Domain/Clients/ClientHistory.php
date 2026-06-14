@@ -62,6 +62,7 @@ final class ClientHistory
 					name: $service->name,
 					background: $service->background,
 					color: $service->color,
+					quoteOnly: $service->quoteOnly,
 					cost: $this->access->can($viewer, AppointmentCapability::CostView, $context)
 						? $service->cost
 						: null

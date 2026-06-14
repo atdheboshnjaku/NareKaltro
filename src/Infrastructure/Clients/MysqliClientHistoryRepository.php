@@ -60,6 +60,7 @@ final class MysqliClientHistoryRepository implements ClientHistoryRepository
 					'name' => 'Unavailable service',
 					'background' => '#f1faff',
 					'color' => '#009ef7',
+					'quote_only' => 0,
 				];
 
 				$serviceRows[] = new ClientHistoryService(
@@ -67,6 +68,7 @@ final class MysqliClientHistoryRepository implements ClientHistoryRepository
 					name: (string) $service['name'],
 					background: (string) $service['background'],
 					color: (string) $service['color'],
+					quoteOnly: (int) ($service['quote_only'] ?? 0) === 1,
 					cost: $costs[$appointmentId][$serviceId] ?? null,
 				);
 			}
@@ -156,7 +158,7 @@ final class MysqliClientHistoryRepository implements ClientHistoryRepository
 	{
 		$db = $this->db();
 		$stmt = $db->prepare(
-			'SELECT id, name, background, color
+			'SELECT id, name, background, color, quote_only
 			FROM Services
 			WHERE account_id = ?'
 		);

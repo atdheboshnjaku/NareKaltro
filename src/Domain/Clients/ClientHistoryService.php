@@ -11,6 +11,7 @@ final readonly class ClientHistoryService
 		public string $name,
 		public string $background,
 		public string $color,
+		public bool $quoteOnly,
 		public ?string $cost,
 	) {
 	}

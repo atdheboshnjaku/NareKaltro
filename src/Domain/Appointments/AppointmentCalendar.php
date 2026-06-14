@@ -111,6 +111,7 @@ final class AppointmentCalendar
 				'name' => $service->name,
 				'background' => $service->background,
 				'color' => $service->color,
+				'quoteOnly' => $service->quoteOnly,
 				'cost' => $canSeeCost ? $service->cost : null,
 				'canUpdateCost' => $this->access->canUpdateCosts($viewer, $context),
 			];

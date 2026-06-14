@@ -6,6 +6,7 @@ foreach ($services as $service) {
 		'name' => $service->name,
 		'background' => $service->background,
 		'color' => $service->color,
+		'quoteOnly' => $service->quoteOnly,
 	];
 }
 ?>
@@ -417,7 +418,10 @@ foreach ($services as $service) {
 			badge.className = 'badge';
 			badge.style.backgroundColor = service.background;
 			badge.style.color = service.color;
-			badge.textContent = service.name + (service.cost !== null && service.cost !== undefined ? ': EUR ' + service.cost : '');
+			const costText = service.cost !== null && service.cost !== undefined
+				? ': EUR ' + service.cost + (service.quoteOnly === true ? ' quote only' : '')
+				: '';
+			badge.textContent = service.name + costText;
 			return badge;
 		};
 
@@ -484,7 +488,8 @@ foreach ($services as $service) {
 					id: serviceId,
 					name: 'Unavailable service',
 					background: '#f1faff',
-					color: '#009ef7'
+					color: '#009ef7',
+					quoteOnly: false
 				};
 				const access = capabilities.serviceCosts[serviceId] || capabilities.serviceCosts[String(serviceId)] || {};
 				const value = values[serviceId] || '';
@@ -500,7 +505,7 @@ foreach ($services as $service) {
 				wrapper.className = 'mb-2';
 				const label = document.createElement('label');
 				label.htmlFor = container.id + '-cost-' + serviceId;
-				label.textContent = service.name + ' price:';
+				label.textContent = service.name + (service.quoteOnly === true ? ' quoted price:' : ' price:');
 				const input = document.createElement('input');
 				input.type = 'number';
 				input.step = '0.01';

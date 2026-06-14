@@ -12,6 +12,7 @@ final readonly class ServiceOffering
 		public string $name,
 		public string $background,
 		public string $color,
+		public bool $quoteOnly,
 		public bool $active,
 	) {
 	}
@@ -24,6 +25,7 @@ final readonly class ServiceOffering
 			name: (string) $row['name'],
 			background: (string) ($row['background'] ?: '#f1faff'),
 			color: (string) ($row['color'] ?: '#009ef7'),
+			quoteOnly: (int) ($row['quote_only'] ?? 0) === 1,
 			active: (int) $row['status'] === 1,
 		);
 	}

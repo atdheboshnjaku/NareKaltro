@@ -23,7 +23,7 @@ final class MysqliServiceRepository implements ServiceRepository
 	{
 		$db = $this->db();
 		$stmt = $db->prepare(
-			'SELECT id, account_id, name, background, color, status
+			'SELECT id, account_id, name, background, color, quote_only, status
 			FROM Services
 			WHERE account_id = ?
 			AND status = 1
@@ -53,7 +53,7 @@ final class MysqliServiceRepository implements ServiceRepository
 		$limit = $page->perPage;
 		$offset = $page->offset();
 		$stmt = $db->prepare(
-			'SELECT id, account_id, name, background, color, status
+			'SELECT id, account_id, name, background, color, quote_only, status
 			FROM Services
 			WHERE account_id = ?
 			AND status = 1
@@ -99,7 +99,7 @@ final class MysqliServiceRepository implements ServiceRepository
 	{
 		$db = $this->db();
 		$stmt = $db->prepare(
-			'SELECT id, account_id, name, background, color, status
+			'SELECT id, account_id, name, background, color, quote_only, status
 			FROM Services
 			WHERE id = ?
 			AND account_id = ?
@@ -156,15 +156,16 @@ final class MysqliServiceRepository implements ServiceRepository
 		$row = $data->toDatabaseRow();
 		$status = 1;
 		$stmt = $db->prepare(
-			'INSERT INTO Services (account_id, name, background, color, status)
-			VALUES (?, ?, ?, ?, ?)'
+			'INSERT INTO Services (account_id, name, background, color, quote_only, status)
+			VALUES (?, ?, ?, ?, ?, ?)'
 		);
 		$stmt->bind_param(
-			'ssssi',
+			'ssssii',
 			$accountId,
 			$row['name'],
 			$row['background'],
 			$row['color'],
+			$row['quote_only'],
 			$status
 		);
 		$stmt->execute();
@@ -180,15 +181,16 @@ final class MysqliServiceRepository implements ServiceRepository
 		$row = $data->toDatabaseRow();
 		$stmt = $db->prepare(
 			'UPDATE Services
-			SET name = ?, background = ?, color = ?
+			SET name = ?, background = ?, color = ?, quote_only = ?
 			WHERE id = ?
 			AND account_id = ?'
 		);
 		$stmt->bind_param(
-			'sssis',
+			'sssiis',
 			$row['name'],
 			$row['background'],
 			$row['color'],
+			$row['quote_only'],
 			$id,
 			$accountId
 		);

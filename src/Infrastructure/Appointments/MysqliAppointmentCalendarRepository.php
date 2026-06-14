@@ -256,12 +256,14 @@ final class MysqliAppointmentCalendarRepository implements AppointmentCalendarRe
 					'name' => 'Unavailable service',
 					'background' => '#f1faff',
 					'color' => '#009ef7',
+					'quote_only' => 0,
 				];
 				$selectedServices[] = new AppointmentService(
 					id: $serviceId,
 					name: (string) $service['name'],
 					background: (string) ($service['background'] ?: '#f1faff'),
 					color: (string) ($service['color'] ?: '#009ef7'),
+					quoteOnly: (int) ($service['quote_only'] ?? 0) === 1,
 					cost: $costs[$serviceId] ?? null
 				);
 			}
@@ -290,7 +292,7 @@ final class MysqliAppointmentCalendarRepository implements AppointmentCalendarRe
 	{
 		$db = $this->db();
 		$stmt = $db->prepare(
-			'SELECT id, name, background, color
+			'SELECT id, name, background, color, quote_only
 			FROM Services
 			WHERE account_id = ?'
 		);

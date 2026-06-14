@@ -19,6 +19,7 @@
 			<tr>
 				<th>Service</th>
 				<th>Style</th>
+				<th>Value handling</th>
 				<th></th>
 				<?php if ($canManage): ?>
 					<th>Actions</th>
@@ -38,6 +39,11 @@
 							style="background-color: <?php echo e($service->background); ?>; color: <?php echo e($service->color); ?>;"
 						>
 							<?php echo e($service->name); ?>
+						</p>
+					</td>
+					<td>
+						<p class="badge <?php echo $service->quoteOnly ? 'badge-vacation' : 'badge-blue'; ?>">
+							<?php echo $service->quoteOnly ? 'Quote only' : 'Revenue'; ?>
 						</p>
 					</td>
 					<td><p></p></td>

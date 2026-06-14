@@ -100,6 +100,10 @@ final class MysqliReportRepository implements ReportRepository
 			FROM Appointments AS appointments
 			INNER JOIN Services_Cost AS costs
 				ON costs.appointment_id = appointments.appointment_id
+			INNER JOIN Services AS services
+				ON services.id = costs.service_id
+				AND services.account_id = appointments.account_id
+				AND services.quote_only = 0
 			WHERE appointments.account_id = ?
 			AND appointments.status = 1
 			AND appointments.start_date >= ?
@@ -222,7 +226,7 @@ final class MysqliReportRepository implements ReportRepository
 		$locationSql = $this->locationConstraint($scope, 'appointments.location_id');
 		$employeeSql = $this->employeeConstraint($scope, 'appointments.employee_id');
 		$stmt = $this->db()->prepare(
-			"SELECT services.id, services.name, services.background, services.color,
+			"SELECT services.id, services.name, services.background, services.color, services.quote_only,
 				COUNT(DISTINCT appointments.appointment_id) AS appointment_total
 			FROM Appointments AS appointments
 			INNER JOIN Appointment_Services AS appointment_services
@@ -235,7 +239,7 @@ final class MysqliReportRepository implements ReportRepository
 			AND appointments.status = 1
 			AND appointments.start_date >= ?
 			AND appointments.start_date < ?" . $locationSql . $employeeSql . "
-			GROUP BY services.id, services.name, services.background, services.color
+			GROUP BY services.id, services.name, services.background, services.color, services.quote_only
 			ORDER BY appointment_total DESC, services.name ASC"
 		);
 		$stmt->bind_param('sss', $accountId, $fromDate, $untilDate);
@@ -249,6 +253,7 @@ final class MysqliReportRepository implements ReportRepository
 				'name' => (string) $row['name'],
 				'background' => (string) $row['background'],
 				'color' => (string) $row['color'],
+				'quoteOnly' => (int) $row['quote_only'] === 1,
 				'appointments' => (int) $row['appointment_total'],
 			];
 		}

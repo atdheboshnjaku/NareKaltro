@@ -133,6 +133,7 @@ final class ServiceController extends Controller
 			'name' => $data?->name ?? $service?->name ?? '',
 			'background' => $data?->background ?? $service?->background ?? '#f1faff',
 			'color' => $data?->color ?? $service?->color ?? '#009ef7',
+			'quote_only' => $data?->quoteOnly ?? $service?->quoteOnly ?? false,
 		];
 	}
 }

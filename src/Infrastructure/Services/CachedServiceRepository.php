@@ -15,6 +15,7 @@ use Fin\Narekaltro\Infrastructure\Cache\CacheKey;
 final class CachedServiceRepository implements ServiceRepository
 {
 	private const TTL_SECONDS = 900;
+	private const CACHE_NAMESPACE = 'services-v3';
 
 	public function __construct(
 		private ServiceRepository $inner,
@@ -98,11 +99,11 @@ final class CachedServiceRepository implements ServiceRepository
 
 	private function prefix(string $accountId): string
 	{
-		return CacheKey::accountPrefix('services', $accountId);
+		return CacheKey::accountPrefix(self::CACHE_NAMESPACE, $accountId);
 	}
 
 	private function key(string $accountId, string|int ...$parts): string
 	{
-		return CacheKey::account('services', $accountId, ...$parts);
+		return CacheKey::account(self::CACHE_NAMESPACE, $accountId, ...$parts);
 	}
 }

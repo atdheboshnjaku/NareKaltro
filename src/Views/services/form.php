@@ -37,6 +37,15 @@
 			<?php endif; ?>
 		</p>
 	</div>
+	<label class="service-quote-row">
+		<input
+			type="checkbox"
+			name="quote_only"
+			value="1"
+			<?php echo $old['quote_only'] ? 'checked' : ''; ?>
+		>
+		<span>Quote only</span>
+	</label>
 	<p>
 		<input type="submit" name="submit" class="blue-btn alab" value="<?php echo e($submitLabel); ?>">
 	</p>

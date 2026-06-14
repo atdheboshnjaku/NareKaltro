@@ -10,6 +10,7 @@ final readonly class ServiceFormData
 		public string $name,
 		public string $background,
 		public string $color,
+		public bool $quoteOnly,
 	) {
 	}
 
@@ -19,6 +20,7 @@ final readonly class ServiceFormData
 			name: trim((string) ($input['name'] ?? '')),
 			background: self::normalizeColor($input['background'] ?? '#f1faff', '#f1faff'),
 			color: self::normalizeColor($input['color'] ?? '#009ef7', '#009ef7'),
+			quoteOnly: isset($input['quote_only']) && (string) $input['quote_only'] === '1',
 		);
 	}
 
@@ -47,6 +49,7 @@ final readonly class ServiceFormData
 			'name' => $this->name,
 			'background' => $this->background,
 			'color' => $this->color,
+			'quote_only' => $this->quoteOnly ? 1 : 0,
 		];
 	}
 

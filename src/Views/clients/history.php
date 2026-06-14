@@ -37,7 +37,7 @@
 								class="badge"
 								style="background: <?php echo e($service->background); ?>; color: <?php echo e($service->color); ?>;"
 							>
-								<?php echo e($service->name); ?><?php echo $service->cost !== null ? e(': EUR ' . $service->cost) : ''; ?>
+								<?php echo e($service->name); ?><?php echo $service->cost !== null ? e(': EUR ' . $service->cost . ($service->quoteOnly ? ' quote only' : '')) : ''; ?>
 							</p>
 						<?php endforeach; ?>
 					</td>
