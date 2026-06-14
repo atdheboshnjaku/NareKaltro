@@ -11,6 +11,7 @@ use Fin\Narekaltro\Core\View;
 use Fin\Narekaltro\Domain\Auth\AuthenticationService;
 use Fin\Narekaltro\Domain\Auth\AuthenticatedUser;
 use Fin\Narekaltro\Domain\Auth\CurrentUserProvider;
+use Fin\Narekaltro\Domain\Auth\LoginThrottle;
 use Fin\Narekaltro\Domain\Auth\PasswordResetThrottle;
 use Fin\Narekaltro\Domain\Auth\RegistrationThrottle;
 
@@ -23,7 +24,8 @@ final class AuthController extends Controller
 		private AuthenticationService $authentication,
 		private CurrentUserProvider $users,
 		private RegistrationThrottle $registrationThrottle,
-		private PasswordResetThrottle $passwordResetThrottle
+		private PasswordResetThrottle $passwordResetThrottle,
+		private LoginThrottle $loginThrottle
 	) {
 		parent::__construct($view);
 	}
@@ -56,9 +58,25 @@ final class AuthController extends Controller
 			$errors['password'] = 'Please enter your password';
 		}
 
-		$user = $errors === [] ? $this->authentication->attempt($email, $password) : null;
-		if ($errors === [] && $user === null) {
-			$errors['login'] = 'Email/Password combination is not correct!';
+		$user = null;
+		if ($errors === []) {
+			$ip = $this->requestIp($request);
+			$throttle = $this->loginThrottle->check($email, $ip);
+			if (!$throttle->allowed) {
+				return $this->renderAuth('auth.login', [
+					'title' => 'Login',
+					'errors' => ['login' => $this->loginThrottleMessage($throttle->retryAfterSeconds)],
+					'old' => ['email' => $email, 'remember' => $remember],
+				], 429);
+			}
+
+			$user = $this->authentication->attempt($email, $password);
+			if ($user === null) {
+				$this->loginThrottle->registerFailure($email, $ip);
+				$errors['login'] = 'Email/Password combination is not correct!';
+			} else {
+				$this->loginThrottle->clear($email, $ip);
+			}
 		}
 
 		if ($errors !== []) {
@@ -432,6 +450,14 @@ final class AuthController extends Controller
 		$remoteAddress = (string) $request->server('REMOTE_ADDR', '');
 
 		return filter_var($remoteAddress, FILTER_VALIDATE_IP) ? $remoteAddress : 'unknown';
+	}
+
+	private function loginThrottleMessage(int $retryAfterSeconds): string
+	{
+		$minutes = max(1, (int) ceil($retryAfterSeconds / 60));
+
+		return 'Too many failed login attempts. Please try again in '
+			. $minutes . ' minute' . ($minutes === 1 ? '' : 's') . '.';
 	}
 
 }

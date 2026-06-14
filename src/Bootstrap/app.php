@@ -12,6 +12,7 @@ use Fin\Narekaltro\Domain\Auth\AccountPolicyProvisioner;
 use Fin\Narekaltro\Domain\Auth\AuthenticationRepository;
 use Fin\Narekaltro\Domain\Auth\Authorization;
 use Fin\Narekaltro\Domain\Auth\CurrentUserProvider;
+use Fin\Narekaltro\Domain\Auth\LoginThrottle;
 use Fin\Narekaltro\Domain\Auth\PasswordResetMailer;
 use Fin\Narekaltro\Domain\Auth\PasswordResetThrottle;
 use Fin\Narekaltro\Domain\Auth\PasswordResetTokenService;
@@ -37,6 +38,7 @@ use Fin\Narekaltro\Domain\Shared\TransactionManager;
 use Fin\Narekaltro\Domain\Staff\StaffRepository;
 use Fin\Narekaltro\Infrastructure\Auth\CachedAccessPolicyRepository;
 use Fin\Narekaltro\Infrastructure\Auth\MysqliAccessPolicyRepository;
+use Fin\Narekaltro\Infrastructure\Auth\FileLoginThrottle;
 use Fin\Narekaltro\Infrastructure\Auth\FileRegistrationThrottle;
 use Fin\Narekaltro\Infrastructure\Auth\MailPasswordResetMailer;
 use Fin\Narekaltro\Infrastructure\Auth\MailRegistrationMailer;
@@ -93,6 +95,9 @@ $container->set(RegistrationThrottle::class, fn () => new FileRegistrationThrott
 ));
 $container->set(PasswordResetThrottle::class, fn () => new FileRegistrationThrottle(
 	sys_get_temp_dir() . '/narekaltro/auth-password-reset-throttle.json'
+));
+$container->set(LoginThrottle::class, fn () => new FileLoginThrottle(
+	sys_get_temp_dir() . '/narekaltro/auth-login-throttle.json'
 ));
 $container->set(PasswordResetTokenService::class, function (Container $container): PasswordResetTokenService {
 	$container->get(Connection::class);
