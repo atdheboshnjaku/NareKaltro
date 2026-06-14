@@ -12,6 +12,7 @@ use Fin\Narekaltro\Domain\Auth\AuthenticationService;
 use Fin\Narekaltro\Domain\Auth\AuthenticatedUser;
 use Fin\Narekaltro\Domain\Auth\CurrentUserProvider;
 use Fin\Narekaltro\Domain\Auth\LoginThrottle;
+use Fin\Narekaltro\Domain\Auth\PasswordPolicy;
 use Fin\Narekaltro\Domain\Auth\PasswordResetThrottle;
 use Fin\Narekaltro\Domain\Auth\RegistrationThrottle;
 
@@ -229,10 +230,8 @@ final class AuthController extends Controller
 		$passwordConfirm = (string) $request->input('password_confirm', '');
 		$errors = [];
 
-		if ($password === '') {
-			$errors['password'] = 'Please enter your password';
-		} elseif (strlen($password) < 8) {
-			$errors['password'] = 'Password must be at least 8 characters';
+		if (!PasswordPolicy::isValid($password)) {
+			$errors['password'] = 'Please choose a password that meets all the requirements below';
 		}
 
 		if ($password !== $passwordConfirm) {
@@ -299,8 +298,8 @@ final class AuthController extends Controller
 			$errors['name'] = 'Please enter the users full name';
 		}
 
-		if ($password === '') {
-			$errors['password'] = 'Please enter your password';
+		if (!PasswordPolicy::isValid($password)) {
+			$errors['password'] = 'Please choose a password that meets all the requirements below';
 		}
 
 		if ($errors !== []) {

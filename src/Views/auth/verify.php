@@ -33,6 +33,7 @@ $old = $old ?? ['name' => ''];
 					placeholder="Strong Password"
 					required
 				>
+				<?php require __DIR__ . '/../partials/password_strength.php'; ?>
 				<input type="submit" name="submit" value="Continue">
 			</form>
 		</div>

@@ -23,6 +23,7 @@ $errors = $errors ?? [];
 					placeholder="New Password"
 					required
 				>
+				<?php require __DIR__ . '/../partials/password_strength.php'; ?>
 				<input
 					type="password"
 					name="password_confirm"
