@@ -5,3 +5,7 @@ composer.phar
 docker-compose.yml
 /docker/
 .dockerignore
+
+# Claude Code AI tooling — local only, never deploy to live
+/ai/
+/CLAUDE.md
