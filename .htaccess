@@ -1,9 +1,6 @@
 Options +FollowSymLinks -MultiViews
 RewriteEngine On
 
-# send all the traffic to legacy app
-# RewriteRule .* src/Pages/$0 [L]
-
 # use once we move to new mvc
 RewriteRule ^$ public/index.php [END,QSA]
 RewriteRule ^assets/(.*)$ public/assets/$1 [END,QSA]
