@@ -1,7 +1,7 @@
 Options +FollowSymLinks -MultiViews
 RewriteEngine On
 
-# use once we move to new mvc
+# MVC front controller
 RewriteRule ^$ public/index.php [END,QSA]
 RewriteRule ^assets/(.*)$ public/assets/$1 [END,QSA]
 RewriteRule ^(.*)$ public/index.php [END,QSA]

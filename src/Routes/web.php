@@ -20,19 +20,6 @@ use Fin\Narekaltro\Http\Controllers\StaffController;
 return static function (Router $router): void {
 	$route = static function (string $method, string $path, array|\Closure $handler) use ($router): void {
 		$router->add($method, $path, $handler);
-
-		$legacyPath = '/_new' . ($path === '/' ? '' : $path);
-		if (strtoupper($method) === 'GET') {
-			$router->get($legacyPath, static function (Request $request) use ($path): Response {
-				$query = (string) $request->server('QUERY_STRING', '');
-
-				return Response::redirect($path . ($query === '' ? '' : '?' . $query), 301);
-			});
-
-			return;
-		}
-
-		$router->add($method, $legacyPath, $handler);
 	};
 
 	$route('GET', '/', [DashboardController::class, 'index']);
