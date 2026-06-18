@@ -691,6 +691,11 @@ foreach ($services as $service) {
 			});
 		}
 
+		// Focus select2 dropdown on open
+		$(document).on('select2:open', function () {
+			document.querySelector('.select2-container--open .select2-search__field')?.focus();
+		});
+
 		const historyRows = historyElement ? historyElement.querySelector('[data-history-rows]') : null;
 		const historyTitle = historyElement ? historyElement.querySelector('#appointment-history-title') : null;
 		const openHistory = function (clientId, sourceModal) {
