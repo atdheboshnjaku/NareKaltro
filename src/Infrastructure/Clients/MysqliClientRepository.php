@@ -201,7 +201,6 @@ final class MysqliClientRepository implements ClientRepository
 		$name = $data->name;
 		$email = $data->email;
 		$phone = $data->phone;
-		$password = null;
 		$countryId = $data->countryId;
 		$stateId = $data->stateId;
 		$cityId = $data->cityId;
@@ -210,11 +209,11 @@ final class MysqliClientRepository implements ClientRepository
 		$stmt = $db->prepare(
 			'INSERT INTO Users (
 				account_id, role_id, location_id, date, name, email, number,
-				password, country, state, city, status, hash
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+				country, state, city, status, hash
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 		);
 		$stmt->bind_param(
-			'siisssssiiiis',
+			'siissssiiiis',
 			$accountId,
 			$roleId,
 			$locationId,
@@ -222,7 +221,6 @@ final class MysqliClientRepository implements ClientRepository
 			$name,
 			$email,
 			$phone,
-			$password,
 			$countryId,
 			$stateId,
 			$cityId,

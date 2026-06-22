@@ -47,20 +47,12 @@ final readonly class ClientFormData
 	{
 		$errors = [];
 
-		if ($this->locationId < 1) {
-			$errors['location_id'] = 'Please select a client location.';
-		}
-
 		if ($this->name === '') {
 			$errors['name'] = 'Please enter the client name.';
 		}
 
 		if ($this->email !== '' && filter_var($this->email, FILTER_VALIDATE_EMAIL) === false) {
 			$errors['email'] = 'Please enter a valid email address.';
-		}
-
-		if ($this->countryId < 1) {
-			$errors['country'] = 'Please select the client country.';
 		}
 
 		return $errors;

@@ -96,7 +96,7 @@ final class ClientManager
 		$errors = $data->validate();
 
 		$keepsExistingLocation = $existing !== null && $data->locationId === $existing->locationId;
-		if (!$keepsExistingLocation && $this->locations->findActiveForAccount($data->locationId, $accountId) === null) {
+		if ($data->locationId > 0 && !$keepsExistingLocation && $this->locations->findActiveForAccount($data->locationId, $accountId) === null) {
 			$errors['location_id'] = 'Please select an active client location.';
 		}
 
@@ -108,7 +108,7 @@ final class ClientManager
 		}
 
 		$keepsExistingCountry = $existing !== null && $data->countryId === $existing->countryId;
-		if (!$keepsExistingCountry && !$this->geography->countryExists($data->countryId)) {
+		if ($data->countryId > 0 && !$keepsExistingCountry && !$this->geography->countryExists($data->countryId)) {
 			$errors['country'] = 'Please select a valid client country.';
 		}
 
