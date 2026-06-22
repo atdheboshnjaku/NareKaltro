@@ -686,8 +686,10 @@ foreach ($services as $service) {
 			});
 			$(document).on('click', '[data-open-client-modal]', function () {
 				returnFromNewClient = addModal;
+				addElement.addEventListener('hidden.bs.modal', function () {
+					newClientModal.show();
+				}, {once: true});
 				addModal.hide();
-				newClientModal.show();
 			});
 		}
 
@@ -915,9 +917,14 @@ foreach ($services as $service) {
 					.then(function (client) {
 						ensureOption(addClient, client.id, client.name);
 						$(addClient).val(String(client.id)).trigger('change');
+						newClientElement.addEventListener('hidden.bs.modal', function () {
+							if (returnFromNewClient) {
+								const target = returnFromNewClient;
+								returnFromNewClient = null;
+								target.show();
+							}
+						}, {once: true});
 						newClientModal.hide();
-						returnFromNewClient.show();
-						returnFromNewClient = null;
 					})
 					.catch(function (error) {
 						swal(error.message, {icon: 'error'});
