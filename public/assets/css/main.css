@@ -634,6 +634,29 @@ table.action-table th {
 	width: 100% !important;
 }
 
+/* Mobile: keep modals scrollable and select2 results visible above the keyboard */
+@media (max-width: 575.98px) {
+	.modal-body {
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.select2-results__options {
+		max-height: 30vh !important;
+	}
+
+	/* Keep them scrollable but hide the scrollbar */
+	.modal-body,
+	.select2-results__options {
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+
+	.modal-body::-webkit-scrollbar,
+	.select2-results__options::-webkit-scrollbar {
+		display: none;
+	}
+}
+
 .profile-card input,
 .profile-card select {
 	width: 100% !important;

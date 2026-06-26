@@ -34,7 +34,7 @@ foreach ($services as $service) {
 	<div id="calendar"></div>
 
 	<div class="modal fade" id="openappointment" tabindex="-1" aria-labelledby="appointment-details-title" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="appointment-details-title">
@@ -150,7 +150,7 @@ foreach ($services as $service) {
 
 	<?php if ($canCreate): ?>
 		<div class="modal fade" id="addappointment" tabindex="-1" aria-labelledby="add-appointment-title" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="add-appointment-title">Create Appointment</h5>
@@ -244,7 +244,7 @@ foreach ($services as $service) {
 
 	<?php if ($canCreateClient): ?>
 		<div class="modal fade" id="addclient" tabindex="-1" aria-labelledby="add-client-title" aria-hidden="true">
-			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="add-client-title">Add Client</h5>
@@ -320,7 +320,7 @@ foreach ($services as $service) {
 
 <?php if ($canViewClientHistory): ?>
 	<div class="modal fade" id="appointment-client-history" tabindex="-1" aria-labelledby="appointment-history-title" aria-hidden="true">
-		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="appointment-history-title">Recent History</h5>
@@ -694,8 +694,14 @@ foreach ($services as $service) {
 		}
 
 		// Focus select2 dropdown on open
-		$(document).on('select2:open', function () {
+		$(document).on('select2:open', function (event) {
 			document.querySelector('.select2-container--open .select2-search__field')?.focus();
+
+			// On mobile, scroll the field up so its results aren't hidden behind the keyboard
+			if (window.matchMedia('(max-width: 575.98px)').matches) {
+				const field = $(event.target).data('select2')?.$container?.[0];
+				field?.scrollIntoView({block: 'start'});
+			}
 		});
 
 		const historyRows = historyElement ? historyElement.querySelector('[data-history-rows]') : null;
